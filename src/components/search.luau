@@ -4,6 +4,8 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: the results page shows the same slim scrollbar as a tab page.
 
 -- Search: a pill that takes over the tab strip and searches every page at once. The Search
 -- action toggles it; while open the tab selector hides and every content tab's elements are
@@ -241,12 +243,15 @@ function search.build(window)
         BackgroundTransparency = 1,
         AutomaticCanvasSize = Enum.AutomaticSize.Y,
         CanvasSize = UDim2.new(0, 0, 0, 0),
-        ScrollBarThickness = 0,
+        -- same slim bar as a tab page, so a long list of results reads as scrollable
+        ScrollBarThickness = constants.pageScrollbar.thickness,
+        ScrollBarImageTransparency = constants.pageScrollbar.transparency,
+        VerticalScrollBarInset = Enum.ScrollBarInset.None,
         ScrollingDirection = Enum.ScrollingDirection.Y,
         LayoutOrder = 2000, -- sits after every tab page
 
         Parent = window.elements,
-    })
+    }, { ScrollBarImageColor3 = "ContentColor" })
 
     window:Create("UIListLayout", {
         Padding = UDim.new(0, 7),

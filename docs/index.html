@@ -256,6 +256,10 @@
     content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 60px; pointer-events: none;
     background: linear-gradient(color-mix(in srgb, var(--rf-w1) 0%, transparent), var(--rf-w1) 80%);
   }
+  .rf-scroll {
+    position: absolute; top: 6px; right: 2px; width: 3px; height: 62%; border-radius: 3px; z-index: 2;
+    background: color-mix(in srgb, var(--rf-tx) 40%, transparent);
+  }
   .rf-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   @container (width < 520px) { .rf-cols { grid-template-columns: 1fr; gap: 20px; } }
   .rf-col { display: grid; gap: 7px; align-content: start; min-width: 0; }
@@ -513,6 +517,7 @@
           <span class="rf-tab on"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M9.5 1 3 9h4l-1 6 6.5-8h-4z"/></svg>Auto</span>
         </div>
         <div class="rf-page">
+          <span class="rf-scroll" aria-hidden="true"></span>
           <div class="rf-cols">
             <div class="rf-col">
               <div class="rf-sec" data-row style="--row:0">Job</div>

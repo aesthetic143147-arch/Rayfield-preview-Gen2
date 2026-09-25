@@ -6,7 +6,7 @@
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
 --
 -- Modified for Rayfield Columns: a tab's page is two columns (tab.Left, tab.Right), and the
--- tab's own CreateX calls land in one of them.
+-- tab's own CreateX calls land in one of them. A long page shows a slim scrollbar.
 
 local Tab = {}
 Tab.__index = Tab
@@ -17,6 +17,7 @@ local utility = script.Parent.Parent.utility
 
 -- Variables
 local variables = require(utility.variables)
+local constants = require(utility.constants)
 local hapticEngine = require(utility.HapticEngine)
 local log = require(utility.log)
 local columns = require(utility.columns)
@@ -97,13 +98,16 @@ function Tab.new(window, properties)
         BackgroundTransparency = 1,
         AutomaticCanvasSize = Enum.AutomaticSize.Y,
         CanvasSize = UDim2.new(0, 0, 0, 0),
-        ScrollBarThickness = 0,
+        -- a slim bar in the page's side margin, so a long page reads as scrollable
+        ScrollBarThickness = constants.pageScrollbar.thickness,
+        ScrollBarImageTransparency = constants.pageScrollbar.transparency,
+        VerticalScrollBarInset = Enum.ScrollBarInset.None,
         ScrollingDirection = Enum.ScrollingDirection.Y,
 
         LayoutOrder = self.customOrder or 0,
 
         Parent = self.window.elements,
-    })
+    }, { ScrollBarImageColor3 = "ContentColor" })
 
     self.tabPageLayout = self.window:Create("UIListLayout", {
         Padding = UDim.new(0, 7),

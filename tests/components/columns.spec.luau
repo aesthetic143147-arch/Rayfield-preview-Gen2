@@ -246,6 +246,23 @@ return function()
             expect(mood.main.Size.Y.Offset > 20).to.equal(true)
         end)
 
+        it("shows a slim, themed scrollbar on a page, clear of the elements", function()
+            local w = wideWindow()
+            local tab = w:CreateTab({ name = "Auto" })
+            local page = tab.tabPage
+
+            expect(page.ScrollBarThickness > 0).to.equal(true)
+            expect(page.ScrollBarThickness <= 10).to.equal(true) -- fits the page's 10px side margin
+            expect(page.ScrollBarImageTransparency < 1).to.equal(true)
+            expect(page.VerticalScrollBarInset).to.equal(Enum.ScrollBarInset.None)
+            expect(page.ScrollBarImageColor3).to.equal(w.theme.ContentColor)
+            expect(w.searchPage.ScrollBarThickness).to.equal(page.ScrollBarThickness)
+
+            -- it follows the theme like the rest of the page
+            w:ChangeTheme("Frost")
+            expect(page.ScrollBarImageColor3).to.equal(w.theme.ContentColor)
+        end)
+
         it("takes every element a tab takes", function()
             local tab = wideWindow():CreateTab({ name = "Everything" })
 

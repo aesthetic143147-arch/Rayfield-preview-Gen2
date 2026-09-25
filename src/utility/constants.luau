@@ -4,6 +4,8 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: adds the page scrollbar's look.
 
 -- Shared visual constants. Theme-varying colours/fonts live in themes/; these dont.
 
@@ -31,6 +33,13 @@ constants.icons = {
     banner = 111263549366178,
     config = 125823673784681, -- saved-configurations picker
     rayfield = 80387863064905, -- default show icon on the sign-in toast
+}
+
+-- The slim bar down the right of a scrolling page, so it's clear there is more below. It sits in
+-- the page's own 10px side margin, clear of the elements, and only draws while the page scrolls.
+constants.pageScrollbar = {
+    thickness = 3,
+    transparency = 0.6,
 }
 
 -- Accent used by the toggle switch + slider glow when active.
