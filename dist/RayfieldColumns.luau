@@ -1210,100 +1210,100 @@ HapticEngine)local function b(c)local d=0 while d<6 do local e=c*10^d if math.ab
 +=1 end return d end local function c(d,e,f)local g=d[1]+math.round((f-d[1])/e)*e return math.clamp(g,d[1],d[2])end
 local d,e,f,g,h,i=TweenInfo.new(0.45,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.3,Enum.
 EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.3,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),440
-,Vector2.new(35,20),Vector2.new(41,22)local function j(k:number):UDim2 return UDim2.new(k,0,1,0)end local function k():
-UDim2 return UDim2.new(1,0,0.5,0)end local function l(m:number,n:number,o:number):number return math.clamp((m-n)/o,0,1)
-end function ae.new(m,n)n=if typeof(n)=='table'then n else{}local o=setmetatable({tab=assert(m,
-'Missing argument #1 (Tab expected)'),window=m.window,name=n.name or n.Name or'Slider',icon=n.icon or n.Icon,description
-=n.description or n.Description,forgetState=n.forgetState or n.ForgetState or m.forgetState,range=n.range or n.Range or{
-0,100},increment=n.increment or n.Increment or 1,suffix=n.suffix or n.Suffix or'',callback=n.callback or n.Callback or
-function()end,dragging=false,minimal=n.minimal or n.Minimal or false,_handleWidth=h.X},ae)assert(typeof(o.range)==
-'table'and typeof(o.range[1])=='number'and typeof(o.range[2])=='number',
-'A slider range needs two numbers, like { 0, 100 }.')if o.range[1]>o.range[2]then o.range={o.range[2],o.range[1]}end if
-o.increment<=0 then o.increment=1 end o.value=if(n.value or n.Value)~=nil then(n.value or n.Value)elseif(n.currentValue
-or n.CurrentValue)~=nil then(n.currentValue or n.CurrentValue)else o.range[1]o.value=c(o.range,o.increment,o.value)o.
-_decimals=b(o.increment)o.flag=n.flag or n.Flag or(not o.forgetState and ah.deriveFlagFromName(o.name)or nil)o.window:
-_registerControl(o)o.main=o.window:Create('Frame',{Size=UDim2.new(1,-20,0,65),BorderSizePixel=0,Name=o.name,
-BackgroundColor3=Color3.fromRGB(255,255,255),BackgroundTransparency=1,Parent=o.tab.tabPage},{BackgroundTransparency=
-'ElementTransparency'})o.stroke=o.window:StyleElementBody(o.main)o._lastValue=o.value if not o.minimal then o:
-_buildLabel()end o.track=o.window:Create('Frame',{AnchorPoint=Vector2.new(1,0.5),Position=UDim2.new(1,-15,0.5,0),Size=
-UDim2.fromOffset(222,14),BorderSizePixel=0,BackgroundTransparency=1,Parent=o.main},{BackgroundColor3='SliderBackground'}
-)o.window:Create('UICorner',{CornerRadius=UDim.new(0,13),Parent=o.track})o.progress=o.window:Create('Frame',{AnchorPoint
+,Vector2.new(35,20),Vector2.new(41,22)local j=math.ceil(h.X/2)local function k(l:number):UDim2 return UDim2.new(l,math.
+round(j*(1-2*l)),1,0)end local function l():UDim2 return UDim2.new(1,0,0.5,0)end local function m(n:number,o:number,p:
+number):number return math.clamp((n-o)/p,0,1)end function ae.new(n,o)o=if typeof(o)=='table'then o else{}local p=
+setmetatable({tab=assert(n,'Missing argument #1 (Tab expected)'),window=n.window,name=o.name or o.Name or'Slider',icon=o
+.icon or o.Icon,description=o.description or o.Description,forgetState=o.forgetState or o.ForgetState or n.forgetState,
+range=o.range or o.Range or{0,100},increment=o.increment or o.Increment or 1,suffix=o.suffix or o.Suffix or'',callback=o
+.callback or o.Callback or function()end,dragging=false,minimal=o.minimal or o.Minimal or false,_handleWidth=h.X},ae)
+assert(typeof(p.range)=='table'and typeof(p.range[1])=='number'and typeof(p.range[2])=='number',
+'A slider range needs two numbers, like { 0, 100 }.')if p.range[1]>p.range[2]then p.range={p.range[2],p.range[1]}end if
+p.increment<=0 then p.increment=1 end p.value=if(o.value or o.Value)~=nil then(o.value or o.Value)elseif(o.currentValue
+or o.CurrentValue)~=nil then(o.currentValue or o.CurrentValue)else p.range[1]p.value=c(p.range,p.increment,p.value)p.
+_decimals=b(p.increment)p.flag=o.flag or o.Flag or(not p.forgetState and ah.deriveFlagFromName(p.name)or nil)p.window:
+_registerControl(p)p.main=p.window:Create('Frame',{Size=UDim2.new(1,-20,0,65),BorderSizePixel=0,Name=p.name,
+BackgroundColor3=Color3.fromRGB(255,255,255),BackgroundTransparency=1,Parent=p.tab.tabPage},{BackgroundTransparency=
+'ElementTransparency'})p.stroke=p.window:StyleElementBody(p.main)p._lastValue=p.value if not p.minimal then p:
+_buildLabel()end p.track=p.window:Create('Frame',{AnchorPoint=Vector2.new(1,0.5),Position=UDim2.new(1,-15,0.5,0),Size=
+UDim2.fromOffset(222,14),BorderSizePixel=0,BackgroundTransparency=1,Parent=p.main},{BackgroundColor3='SliderBackground'}
+)p.window:Create('UICorner',{CornerRadius=UDim.new(0,13),Parent=p.track})p.progress=p.window:Create('Frame',{AnchorPoint
 =Vector2.new(0,0.5),Position=UDim2.fromScale(0,0.5),Size=UDim2.fromScale(0,1),BackgroundColor3=Color3.fromRGB(255,255,
-255),BorderSizePixel=0,ZIndex=2,BackgroundTransparency=1,Parent=o.track})o.window:Create('UICorner',{CornerRadius=UDim.
-new(0,13),Parent=o.progress})o.window:Create('UIGradient',{Offset=Vector2.new(0,0.5),Rotation=2,Transparency=
-NumberSequence.new{NumberSequenceKeypoint.new(0,0.85),NumberSequenceKeypoint.new(1,0)},Parent=o.progress},{Color={
-'SliderProgress',ah.toColorSequence}})o.progressGlow=o.window:CreateGlow(o.progress,'AccentColor',20,1)o.handle=o.window
-:Create('Frame',{AnchorPoint=Vector2.new(0.5,0.5),Position=k(),Size=UDim2.fromOffset(h.X,h.Y),BorderSizePixel=0,ZIndex=
-50,BackgroundTransparency=1,Parent=o.progress},{BackgroundColor3='SliderHandle'})o.window:Create('UICorner',{
-CornerRadius=UDim.new(1,0),Parent=o.handle})o.handleGlow=o.window:CreateGlow(o.handle,Color3.fromRGB(255,255,255),10,1)o
-.handleStroke=o.window:Create('UIStroke',{Transparency=1,Parent=o.handle},{Color='SliderStroke'})o.interact=o.window:
-Create('TextButton',{BackgroundTransparency=1,Size=UDim2.fromScale(1,1),Text='',TextTransparency=1,ZIndex=10,Parent=o.
-track})o.window:ConnectFor(o,o.main.MouseEnter,function()if not o.window:_interactive()then return end ag.tweenService:
-Create(o.track,d,{BackgroundColor3=o.window.theme.SliderBackgroundHover}):Play()end)o.window:ConnectFor(o,o.main.
-MouseLeave,function()ag.tweenService:Create(o.track,d,{BackgroundColor3=o.window.theme.SliderBackground}):Play()end)o.
-window:ConnectFor(o,o.interact.InputBegan,function(p)if p.UserInputType==Enum.UserInputType.MouseButton1 or p.
-UserInputType==Enum.UserInputType.Touch then am.click()o.dragging=true o:_setHeld(true)o:_updateFromMouse()if o.
-_dragConnection then o._dragConnection:Disconnect()o._dragConnection=nil end o._dragConnection=ag.runService.
-RenderStepped:Connect(function()if o.window.unloaded or not o.dragging then if o._dragConnection then o._dragConnection:
-Disconnect()o._dragConnection=nil end return end o:_updateFromMouse()end)end end)o.window:ConnectFor(o,ag.
-userInputService.InputEnded,function(p)if p.UserInputType==Enum.UserInputType.MouseButton1 or p.UserInputType==Enum.
-UserInputType.Touch then o:_endDrag()end end)o.window:ConnectFor(o,ag.userInputService.WindowFocusReleased,function()o:
-_endDrag()end)if o.description and not o.minimal then o.descriptor=ac(ab.Parent.descriptor).new(o.tab,{description=o.
-description})end o.window:ConnectFor(o,o.main:GetPropertyChangedSignal'AbsoluteSize',function()if o.window.animating or(
-o.window.hidden and o.window.hasShownOnce)then return end o:_applyLayout()end)o:_applyLayout()if o.minimal then o.main.
-Size=UDim2.new(1,-20,0,41)o.track.AnchorPoint=Vector2.new(0.5,0.5)o.track.Position=UDim2.new(0.5,0,0.5,0)o.track.Size=
-UDim2.new(1,-30,0,14)end o:_renderProgress()return o end function ae._buildLabel(m)m.container=m.window:Create('Frame',{
+255),BorderSizePixel=0,ZIndex=2,BackgroundTransparency=1,Parent=p.track})p.window:Create('UICorner',{CornerRadius=UDim.
+new(0,13),Parent=p.progress})p.window:Create('UIGradient',{Offset=Vector2.new(0,0.5),Rotation=2,Transparency=
+NumberSequence.new{NumberSequenceKeypoint.new(0,0.85),NumberSequenceKeypoint.new(1,0)},Parent=p.progress},{Color={
+'SliderProgress',ah.toColorSequence}})p.progressGlow=p.window:CreateGlow(p.progress,'AccentColor',20,1)p.handle=p.window
+:Create('Frame',{AnchorPoint=Vector2.new(0.5,0.5),Position=l(),Size=UDim2.fromOffset(h.X,h.Y),BorderSizePixel=0,ZIndex=
+50,BackgroundTransparency=1,Parent=p.progress},{BackgroundColor3='SliderHandle'})p.window:Create('UICorner',{
+CornerRadius=UDim.new(1,0),Parent=p.handle})p.handleGlow=p.window:CreateGlow(p.handle,Color3.fromRGB(255,255,255),10,1)p
+.handleStroke=p.window:Create('UIStroke',{Transparency=1,Parent=p.handle},{Color='SliderStroke'})p.interact=p.window:
+Create('TextButton',{BackgroundTransparency=1,Size=UDim2.fromScale(1,1),Text='',TextTransparency=1,ZIndex=10,Parent=p.
+track})p.window:ConnectFor(p,p.main.MouseEnter,function()if not p.window:_interactive()then return end ag.tweenService:
+Create(p.track,d,{BackgroundColor3=p.window.theme.SliderBackgroundHover}):Play()end)p.window:ConnectFor(p,p.main.
+MouseLeave,function()ag.tweenService:Create(p.track,d,{BackgroundColor3=p.window.theme.SliderBackground}):Play()end)p.
+window:ConnectFor(p,p.interact.InputBegan,function(q)if q.UserInputType==Enum.UserInputType.MouseButton1 or q.
+UserInputType==Enum.UserInputType.Touch then am.click()p.dragging=true p:_setHeld(true)p:_updateFromMouse()if p.
+_dragConnection then p._dragConnection:Disconnect()p._dragConnection=nil end p._dragConnection=ag.runService.
+RenderStepped:Connect(function()if p.window.unloaded or not p.dragging then if p._dragConnection then p._dragConnection:
+Disconnect()p._dragConnection=nil end return end p:_updateFromMouse()end)end end)p.window:ConnectFor(p,ag.
+userInputService.InputEnded,function(q)if q.UserInputType==Enum.UserInputType.MouseButton1 or q.UserInputType==Enum.
+UserInputType.Touch then p:_endDrag()end end)p.window:ConnectFor(p,ag.userInputService.WindowFocusReleased,function()p:
+_endDrag()end)if p.description and not p.minimal then p.descriptor=ac(ab.Parent.descriptor).new(p.tab,{description=p.
+description})end p.window:ConnectFor(p,p.main:GetPropertyChangedSignal'AbsoluteSize',function()if p.window.animating or(
+p.window.hidden and p.window.hasShownOnce)then return end p:_applyLayout()end)p:_applyLayout()if p.minimal then p.main.
+Size=UDim2.new(1,-20,0,41)p.track.AnchorPoint=Vector2.new(0.5,0.5)p.track.Position=UDim2.new(0.5,0,0.5,0)p.track.Size=
+UDim2.new(1,-30,0,14)end p:_renderProgress()return p end function ae._buildLabel(n)n.container=n.window:Create('Frame',{
 AnchorPoint=Vector2.new(0,0.5),Position=UDim2.new(0,20,0.5,0),Size=UDim2.fromOffset(170,33),BackgroundTransparency=1,
-BorderSizePixel=0,ZIndex=5,Parent=m.main})m.containerLayout=m.window:Create('UIListLayout',{Padding=UDim.new(0,2),
-VerticalAlignment=Enum.VerticalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,Parent=m.container})m.
-titleContainer=m.window:Create('Frame',{Size=UDim2.new(1,0,0,16),BackgroundTransparency=1,BorderSizePixel=0,ZIndex=5,
-Parent=m.container})m.window:Create('UIListLayout',{Padding=UDim.new(0,5),FillDirection=Enum.FillDirection.Horizontal,
-VerticalAlignment=Enum.VerticalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,Parent=m.titleContainer})m.
-titleFlex=m.window:Create('UIFlexItem',{FlexMode=Enum.UIFlexMode.None,Parent=m.titleContainer})if m.icon then m.
-iconLabel=m.window:Create('ImageLabel',{Image=m.icon,Size=UDim2.fromOffset(16,16),BorderSizePixel=0,
-BackgroundTransparency=1,ZIndex=5,ImageTransparency=1,Parent=m.titleContainer},{ImageColor3='ContentColor'})end m.title=
-m.window:Create('TextLabel',{Text=al.t(m.name),Size=UDim2.new(1,0,0,16),BorderSizePixel=0,BackgroundTransparency=1,
+BorderSizePixel=0,ZIndex=5,Parent=n.main})n.containerLayout=n.window:Create('UIListLayout',{Padding=UDim.new(0,2),
+VerticalAlignment=Enum.VerticalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,Parent=n.container})n.
+titleContainer=n.window:Create('Frame',{Size=UDim2.new(1,0,0,16),BackgroundTransparency=1,BorderSizePixel=0,ZIndex=5,
+Parent=n.container})n.window:Create('UIListLayout',{Padding=UDim.new(0,5),FillDirection=Enum.FillDirection.Horizontal,
+VerticalAlignment=Enum.VerticalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,Parent=n.titleContainer})n.
+titleFlex=n.window:Create('UIFlexItem',{FlexMode=Enum.UIFlexMode.None,Parent=n.titleContainer})if n.icon then n.
+iconLabel=n.window:Create('ImageLabel',{Image=n.icon,Size=UDim2.fromOffset(16,16),BorderSizePixel=0,
+BackgroundTransparency=1,ZIndex=5,ImageTransparency=1,Parent=n.titleContainer},{ImageColor3='ContentColor'})end n.title=
+n.window:Create('TextLabel',{Text=al.t(n.name),Size=UDim2.new(1,0,0,16),BorderSizePixel=0,BackgroundTransparency=1,
 TextSize=16,TextXAlignment=Enum.TextXAlignment.Left,TextTruncate=Enum.TextTruncate.AtEnd,RichText=true,LayoutOrder=1,
-ZIndex=5,TextTransparency=1,Parent=m.titleContainer},{TextColor3='ContentColor',FontFace='Font'})m.window:Create(
-'UIFlexItem',{FlexMode=Enum.UIFlexMode.Shrink,Parent=m.title})m.valueHost=m.window:Create('Frame',{Size=UDim2.new(1,0,0,
-16),BackgroundTransparency=1,BorderSizePixel=0,ZIndex=6,LayoutOrder=1,Parent=m.container})m.valueOdo=ai.new(m.window,m.
-valueHost,{textSize=15,alignment=Enum.HorizontalAlignment.Left,transparency=1,duration=0.28})m.valueOdo:snap(m:_format(m
-.value))end function ae._setMainHeight(m,n)if m._widthManaged then m.main.Size=UDim2.new(m.main.Size.X.Scale,m.main.Size
-.X.Offset,0,n)else m.main.Size=UDim2.new(1,-20,0,n)end end function ae._applyLayout(m)if m.minimal then return end local
-n=m.main.AbsoluteSize.X local o=if n>0 and n<g then'narrow'else'wide'if m._layoutMode==o then return end m._layoutMode=o
-if o=='narrow'then m:_setMainHeight(70)m.container.AnchorPoint=Vector2.new(0,0)m.container.Position=UDim2.new(0,20,0,14)
-m.container.Size=UDim2.new(1,-40,0,16)m.containerLayout.FillDirection=Enum.FillDirection.Horizontal m.titleFlex.FlexMode
-=Enum.UIFlexMode.Fill m.valueHost.AutomaticSize=Enum.AutomaticSize.X m.valueHost.Size=UDim2.new(0,0,0,16)m.track.
-AnchorPoint=Vector2.new(0.5,1)m.track.Position=UDim2.new(0.5,0,1,-14)m.track.Size=UDim2.new(1,-30,0,14)else m:
-_setMainHeight(65)m.container.AnchorPoint=Vector2.new(0,0.5)m.container.Position=UDim2.new(0,20,0.5,0)m.container.Size=
-UDim2.new(0,170,0,33)m.containerLayout.FillDirection=Enum.FillDirection.Vertical m.titleFlex.FlexMode=Enum.UIFlexMode.
-None m.valueHost.AutomaticSize=Enum.AutomaticSize.None m.valueHost.Size=UDim2.new(1,0,0,16)m.track.AnchorPoint=Vector2.
-new(1,0.5)m.track.Position=UDim2.new(1,-15,0.5,0)m.track.Size=UDim2.new(0,222,0,14)end end function ae._format(m,n)local
-o=string.format('%.'..m._decimals..'f',n)if m.suffix~=''then return o..' '..m.suffix end return o end function ae.
-_pillTravel(m)return math.max(m.track.AbsoluteSize.X,0)end function ae._renderProgress(m,n)local o=m.range[2]-m.range[1]
-local p=if o~=0 then math.clamp((m.value-m.range[1])/o,0,1)else 0 local q=j(p)if n then ag.tweenService:Create(m.
-progress,n,{Size=q}):Play()else m.progress.Size=q end end function ae._updateFromMouse(m)local n=m:_pillTravel()if n<=0
-then return end local o=l(ag.userInputService:GetMouseLocation().X,m.track.AbsolutePosition.X,n)local p=c(m.range,m.
-increment,m.range[1]+o*(m.range[2]-m.range[1]))if p~=m.value then m.value=p if m.valueOdo then m.valueOdo:snap(m:
-_format(p))end m._lastValue=p m:_renderProgress(f)m:_fireCallback(p)end end function ae._endDrag(m)if not m.dragging
-then return end m.dragging=false m:_setHeld(false)if m._dragConnection then m._dragConnection:Disconnect()m.
-_dragConnection=nil end m.window:_persist(m)end function ae._setHeld(m,n)if not n then m:_fireCallback(m.value)end local
-o=if n then i else h m._handleWidth=o.X ag.tweenService:Create(m.handle,e,{Size=UDim2.fromOffset(o.X,o.Y),
-BackgroundTransparency=if n then 0.7 else 0}):Play()ag.tweenService:Create(m.handleStroke,e,{Transparency=if n then 0.6
-else 1}):Play()m:_renderProgress(e)end function ae._fireCallback(m,n)m.window:_runGuarded(m,m.callback,n,m.dragging==
-true)end function ae.Set(m,n,o)n=c(m.range,m.increment,n)m.value=n if m.valueOdo then m.valueOdo:to(m:_format(n),n>=(m.
-_lastValue or n))end m._lastValue=n m:_renderProgress(d)if not o then m:_fireCallback(n)m.window:_persist(m)end end
-local m=TweenInfo.new(0.4,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out,0,false,0.35)function ae._setShown(n,o,p
-)local q=n.window if o then q:_revealCommon(n,p)q:_reveal(n.track,{BackgroundTransparency=0},p)q:_reveal(n.progress,{
-BackgroundTransparency=0},p)q:_reveal(n.handle,{BackgroundTransparency=0},p)if n.valueOdo then n.valueOdo:reveal(0.3,p)
-end q:_reveal(n.progressGlow,{Transparency=math.max(0.55,q.theme.AccentGlow)},p,m)q:_reveal(n.handleGlow,{Transparency=
-0.8},p,m)else q:_hideCommon(n,p)q:_reveal(n.track,{BackgroundTransparency=1},p)q:_reveal(n.progress,{
-BackgroundTransparency=1},p)q:_reveal(n.handle,{BackgroundTransparency=1},p)if n.valueOdo then n.valueOdo:reveal(1,p)end
-q:_reveal(n.progressGlow,{Transparency=1},p,m)q:_reveal(n.handleGlow,{Transparency=1},p,m)end end function ae.
-_refreshTheme(n)ag.tweenService:Create(n.progressGlow,TweenInfo.new(0.5,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
-,{Transparency=math.max(0.55,n.window.theme.AccentGlow)}):Play()end function ae._minWidth(n)if n.minimal then return 100
-end local o=40 if n.icon then o+=22 end o+=ah.textWidth(n.window.theme.Font,16,al.resolve(n.name))o+=12 o+=ah.textWidth(
-n.window.theme.Font,15,n:_format(n.value))return math.max(o,160)end aj(ae)ak(ae)return ae end)()end,[23]=function()local
+ZIndex=5,TextTransparency=1,Parent=n.titleContainer},{TextColor3='ContentColor',FontFace='Font'})n.window:Create(
+'UIFlexItem',{FlexMode=Enum.UIFlexMode.Shrink,Parent=n.title})n.valueHost=n.window:Create('Frame',{Size=UDim2.new(1,0,0,
+16),BackgroundTransparency=1,BorderSizePixel=0,ZIndex=6,LayoutOrder=1,Parent=n.container})n.valueOdo=ai.new(n.window,n.
+valueHost,{textSize=15,alignment=Enum.HorizontalAlignment.Left,transparency=1,duration=0.28})n.valueOdo:snap(n:_format(n
+.value))end function ae._setMainHeight(n,o)if n._widthManaged then n.main.Size=UDim2.new(n.main.Size.X.Scale,n.main.Size
+.X.Offset,0,o)else n.main.Size=UDim2.new(1,-20,0,o)end end function ae._applyLayout(n)if n.minimal then return end local
+o=n.main.AbsoluteSize.X local p=if o>0 and o<g then'narrow'else'wide'if n._layoutMode==p then return end n._layoutMode=p
+if p=='narrow'then n:_setMainHeight(70)n.container.AnchorPoint=Vector2.new(0,0)n.container.Position=UDim2.new(0,20,0,14)
+n.container.Size=UDim2.new(1,-40,0,16)n.containerLayout.FillDirection=Enum.FillDirection.Horizontal n.titleFlex.FlexMode
+=Enum.UIFlexMode.Fill n.valueHost.AutomaticSize=Enum.AutomaticSize.X n.valueHost.Size=UDim2.new(0,0,0,16)n.track.
+AnchorPoint=Vector2.new(0.5,1)n.track.Position=UDim2.new(0.5,0,1,-14)n.track.Size=UDim2.new(1,-30,0,14)else n:
+_setMainHeight(65)n.container.AnchorPoint=Vector2.new(0,0.5)n.container.Position=UDim2.new(0,20,0.5,0)n.container.Size=
+UDim2.new(0,170,0,33)n.containerLayout.FillDirection=Enum.FillDirection.Vertical n.titleFlex.FlexMode=Enum.UIFlexMode.
+None n.valueHost.AutomaticSize=Enum.AutomaticSize.None n.valueHost.Size=UDim2.new(1,0,0,16)n.track.AnchorPoint=Vector2.
+new(1,0.5)n.track.Position=UDim2.new(1,-15,0.5,0)n.track.Size=UDim2.new(0,222,0,14)end end function ae._format(n,o)local
+p=string.format('%.'..n._decimals..'f',o)if n.suffix~=''then return p..' '..n.suffix end return p end function ae.
+_pillTravel(n)return math.max(n.track.AbsoluteSize.X-j*2,0)end function ae._renderProgress(n,o)local p=n.range[2]-n.
+range[1]local q=if p~=0 then math.clamp((n.value-n.range[1])/p,0,1)else 0 local r=k(q)if o then ag.tweenService:Create(n
+.progress,o,{Size=r}):Play()else n.progress.Size=r end end function ae._updateFromMouse(n)local o=n:_pillTravel()if o<=0
+then return end local p=m(ag.userInputService:GetMouseLocation().X,n.track.AbsolutePosition.X+j,o)local q=c(n.range,n.
+increment,n.range[1]+p*(n.range[2]-n.range[1]))if q~=n.value then n.value=q if n.valueOdo then n.valueOdo:snap(n:
+_format(q))end n._lastValue=q n:_renderProgress(f)n:_fireCallback(q)end end function ae._endDrag(n)if not n.dragging
+then return end n.dragging=false n:_setHeld(false)if n._dragConnection then n._dragConnection:Disconnect()n.
+_dragConnection=nil end n.window:_persist(n)end function ae._setHeld(n,o)if not o then n:_fireCallback(n.value)end local
+p=if o then i else h n._handleWidth=p.X ag.tweenService:Create(n.handle,e,{Size=UDim2.fromOffset(p.X,p.Y),
+BackgroundTransparency=if o then 0.7 else 0}):Play()ag.tweenService:Create(n.handleStroke,e,{Transparency=if o then 0.6
+else 1}):Play()n:_renderProgress(e)end function ae._fireCallback(n,o)n.window:_runGuarded(n,n.callback,o,n.dragging==
+true)end function ae.Set(n,o,p)o=c(n.range,n.increment,o)n.value=o if n.valueOdo then n.valueOdo:to(n:_format(o),o>=(n.
+_lastValue or o))end n._lastValue=o n:_renderProgress(d)if not p then n:_fireCallback(o)n.window:_persist(n)end end
+local n=TweenInfo.new(0.4,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out,0,false,0.35)function ae._setShown(o,p,q
+)local r=o.window if p then r:_revealCommon(o,q)r:_reveal(o.track,{BackgroundTransparency=0},q)r:_reveal(o.progress,{
+BackgroundTransparency=0},q)r:_reveal(o.handle,{BackgroundTransparency=0},q)if o.valueOdo then o.valueOdo:reveal(0.3,q)
+end r:_reveal(o.progressGlow,{Transparency=math.max(0.55,r.theme.AccentGlow)},q,n)r:_reveal(o.handleGlow,{Transparency=
+0.8},q,n)else r:_hideCommon(o,q)r:_reveal(o.track,{BackgroundTransparency=1},q)r:_reveal(o.progress,{
+BackgroundTransparency=1},q)r:_reveal(o.handle,{BackgroundTransparency=1},q)if o.valueOdo then o.valueOdo:reveal(1,q)end
+r:_reveal(o.progressGlow,{Transparency=1},q,n)r:_reveal(o.handleGlow,{Transparency=1},q,n)end end function ae.
+_refreshTheme(o)ag.tweenService:Create(o.progressGlow,TweenInfo.new(0.5,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
+,{Transparency=math.max(0.55,o.window.theme.AccentGlow)}):Play()end function ae._minWidth(o)if o.minimal then return 100
+end local p=40 if o.icon then p+=22 end p+=ah.textWidth(o.window.theme.Font,16,al.resolve(o.name))p+=12 p+=ah.textWidth(
+o.window.theme.Font,15,o:_format(o.value))return math.max(p,160)end aj(ae)ak(ae)return ae end)()end,[23]=function()local
 aa,ab,ac=a(23)local ad return(function(...)local ae={}ae.__index=ae ae.__type='Statistic'local af=ab.Parent.Parent.
 utility local ag,ah,ai,aj,ak,al,am=ac(af.variables),ac(af.functions),ac(af.odometer),ac(af.moveable),ac(af.constants),
 ac(af.locale),ac(af.log)local b,c,d,e=ak.statAccents,NumberSequence.new{NumberSequenceKeypoint.new(0,0.85),
@@ -2828,19 +2828,19 @@ min(c.X*am/e.defaultSize.X,c.Y*b/e.defaultSize.Y)return math.floor(math.clamp(f,
 fit(c:Vector2?,d:ae.Mode?):UDim2 local e=af.profile(d)if not c or c.X<ag or c.Y<ag then return UDim2.fromOffset(e.
 defaultSize.X,e.defaultSize.Y)end local f,g=math.min(c.X*e.maxOccupancyX,c.X-e.marginFloorX),ai(e,c.Y)if e.
 minAspectRatio then return al(e,f,g)end return ak(e,f,g)end return af end)()end},{{1,2,{'Rayfield'},{{41,1,{'utility'},{
-{73,2,{'windowSizing'}},{49,2,{'filesystemManager'}},{70,2,{'services'}},{56,2,{'locale'}},{63,2,{'path'}},{46,2,{
-'constants'}},{53,2,{'image'}},{61,2,{'odometer'}},{55,2,{'layouts'}},{71,2,{'textMetrics'}},{72,2,{'variables'}},{68,2,
-{'persistenceWrite'}},{67,2,{'persistenceSettings'}},{52,2,{'functions'}},{66,2,{'persistencePaths'}},{50,2,{'flagNames'
-}},{64,2,{'persistence'}},{43,2,{'assetResolver'}},{62,2,{'ordering'}},{69,2,{'runtime'}},{42,2,{'HapticEngine'}},{44,2,
-{'colors'}},{58,2,{'log'}},{51,2,{'fontManager'}},{54,2,{'imageCache'}},{60,2,{'network'}},{45,2,{'columns'}},{47,2,{
-'enums'}},{59,2,{'moveable'}},{57,2,{'lockable'}},{65,2,{'persistenceConfig'}},{48,2,{'filesystem'}}}},{32,1,{'themes'},
-{{36,2,{'default'}},{35,2,{'cobalt'}},{34,2,{'azure'}},{37,2,{'ember'}},{33,2,{'amethyst'}},{39,2,{'rose'}},{38,2,{
-'frost'}}}},{2,1,{'components'},{{20,2,{'section'}},{14,2,{'input'}},{6,2,{'colorpicker'}},{10,2,{'divider'}},{29,2,{
-'toast'}},{30,2,{'toggle'}},{31,2,{'window'}},{28,2,{'text'}},{7,2,{'column'}},{27,2,{'tag'}},{3,2,{'action'}},{16,2,{
-'notification'}},{15,2,{'keybind'}},{11,2,{'drag'}},{25,2,{'tabSection'}},{18,2,{'progress'}},{8,2,{'console'}},{26,2,{
-'tabSelector'}},{21,2,{'sidebar'}},{5,2,{'chrome'}},{19,2,{'search'}},{12,2,{'dropdown'}},{4,2,{'button'}},{24,2,{'tab'}
-},{17,2,{'popup'}},{22,2,{'slider'}},{9,2,{'descriptor'}},{13,2,{'group'}},{23,2,{'stat'}}}},{40,2,{'types'}}}}},'0.4.1'
-,'Rayfield',string,task,setmetatable,error,next,table,unpack,coroutine,script,type,require,pcall,xpcall,tostring,
+{73,2,{'windowSizing'}},{68,2,{'persistenceWrite'}},{46,2,{'constants'}},{72,2,{'variables'}},{45,2,{'columns'}},{56,2,{
+'locale'}},{44,2,{'colors'}},{53,2,{'image'}},{43,2,{'assetResolver'}},{63,2,{'path'}},{70,2,{'services'}},{57,2,{
+'lockable'}},{69,2,{'runtime'}},{47,2,{'enums'}},{50,2,{'flagNames'}},{66,2,{'persistencePaths'}},{65,2,{
+'persistenceConfig'}},{55,2,{'layouts'}},{64,2,{'persistence'}},{61,2,{'odometer'}},{60,2,{'network'}},{62,2,{'ordering'
+}},{49,2,{'filesystemManager'}},{52,2,{'functions'}},{42,2,{'HapticEngine'}},{48,2,{'filesystem'}},{59,2,{'moveable'}},{
+54,2,{'imageCache'}},{51,2,{'fontManager'}},{58,2,{'log'}},{71,2,{'textMetrics'}},{67,2,{'persistenceSettings'}}}},{32,1
+,{'themes'},{{35,2,{'cobalt'}},{39,2,{'rose'}},{38,2,{'frost'}},{37,2,{'ember'}},{34,2,{'azure'}},{33,2,{'amethyst'}},{
+36,2,{'default'}}}},{40,2,{'types'}},{2,1,{'components'},{{17,2,{'popup'}},{15,2,{'keybind'}},{3,2,{'action'}},{31,2,{
+'window'}},{14,2,{'input'}},{19,2,{'search'}},{8,2,{'console'}},{30,2,{'toggle'}},{29,2,{'toast'}},{9,2,{'descriptor'}},
+{6,2,{'colorpicker'}},{27,2,{'tag'}},{20,2,{'section'}},{12,2,{'dropdown'}},{18,2,{'progress'}},{4,2,{'button'}},{10,2,{
+'divider'}},{23,2,{'stat'}},{24,2,{'tab'}},{25,2,{'tabSection'}},{26,2,{'tabSelector'}},{7,2,{'column'}},{28,2,{'text'}}
+,{21,2,{'sidebar'}},{22,2,{'slider'}},{13,2,{'group'}},{16,2,{'notification'}},{11,2,{'drag'}},{5,2,{'chrome'}}}}}}},
+'0.4.1','Rayfield',string,task,setmetatable,error,next,table,unpack,coroutine,script,type,require,pcall,xpcall,tostring,
 tonumber,_VERSION local j,k,l,m,n,o,p=aj.insert,aj.remove,aj.freeze or function(j)return j end,al.wrap,ae.sub,ae.match,
 ae.gmatch if h and n(h,1,4)=='Lune'then local q,r=d(c,'@lune/task')if q and r then af=r end end local q=af and af.defer
 local r,s,t,u,v,w,x,y,z=q or function(r,...)m(r)(...)end,{[1]='Folder',[2]='ModuleScript',[3]='Script',[4]='LocalScript'

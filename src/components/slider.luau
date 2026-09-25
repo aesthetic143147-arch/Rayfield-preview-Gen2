@@ -5,7 +5,8 @@
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
 --
--- Modified for Rayfield Columns: a slider in a column takes the stacked layout.
+-- Modified for Rayfield Columns: a slider in a column takes the stacked layout, and the pill stays
+-- inside the track at both ends of the range.
 
 local Slider = {}
 Slider.__index = Slider
@@ -80,11 +81,18 @@ local handleHeld = Vector2.new(41, 22)
 -- of the range, none of it at the top. Whole pixels, because a UDim offset is, and they split this
 -- one number between them rather than each halving the pill on its own - rounded apart they'd land
 -- a pixel out and hang the pill over the end after all.
--- The pill's centre rides the fill's edge and maps straight onto the track, so at either end
--- half of it hangs past the track the way the design has it. Scale rather than pixels: the fill
--- and the pill read the same ratio, so they can't round apart and drift by a pixel.
+-- Rayfield Columns keeps the pill inside the track. Gen2 let its centre reach the track's very
+-- ends, so half a pill hung past each end; a full-width row has margin to spare for that, but a
+-- column's stacked slider sits 15px from the card's edge and the pill poked out of the card. The
+-- centre now travels between half a (resting) pill in from each end instead: at the bottom of the
+-- range the fill reaches the pill's middle, at the top it is the whole track, and the pill's edges
+-- sit on the track's ends. A UDim offset is whole pixels, so the inset is too (half the resting
+-- pill, rounded up) and the offset is rounded rather than left for Roblox to truncate, which keeps
+-- the pill within half a pixel of where the value puts it.
+local pillInset = math.ceil(handleRest.X / 2)
+
 local function fillSize(ratio: number): UDim2
-    return UDim2.new(ratio, 0, 1, 0)
+    return UDim2.new(ratio, math.round(pillInset * (1 - 2 * ratio)), 1, 0)
 end
 
 -- The pill sits centred on the fill's leading edge, and it lives inside the fill, so it tracks
@@ -94,8 +102,8 @@ local function handleOffset(): UDim2
     return UDim2.new(1, 0, 0.5, 0)
 end
 
--- The pointer maps over the whole track, because the pill's centre does too. Clamping covers
--- the ends, where half the pill sits past the track.
+-- The pointer maps over the stretch the pill's centre travels, which starts half a pill in from
+-- the track's left edge. Clamping covers the ends, so grabbing the pill at either end still works.
 local function ratioFromPointer(x: number, left: number, travel: number): number
     return math.clamp((x - left) / travel, 0, 1)
 end
@@ -538,9 +546,9 @@ end
 -- hasn't been laid out yet - _updateFromMouse turns both away below rather than map onto nothing,
 -- which is why neither the fill, the pill nor the pointer needs a guard of its own.
 --
--- Travel is the whole track: the pill's centre reaches both ends and half of it hangs past.
+-- Travel is the track less one resting pill: the centre stops half a pill short of either end.
 function Slider:_pillTravel()
-    return math.max(self.track.AbsoluteSize.X, 0)
+    return math.max(self.track.AbsoluteSize.X - pillInset * 2, 0)
 end
 
 function Slider:_renderProgress(info)
@@ -561,8 +569,11 @@ function Slider:_updateFromMouse()
         return
     end
 
-    local ratio =
-        ratioFromPointer(variables.userInputService:GetMouseLocation().X, self.track.AbsolutePosition.X, travel)
+    local ratio = ratioFromPointer(
+        variables.userInputService:GetMouseLocation().X,
+        self.track.AbsolutePosition.X + pillInset,
+        travel
+    )
     local value = snapTo(self.range, self.increment, self.range[1] + ratio * (self.range[2] - self.range[1]))
 
     if value ~= self.value then

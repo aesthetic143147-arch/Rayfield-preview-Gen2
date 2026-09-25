@@ -1535,10 +1535,10 @@ return function()
             slider.track.AbsolutePosition = Vector2.new(100, 300)
             slider.track.AbsoluteSize = Vector2.new(200, 14)
 
-            helpers.services.UserInputService._setMouseLocation(Vector2.new(150, 80))
+            helpers.services.UserInputService._setMouseLocation(Vector2.new(159, 80)) -- a quarter of the 164px the pill travels, from 18px in
             slider.interact.InputBegan:Fire({ UserInputType = Enum.UserInputType.MouseButton1 })
             expect(slider.dragging).to.equal(true)
-            expect(slider.value).to.equal(25) -- (150 - 100) / 200 of the range
+            expect(slider.value).to.equal(25) -- (159 - 118) / 164 of the range
 
             helpers.services.UserInputService._setMouseLocation(Vector2.new(200, 80))
             helpers.services.RunService.RenderStepped:Fire()

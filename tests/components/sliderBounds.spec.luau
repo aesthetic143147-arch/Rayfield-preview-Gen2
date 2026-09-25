@@ -55,7 +55,7 @@ return function()
             return n == n and n ~= math.huge and n ~= -math.huge
         end
 
-        it("hangs half a pill past each end of the track", function()
+        it("keeps the whole pill inside the track at both ends", function()
             local slider = makeSlider({
                 name = "Volume",
                 range = { 0, 100 },
@@ -67,16 +67,17 @@ return function()
             for _, width in { 420, 222, 160, 60 } do
                 placeTrack(slider, 0, width)
 
+                -- the pill's edges land on the track's ends, never past them (within the pixel
+                -- UDim rounding takes)
                 slider:Set(0)
                 slider:_renderProgress()
-                local half = slider.handle.Size.X.Offset / 2
                 local left = pillEdges(slider, width)
-                expect(left).to.equal(-half) -- centre on the track's left edge
+                expect(math.abs(left) <= 0.5).to.equal(true)
 
                 slider:Set(100)
                 slider:_renderProgress()
                 local _, right = pillEdges(slider, width)
-                expect(right).to.equal(width + half) -- and on its right edge at the top
+                expect(math.abs(right - width) <= 0.5).to.equal(true)
             end
         end)
 
@@ -91,15 +92,17 @@ return function()
 
             local width = 200
             placeTrack(slider, 0, width)
+            local inset = math.ceil(slider.handle.Size.X.Offset / 2) -- the centre stops half a pill in
 
-            for _, case in { { 0, 0 }, { 25, 50 }, { 50, 100 }, { 100, 200 } } do
-                slider:Set(case[1])
+            for _, value in { 0, 25, 50, 100 } do
+                slider:Set(value)
                 slider:_renderProgress()
-                expect(pillCentre(slider, width)).to.equal(case[2])
+                local expected = math.round(inset + value / 100 * (width - inset * 2))
+                expect(pillCentre(slider, width)).to.equal(expected)
             end
         end)
 
-        it("maps the pointer over the whole track", function()
+        it("maps the pointer over the stretch the pill travels", function()
             local slider = makeSlider({
                 name = "Volume",
                 range = { 0, 100 },
@@ -110,8 +113,9 @@ return function()
 
             placeTrack(slider, 100, 200)
 
-            -- a quarter along the track is a quarter of the range, with no inset to account for
-            pointAt(150)
+            -- the pill's centre travels from half a pill (18px) in from each end, so a quarter of
+            -- that 164px stretch is a quarter of the range
+            pointAt(100 + 18 + 164 / 4)
             slider.interact.InputBegan:Fire({ UserInputType = Enum.UserInputType.MouseButton1 })
             expect(slider.value).to.equal(25)
 
@@ -153,7 +157,7 @@ return function()
             slider:Set(90)
             slider:_renderProgress()
             expect(slider.handle.Position).to.equal(before)
-            expect(pillCentre(slider, 200)).to.equal(180)
+            expect(pillCentre(slider, 200)).to.equal(math.round(18 + 0.9 * 164))
         end)
 
         it("stays finite on a track narrower than the pill", function()
