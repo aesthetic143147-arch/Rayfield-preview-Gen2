@@ -15,8 +15,7 @@ local process = require("@lune/process")
 local input = process.args[1] or "build/bundled.luau"
 local output = process.args[2] or "dist/RayfieldColumns.luau"
 
-local repository = "aesthetic143147-arch/cwk-assets"
-local folder = "rayfield-columns"
+local repository = "aesthetic143147-arch/rayfield-columns"
 local upstreamVersion = "1.2.0"
 
 local function trim(text: string): string
@@ -31,7 +30,7 @@ local header = table.concat({
     `-- Rayfield Columns v{version}`,
     "-- A fan-made two-column edition of Rayfield Gen2. Unofficial: not made, endorsed or supported by Sirius.",
     "--",
-    `-- local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/{repository}/main/{folder}/{output}"))()`,
+    `-- local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/{repository}/main/{output}"))()`,
     "--",
     `-- Built on Rayfield Gen2 {upstreamVersion} by Sirius - https://sirius.menu - https://github.com/SiriusSoftwareLtd/rayfield-gen2`,
     "-- Copyright (c) 2026 Corridon Capital",
@@ -39,7 +38,7 @@ local header = table.concat({
     "-- License, v. 2.0. If a copy of the MPL was not distributed with this",
     "-- file, You can obtain one at https://mozilla.org/MPL/2.0/.",
     "--",
-    `-- Source: https://github.com/{repository}/tree/main/{folder}`,
+    `-- Source: https://github.com/{repository}`,
     "--",
     "",
 }, "\n")

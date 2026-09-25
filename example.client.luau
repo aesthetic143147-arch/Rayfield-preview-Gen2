@@ -1,7 +1,7 @@
 -- Rayfield Columns example: the "Pulse" hub, laid out in two columns.
 -- In Studio this runs from Rojo against ReplicatedStorage.Rayfield. From an executor, load the
 -- bundle instead (see example.lua):
---   local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/aesthetic143147-arch/cwk-assets/main/rayfield-columns/dist/RayfieldColumns.luau"))()
+--   local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/aesthetic143147-arch/rayfield-columns/main/dist/RayfieldColumns.luau"))()
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Rayfield = require(ReplicatedStorage.Rayfield)

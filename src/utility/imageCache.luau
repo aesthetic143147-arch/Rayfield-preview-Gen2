@@ -32,7 +32,7 @@ local assetResolver = variables.assetResolver
 
 -- raw host, not the /blob/ page: that 302s and executors that dont follow redirects
 -- would cache the redirect body instead of the png
-local assetBase = "https://raw.githubusercontent.com/aesthetic143147-arch/cwk-assets/main/rayfield-columns/assets/"
+local assetBase = "https://raw.githubusercontent.com/aesthetic143147-arch/rayfield-columns/main/assets/"
 local headshotPx = 48
 local thumbEndpoint =
     "https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=%d&size=%dx%d&format=Png&isCircular=false"
