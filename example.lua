@@ -2,7 +2,7 @@
 -- Paste into your executor.
 
 local source =
-    "https://raw.githubusercontent.com/aesthetic143147-arch/Rayfiend-preview-Gen2/main/dist/RayfieldColumns.luau"
+    "https://raw.githubusercontent.com/aesthetic143147-arch/Rayfield-preview-Gen2/main/dist/RayfieldColumns.luau"
 local Rayfield = loadstring(game:HttpGet(source))()
 
 local Window = Rayfield:CreateWindow({
