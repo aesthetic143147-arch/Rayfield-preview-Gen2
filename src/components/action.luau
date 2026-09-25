@@ -5,7 +5,8 @@
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
 --
--- Modified for Rayfield Columns: finger-sized buttons on touch screens.
+-- Modified for Rayfield Columns: finger-sized buttons on touch screens, and icons sized so each
+-- glyph looks about as big as the close cross.
 
 local Action = {}
 Action.__index = Action
@@ -18,6 +19,8 @@ local utility = script.Parent.Parent.utility
 local variables = require(utility.variables)
 local log = require(utility.log)
 local hapticEngine = require(utility.HapticEngine)
+local constants = require(utility.constants)
+local image = require(utility.image)
 
 -- How big a title-bar button is, in logical pixels. With a mouse it hugs its 20px icon. On a touch
 -- screen it becomes a finger-sized target: about 44 points tall on screen once the window's scale
@@ -141,17 +144,25 @@ end
 -- target it can actually hit. Called again whenever the window rescales.
 function Action:_fit()
     local touch = variables.userInputService.TouchEnabled == true
+    local iconSize = if touch then touchIcon else mouseIcon
     if touch then
         local height = math.clamp(math.ceil(touchTarget / (self.window.scale or 1)), touchHeightMin, touchHeightMax)
         self.action.Size = UDim2.fromOffset(touchWidth, height)
-        self.iconLabel.Size = UDim2.fromOffset(touchIcon, touchIcon)
         self.interact.Size = UDim2.new(1, touchReach, 1, 0)
     else
         self.action.Size = UDim2.fromOffset(mouseFrame, mouseFrame)
-        self.iconLabel.Size = UDim2.fromOffset(mouseIcon, mouseIcon)
         self.interact.Size = UDim2.fromScale(1, 1)
     end
+    local size = math.round(iconSize * (constants.actionIconScale[self.icon] or 1))
+    self.iconLabel.Size = UDim2.fromOffset(size, size)
     self.window.actionsListLayout.Padding = UDim.new(0, if touch then 4 else 5)
+end
+
+-- Swap the icon (the minimise button shows maximise while minimised) and resize it to match.
+function Action:_setIcon(icon)
+    self.icon = icon
+    image.assign(self.iconLabel, "Image", icon)
+    self:_fit()
 end
 
 return Action

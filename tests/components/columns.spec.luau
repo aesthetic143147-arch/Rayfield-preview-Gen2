@@ -6,6 +6,7 @@ return function()
     local layouts = helpers.requireUtility("layouts")
     local logModule = helpers.requireUtility("log")
     local variables = helpers.requireUtility("variables")
+    local constants = helpers.requireUtility("constants")
 
     describe("utility.columns", function()
         it("reads a side from a name in any case, an index, or nothing", function()
@@ -356,9 +357,33 @@ return function()
             local w = wideWindow()
             for _, action in w.actions do
                 expect(action.action.Size).to.equal(UDim2.fromOffset(24, 24))
-                expect(action.iconLabel.Size).to.equal(UDim2.fromOffset(20, 20))
+            end
+            for _, action in w.actions do
+                if action.name == "Close" then
+                    expect(action.iconLabel.Size).to.equal(UDim2.fromOffset(20, 20))
+                end
             end
             expect(w.actionsListLayout.Padding.Offset).to.equal(5)
+        end)
+
+        it("sizes each title-bar icon so its glyph looks about as big as the close cross", function()
+            local w = wideWindow()
+            local cross
+            for _, action in w.actions do
+                if action.name == "Close" then
+                    cross = action.iconLabel.Size.X.Offset
+                end
+            end
+            -- the cog and search glyphs fill more of their images, the minimise bar less
+            expect(w.settingsAction.iconLabel.Size.X.Offset < cross).to.equal(true)
+            expect(w.searchAction.iconLabel.Size.X.Offset < cross).to.equal(true)
+            expect(w.minimiseAction.iconLabel.Size.X.Offset > cross).to.equal(true)
+
+            -- swapping to the maximise icon resizes it for that glyph, and back again
+            w.minimiseAction:_setIcon(constants.icons.maximise)
+            expect(w.minimiseAction.iconLabel.Size).to.equal(UDim2.fromOffset(23, 23))
+            w.minimiseAction:_setIcon(constants.icons.minimise)
+            expect(w.minimiseAction.iconLabel.Size).to.equal(UDim2.fromOffset(24, 24))
         end)
 
         it("takes every element a tab takes", function()

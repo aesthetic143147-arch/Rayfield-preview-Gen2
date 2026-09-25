@@ -5,7 +5,8 @@
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
 --
--- Modified for Rayfield Columns: adds the page scrollbar's look and the built-in theme list.
+-- Modified for Rayfield Columns: adds the page scrollbar's look, the built-in theme list and the
+-- title-bar icon sizes.
 
 -- Shared visual constants. Theme-varying colours/fonts live in themes/; these dont.
 
@@ -36,6 +37,17 @@ constants.icons = {
 
 -- Every built-in theme, in the order the settings page lists them. Each name matches a module in
 -- themes/ (lowercased), so ChangeTheme(name) resolves it.
+-- Title-bar icons don't fill their images equally: the close cross covers 70% of its box, the
+-- cog and search 90%, the minimise bar only 50% of the width. Each is drawn at this multiple of
+-- the button's icon size so they all look about as big as the cross.
+constants.actionIconScale = {
+    [constants.icons.close] = 1,
+    [constants.icons.settings] = 0.78,
+    [constants.icons.search] = 0.78,
+    [constants.icons.minimise] = 1.2,
+    [constants.icons.maximise] = 1.15,
+}
+
 constants.builtInThemes = { "Default", "Amethyst", "Cobalt", "Ember", "Frost", "Rose" }
 
 -- The slim bar down the right of a scrolling page, so it's clear there is more below. It sits in

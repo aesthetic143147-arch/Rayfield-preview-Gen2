@@ -1135,7 +1135,7 @@ function Window:Hide()
     -- to agree with that
     if self.minimised then
         self.minimised = false
-        image.assign(self.minimiseAction.iconLabel, "Image", constants.icons.minimise) -- back to the minimise icon
+        self.minimiseAction:_setIcon(constants.icons.minimise) -- back to the minimise icon
     end
 
     -- remember where the window sat so Show grows it back to the same spot
@@ -1257,7 +1257,7 @@ function Window:ToggleMinimise()
 
     if self.minimised then
         self.minimised = false
-        image.assign(self.minimiseAction.iconLabel, "Image", constants.icons.minimise) -- back to the minimise icon
+        self.minimiseAction:_setIcon(constants.icons.minimise) -- back to the minimise icon
 
         variables.tweenService:Create(self.main, sizeInfo, { Size = self.size }):Play()
         self:_fadeSurfaces(true, fadeInfo)
@@ -1298,7 +1298,7 @@ function Window:ToggleMinimise()
         end)
     else
         self.minimised = true
-        image.assign(self.minimiseAction.iconLabel, "Image", constants.icons.maximise) -- maximise icon while minimised
+        self.minimiseAction:_setIcon(constants.icons.maximise) -- maximise icon while minimised
 
         -- fade the content + tab pills out instead of cutting them, then hide them once faded
         -- so they don't sit clipped under the collapsed bar
