@@ -123,6 +123,7 @@ Everything there applies here, and this README covers only what's different.
 | --- | --- |
 | `name`, `subtitle`, `icon` | The title bar |
 | `sidebarLayout` | `true` puts the tabs in a rail on the left instead of across the top |
+| `scale` | Draw the window at a fixed scale (`1` is full size). Leave it out and the window scales itself to the screen |
 | `configuration` | `{ autoSave, autoLoad, fileName, customFolder }` for saving settings between sessions |
 | `theme` | A built-in theme (`"Default"`, `"Amethyst"`, `"Cobalt"`, `"Ember"`, `"Frost"`, `"Rose"`) or a table of theme keys to override. Default when left out |
 | `showName`, `showIcon`, `showIconOnly` | What the collapsed pill shows while the window is hidden |
@@ -139,7 +140,10 @@ settings page (cog icon).
 - Every tab page is two columns (above). All Gen2 elements, tabs, the tab strip and the sidebar
   work as before.
 - The window is landscape by default (760×520 with top tabs, 900×540 with the sidebar), so each
-  column gets a full-size element. It still shrinks to fit smaller screens.
+  column gets a full-size element.
+- **Automatic UI scaling.** On small screens such as phones, the whole window is drawn smaller
+  (down to 70%) instead of squeezing full-size elements into a short strip, so more rows fit.
+  PCs and tablets stay at full size. Pass `scale = 0.8` (or any number) to fix it yourself.
 - In a column, sliders use Gen2's stacked layout (name and value on top, full-width track below),
   a long dropdown value is shortened with "…", and an input field never grows over its title.
 - Configs and settings are saved under `RayfieldColumns/`, separate from an official Rayfield

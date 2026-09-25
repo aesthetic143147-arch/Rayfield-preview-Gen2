@@ -4,6 +4,8 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: the bar hangs below the window as it is drawn, scale included.
 
 local Drag = {}
 Drag.__index = Drag
@@ -30,7 +32,7 @@ function Drag.new(window, properties)
         AnchorPoint = Vector2.new(0.5, 0.5),
         -- hangs under the window's bottom edge; derived from the real size so it's right on the
         -- first open too (Show/minimise recompute the same way against self.size)
-        Position = UDim2.new(0.5, 0, 0.5, self.window.size.Y.Offset / 2 + 15),
+        Position = UDim2.new(0.5, 0, 0.5, self.window:_hang(self.window.size.Y.Offset)),
         ZIndex = constants.zIndex.drag,
 
         -- Animation
@@ -109,7 +111,7 @@ function Drag.new(window, properties)
         end
 
         local mainTarget = UDim2.fromOffset(x, y)
-        local dragTarget = UDim2.fromOffset(x, y + (self.window.main.Size.Y.Offset / 2 + 15))
+        local dragTarget = UDim2.fromOffset(x, y + self.window:_hang(self.window.main.Size.Y.Offset))
         return mainTarget, dragTarget
     end
 

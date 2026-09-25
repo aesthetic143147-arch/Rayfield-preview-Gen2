@@ -223,4 +223,42 @@ return function()
             expect(windowSizing.profile("nonsense" :: any)).to.equal(top)
         end)
     end)
+
+    describe("utility.windowSizing scale", function()
+        it("keeps roomy screens at full size", function()
+            for _, viewport in { Vector2.new(1920, 1080), Vector2.new(1280, 720), Vector2.new(2560, 1440) } do
+                expect(windowSizing.scaleFor(viewport)).to.equal(1)
+            end
+        end)
+
+        it("shrinks a phone, but never below the readable floor", function()
+            for _, viewport in { Vector2.new(844, 390), Vector2.new(667, 375), Vector2.new(390, 844) } do
+                local scale = windowSizing.scaleFor(viewport)
+                expect(scale < 1).to.equal(true)
+                expect(scale >= windowSizing.minScale).to.equal(true)
+            end
+        end)
+
+        it("scales in between on a screen that is only a little short", function()
+            local scale = windowSizing.scaleFor(Vector2.new(1280, 540))
+            expect(scale > windowSizing.minScale).to.equal(true)
+            expect(scale < 1).to.equal(true)
+        end)
+
+        it("leaves an implausible viewport at full size", function()
+            expect(windowSizing.scaleFor(nil)).to.equal(1)
+            expect(windowSizing.scaleFor(Vector2.new(1, 1))).to.equal(1)
+        end)
+
+        it("uses the sidebar's own ideal size", function()
+            -- the sidebar window is bigger, so the same screen scales it at least as far
+            local viewport = Vector2.new(1024, 600)
+            expect(windowSizing.scaleFor(viewport, "sidebar") <= windowSizing.scaleFor(viewport, "top")).to.equal(true)
+        end)
+
+        it("returns steps of a hundredth, so a pixel of wobble doesn't rescale", function()
+            local scale = windowSizing.scaleFor(Vector2.new(1111, 555))
+            expect(math.abs(scale * 100 - math.floor(scale * 100 + 0.5)) < 1e-6).to.equal(true)
+        end)
+    end)
 end

@@ -6,7 +6,7 @@
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
 --
 -- Modified for Rayfield Columns: pages are two columns, which the window re-lays out as the screen
--- changes and reveals top to bottom across both.
+-- changes and reveals top to bottom across both, and draws the window smaller on small screens.
 
 -- Utility
 local utility = script.Parent.Parent.utility
@@ -67,11 +67,16 @@ local maxStaggeredTabs = 8
 -- How often the backstop re-checks the fit, for anything the viewport signal misses.
 local viewportReconcileInterval = 2
 
--- The size the current screen calls for, for this window's layout. Everything downstream (the
--- reveal target, drag clamp, collapse) reads self.size, so it all inherits whatever this returns.
-local function fitWindowSize(mode): UDim2
+-- The size and scale the current screen calls for, for this window's layout. The window is laid
+-- out at `size` and drawn at `scale`, so on a phone it is fitted to the screen as it would look
+-- once scaled: a scale of 0.7 gives the layout 1/0.7 of the screen to work with. A fixed scale
+-- from the dev (properties.scale) replaces the automatic one. Everything downstream (the reveal
+-- target, drag clamp, collapse) reads self.size and self.scale, so it all inherits this.
+local function fitWindowSize(mode, fixedScale): (UDim2, number)
     local camera = variables.workspace.CurrentCamera
-    return windowSizing.fit(camera and camera.ViewportSize, mode)
+    local viewport = camera and camera.ViewportSize
+    local scale = fixedScale or windowSizing.scaleFor(viewport, mode)
+    return windowSizing.fit(if viewport then viewport / scale else nil, mode), scale
 end
 
 -- Per-corner radii are newer than the oldest clients Rayfield runs on, so a shape that only
@@ -228,11 +233,21 @@ function Window.new(properties)
     -- the layout decides the window's whole shape, so it has to settle before the first fit
     local layout = resolveLayout(properties.sidebarLayout or properties.SidebarLayout)
 
+    -- a number fixes the window's scale (1 is full size); left out, it follows the screen
+    local fixedScale = properties.scale or properties.Scale
+    if fixedScale ~= nil and (typeof(fixedScale) ~= "number" or fixedScale <= 0) then
+        log.warn("Rayfield: scale must be a number above 0, using automatic scaling")
+        fixedScale = nil
+    end
+    local size, scale = fitWindowSize(layout.mode, fixedScale)
+
     local self = setmetatable({
         name = properties.name or properties.Name or "Rayfield Window",
         subheading = properties.subtitle or properties.Subtitle,
         layout = layout,
-        size = fitWindowSize(layout.mode),
+        size = size,
+        scale = scale,
+        fixedScale = fixedScale,
         instances = {},
         connections = {},
 
@@ -332,6 +347,13 @@ function Window.new(properties)
         Visible = false, -- In == true
 
         Parent = self.screenGui,
+    })
+
+    -- draws the whole window at self.scale; everything inside is laid out at full size
+    self.uiScale = self:Create("UIScale", {
+        Scale = self.scale,
+
+        Parent = self.main,
     })
 
     self.drag = require(script.Parent.drag).new(self)
@@ -1214,7 +1236,7 @@ function Window:ToggleMinimise()
                     self.main.Position.X.Scale,
                     self.main.Position.X.Offset,
                     self.main.Position.Y.Scale,
-                    self.main.Position.Y.Offset + self.size.Y.Offset / 2 + 15
+                    self.main.Position.Y.Offset + self:_hang(self.size.Y.Offset)
                 ),
             })
             :Play()
@@ -1280,7 +1302,7 @@ function Window:ToggleMinimise()
                     self.main.Position.X.Scale,
                     self.main.Position.X.Offset,
                     self.main.Position.Y.Scale,
-                    self.main.Position.Y.Offset + self.layout.topbarHeight / 2 + 15
+                    self.main.Position.Y.Offset + self:_hang(self.layout.topbarHeight)
                 ),
             })
             :Play()
@@ -1299,7 +1321,7 @@ function Window:_syncDragBar()
         return
     end
     local position = self.main.Position
-    local below = self.size.Y.Offset / 2 + 15
+    local below = self:_hang(self.size.Y.Offset)
     bar.Position = UDim2.new(position.X.Scale, position.X.Offset, position.Y.Scale, position.Y.Offset + below)
 end
 
@@ -1318,7 +1340,7 @@ function Window:_clampedPosition(position: UDim2): UDim2
     end
 
     local screen = self.screenGui.AbsoluteSize
-    local halfX, halfY = self.size.X.Offset / 2, self.size.Y.Offset / 2
+    local halfX, halfY = self.size.X.Offset * self.scale / 2, self.size.Y.Offset * self.scale / 2
     local margin = 8
     -- math.max in case the window is bigger than the screen
     local x = math.clamp(position.X.Offset, halfX + margin, math.max(halfX + margin, screen.X - halfX - margin))
@@ -1341,9 +1363,11 @@ function Window:_applyWindowSize()
         return
     end
 
-    local size = fitWindowSize(self.layout.mode)
-    local changed = size ~= self.size
+    local size, scale = fitWindowSize(self.layout.mode, self.fixedScale)
+    local changed = size ~= self.size or scale ~= self.scale
     self.size = size
+    self.scale = scale
+    self.uiScale.Scale = scale
 
     -- the rail is sized off main, so setting it now is right whether main resizes on the spot
     -- below or grows into the banked size on its next show
@@ -1591,7 +1615,7 @@ function Window:_bindTopbarDrag()
                 mainPosition.X.Scale,
                 mainPosition.X.Offset,
                 mainPosition.Y.Scale,
-                mainPosition.Y.Offset + (self.main.Size.Y.Offset / 2 + 15)
+                mainPosition.Y.Offset + self:_hang(self.main.Size.Y.Offset)
             )
         end
     end)
@@ -1678,7 +1702,7 @@ function Window:_buildSettingsUI()
                 :Play()
             variables.tweenService
                 :Create(self.drag.drag, TweenInfo.new(0.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
-                    Position = UDim2.new(0.5, 0, 0.5, self.size.Y.Offset / 2 + 15),
+                    Position = UDim2.new(0.5, 0, 0.5, self:_hang(self.size.Y.Offset)),
                 })
                 :Play()
         end,
@@ -2140,7 +2164,7 @@ function Window:_quickRestore()
     -- bar-hang offset) before hiding, it would otherwise reappear at the old, wrong height.
     task.delay(0.22, function()
         self.drag.drag.Position =
-            UDim2.new(target.X.Scale, target.X.Offset, target.Y.Scale, target.Y.Offset + self.size.Y.Offset / 2 + 15)
+            UDim2.new(target.X.Scale, target.X.Offset, target.Y.Scale, target.Y.Offset + self:_hang(self.size.Y.Offset))
         self.drag.dragCosmetic.Size = UDim2.fromOffset(0, 4)
         self.drag.dragCosmetic.BackgroundTransparency = 1
         self.drag.drag.Visible = true
@@ -2791,9 +2815,15 @@ function Window:_collapsedRect()
         collapsedTop.X.Scale,
         collapsedTop.X.Offset,
         collapsedTop.Y.Scale,
-        collapsedTop.Y.Offset + size.Y.Offset / 2
+        collapsedTop.Y.Offset + size.Y.Offset * self.scale / 2
     )
     return home, size
+end
+
+-- How far below main's centre the drag bar hangs, on screen, for a window this tall. main is
+-- drawn at self.scale and the bar isn't, so the height is scaled before it is halved.
+function Window:_hang(height: number): number
+    return height * self.scale / 2 + 15
 end
 
 -- true only when the window is fully shown and idle. hover/press animations gate on this so

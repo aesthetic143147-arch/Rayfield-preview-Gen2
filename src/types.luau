@@ -35,6 +35,7 @@ export type WindowProps = {
     showIcon: (string | number)?,
     showIconOnly: boolean?, -- collapse to a round icon badge instead of an icon-and-label pill
     sidebarLayout: boolean?, -- tabs down the left instead of across the top
+    scale: number?, -- draw the window at this scale (1 = full size); left out, it follows the screen
     profile: string?, -- the line under the player's name in the sidebar; empty leaves the name alone
     configuration: WindowConfiguration?,
     fallbackFont: (Font | Enum.Font)?, -- built-in stand-in shown in secure mode while the brand font downloads

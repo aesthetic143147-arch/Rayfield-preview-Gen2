@@ -5,7 +5,8 @@
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
 --
--- Modified for Rayfield Columns: both windows are landscape so a page has room for two columns.
+-- Modified for Rayfield Columns: both windows are landscape so a page has room for two columns, and
+-- small screens draw the window scaled down (scaleFor).
 
 -- Picks the window size for a given screen. Each layout has its own ideal shape and its own
 -- idea of which axis matters: the top-tab window defends its height, the sidebar window defends
@@ -169,6 +170,27 @@ local function fitHorizontal(profile: Profile, availableX: number, availableY: n
     width = math.floor(math.min(width, height * profile.maxAspectRatio))
 
     return UDim2.fromOffset(width, height)
+end
+
+-- How far to shrink the whole window on a small screen. The window is laid out at full size and
+-- drawn smaller through a UIScale, so a phone gets the same layout with room left for content,
+-- instead of full-size elements packed into a strip a couple of rows tall. The scale is whatever
+-- makes the default window (plus its margins) fit the screen, never above 1 and never so small
+-- that text stops being readable or controls stop being easy to tap.
+windowSizing.minScale = 0.7
+
+-- the room the default window wants around it, as a share of the screen on each axis
+local roomX = 0.9
+local roomY = 0.88
+
+function windowSizing.scaleFor(viewport: Vector2?, mode: layouts.Mode?): number
+    if not viewport or viewport.X < minPlausibleViewport or viewport.Y < minPlausibleViewport then
+        return 1
+    end
+    local profile = windowSizing.profile(mode)
+    local fits = math.min(viewport.X * roomX / profile.defaultSize.X, viewport.Y * roomY / profile.defaultSize.Y)
+    -- two decimals, so a viewport that wobbles by a pixel doesn't rescale the window every time
+    return math.floor(math.clamp(fits, windowSizing.minScale, 1) * 100) / 100
 end
 
 function windowSizing.fit(viewport: Vector2?, mode: layouts.Mode?): UDim2

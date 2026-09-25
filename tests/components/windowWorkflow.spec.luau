@@ -1577,11 +1577,12 @@ return function()
 
     describe("component window viewport fitting", function()
         local variables = helpers.requireUtility("variables")
+        local windowSizing = helpers.requireUtility("windowSizing")
         local originalCamera
         local fitted
 
-        local function makeWindow()
-            fitted = Window.new({
+        local function makeWindow(properties)
+            fitted = Window.new(properties or {
                 name = "Fit Window",
                 configuration = { autoSave = false, autoLoad = false },
             })
@@ -1654,12 +1655,66 @@ return function()
             fitted = nil
         end)
 
+        it("draws the window smaller on a phone and gives the layout the room that frees", function()
+            setViewport(844, 390)
+            local w = makeWindow()
+            local unscaled = windowSizing.fit(Vector2.new(844, 390))
+
+            expect(w.scale < 1).to.equal(true)
+            expect(w.uiScale.Scale).to.equal(w.scale)
+            -- laid out taller than an unscaled window could be, so more rows fit
+            expect(w.size.Y.Offset > unscaled.Y.Offset).to.equal(true)
+            -- and still drawn inside the screen
+            expect(w.size.X.Offset * w.scale <= 844).to.equal(true)
+            expect(w.size.Y.Offset * w.scale <= 390).to.equal(true)
+        end)
+
+        it("keeps a roomy screen at full size", function()
+            setViewport(1920, 1080)
+            local w = makeWindow()
+            expect(w.scale).to.equal(1)
+            expect(w.uiScale.Scale).to.equal(1)
+        end)
+
+        it("rescales a live window when the screen changes", function()
+            setViewport(1920, 1080)
+            local w = makeWindow()
+            w.hidden = false
+
+            setViewport(844, 390)
+            w:_applyWindowSize()
+            expect(w.scale < 1).to.equal(true)
+            expect(w.uiScale.Scale).to.equal(w.scale)
+
+            setViewport(1920, 1080)
+            w:_applyWindowSize()
+            expect(w.uiScale.Scale).to.equal(1)
+        end)
+
+        it("holds a scale the dev fixes, whatever the screen", function()
+            setViewport(844, 390)
+            local w =
+                makeWindow({ name = "Fixed", scale = 0.85, configuration = { autoSave = false, autoLoad = false } })
+            expect(w.scale).to.equal(0.85)
+
+            setViewport(1920, 1080)
+            w:_applyWindowSize()
+            expect(w.scale).to.equal(0.85)
+        end)
+
+        it("ignores a scale that isn't a positive number", function()
+            setViewport(1920, 1080)
+            local w = makeWindow({ name = "Bad", scale = -1, configuration = { autoSave = false, autoLoad = false } })
+            expect(w.scale).to.equal(1)
+        end)
+
         it("sizes a new window from the current viewport", function()
             setViewport(667, 375)
             local w = makeWindow()
-            -- a phone gives up height and width both, to what it can actually show
-            expect(w.size.Y.Offset < 520).to.equal(true)
-            expect(w.size.X.Offset < 760).to.equal(true)
+            -- a phone draws the window smaller on both axes, to what it can actually show
+            expect(w.scale < 1).to.equal(true)
+            expect(w.size.Y.Offset * w.scale < 520).to.equal(true)
+            expect(w.size.X.Offset * w.scale < 760).to.equal(true)
         end)
 
         it("re-fits a live window when the viewport changes", function()
@@ -1671,7 +1726,7 @@ return function()
             setViewport(667, 375)
             w:_applyWindowSize()
 
-            expect(w.size.X.Offset < 760).to.equal(true)
+            expect(w.size.X.Offset * w.scale < 760).to.equal(true)
             expect(w.main.Size).to.equal(w.size)
         end)
 
@@ -1684,7 +1739,7 @@ return function()
             w:_applyWindowSize()
 
             -- the size is taken, but a collapsed window must not be yanked open by a rotation
-            expect(w.size.X.Offset < 760).to.equal(true)
+            expect(w.size.X.Offset * w.scale < 760).to.equal(true)
             expect(w.main.Size).to.equal(before)
         end)
 
@@ -1728,8 +1783,8 @@ return function()
 
             local target = w:_clampedPosition(w._restorePosition)
             expect(target.X.Offset < 1700).to.equal(true)
-            expect(target.X.Offset + w.size.X.Offset / 2 <= 700).to.equal(true)
-            expect(target.Y.Offset + w.size.Y.Offset / 2 <= 500).to.equal(true)
+            expect(target.X.Offset + w.size.X.Offset * w.scale / 2 <= 700).to.equal(true)
+            expect(target.Y.Offset + w.size.Y.Offset * w.scale / 2 <= 500).to.equal(true)
         end)
 
         it("keeps the drag bar under the window's bottom edge", function()
@@ -1740,7 +1795,7 @@ return function()
             w:_syncDragBar()
 
             expect(w.drag.drag.Position.X.Offset).to.equal(300)
-            expect(w.drag.drag.Position.Y.Offset).to.equal(200 + w.size.Y.Offset / 2 + 15)
+            expect(w.drag.drag.Position.Y.Offset).to.equal(200 + w.size.Y.Offset * w.scale / 2 + 15)
         end)
 
         it("resizes off the ViewportSize signal without being driven directly", function()
@@ -1753,7 +1808,7 @@ return function()
             camera.ViewportSize = Vector2.new(667, 375)
             camera.changed.fire()
 
-            expect(w.size.X.Offset < 760).to.equal(true)
+            expect(w.size.X.Offset * w.scale < 760).to.equal(true)
             expect(w.main.Size).to.equal(w.size)
         end)
 
@@ -1766,7 +1821,7 @@ return function()
             cameraSwapped.fire() -- respawn, or the game swapping CurrentCamera
 
             -- rebinding re-fits straight away, off the new camera
-            expect(w.size.X.Offset < 760).to.equal(true)
+            expect(w.size.X.Offset * w.scale < 760).to.equal(true)
 
             -- and the replacement drives it from here, while the dead camera does not
             replacement.ViewportSize = Vector2.new(1920, 1080)
