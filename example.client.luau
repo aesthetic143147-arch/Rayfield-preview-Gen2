@@ -1,4 +1,4 @@
--- Rayfield Columns example: the "Pulse" hub, laid out in two columns.
+-- Rayfield Columns example: the "Omnity" hub, laid out in two columns.
 -- In Studio this runs from Rojo against ReplicatedStorage.Rayfield. From an executor, load the
 -- bundle instead (see example.lua):
 --   local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/aesthetic143147-arch/Rayfield-preview-Gen2/main/dist/RayfieldColumns.luau"))()
@@ -10,11 +10,11 @@ local Rayfield = require(ReplicatedStorage.Rayfield)
 task.wait(2)
 
 local Window = Rayfield:CreateWindow({
-    name = "Pulse",
+    name = "Omnity",
     configuration = {
         autoSave = true,
         autoLoad = true,
-        fileName = "Pulse",
+        fileName = "Omnity",
     },
 })
 
@@ -27,7 +27,7 @@ local Home = Window:CreateTab({ icon = 93364949241311 })
 
 Home.Left:CreateSection({ name = "Welcome" })
 Home.Left:CreateText({
-    name = "Pulse",
+    name = "Omnity",
     text = "Everything is split into two columns. Build into Tab.Left and Tab.Right, "
         .. 'or pass side = "Right" to a tab\'s own Create call.',
 })

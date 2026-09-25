@@ -2513,7 +2513,7 @@ function Window:_flashResult(element, ok)
     local inInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
     local outInfo = TweenInfo.new(0.45, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
-    -- a quick coloured pulse: box fill tints (transparency untouched), edge + glow brighten
+    -- a quick coloured flash: box fill tints (transparency untouched), edge + glow brighten
     variables.tweenService:Create(box, inInfo, { BackgroundColor3 = fill }):Play()
     if stroke then
         variables.tweenService:Create(stroke, inInfo, { Color = edge, Transparency = 0.4 }):Play()

@@ -1,4 +1,4 @@
--- Rayfield Columns example: the "Pulse" Auto page, in two columns.
+-- Rayfield Columns example: the "Omnity" Auto page, in two columns.
 -- Paste into your executor.
 
 local source =
@@ -6,11 +6,11 @@ local source =
 local Rayfield = loadstring(game:HttpGet(source))()
 
 local Window = Rayfield:CreateWindow({
-    name = "Pulse",
+    name = "Omnity",
     configuration = {
         autoSave = true,
         autoLoad = true,
-        fileName = "Pulse",
+        fileName = "Omnity",
     },
 })
 
