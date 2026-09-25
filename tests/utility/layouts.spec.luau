@@ -27,8 +27,8 @@ return function()
             expect(layouts.sidebar.chromeHeight).to.equal(layouts.sidebar.topbarHeight)
         end)
 
-        it("hangs the strip a pixel into the topbar", function()
-            expect(layouts.top.tabStripTop).to.equal(layouts.top.topbarHeight - 1)
+        it("leaves a clear gap between the topbar and the strip", function()
+            expect(layouts.top.tabStripTop).to.equal(layouts.top.topbarHeight + 7)
         end)
 
         it("drops the rail to icons only once the window is too narrow for labels", function()

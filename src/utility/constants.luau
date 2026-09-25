@@ -30,7 +30,6 @@ constants.icons = {
     check = 125626312718314,
     dot = 91452555903853, -- unselected dropdown option (also the colorpicker "invisible" mark)
     colorpicker = 91452555903853, -- same hollow-box glyph as dot
-    banner = 111263549366178,
     config = 125823673784681, -- saved-configurations picker
     rayfield = 80387863064905, -- default show icon on the sign-in toast
 }
@@ -86,10 +85,9 @@ constants.zIndex = {
     restoreInteract = 100002,
 }
 
--- DisplayOrder for the top-level ScreenGuis (the window vs the loading banner).
+-- DisplayOrder for the top-level ScreenGuis.
 constants.displayOrder = {
     window = 99999,
-    banner = 100000,
     -- modal popups sit above everything, dim included
     popup = 100001,
 }

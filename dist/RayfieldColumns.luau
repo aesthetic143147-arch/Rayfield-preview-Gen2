@@ -28,28 +28,21 @@ type Dropdown=j.Dropdown export type Input=j.Input export type Keybind=j.Keybind
 export type Stat=j.Stat export type Progress=j.Progress export type Console=j.Console export type Section=j.Section
 export type TabSection=j.TabSection export type Text=j.Text export type Divider=j.Divider export type Tag=j.Tag export
 type Popup=j.Popup export type Rayfield=j.Rayfield type WindowModule={new:(j.WindowProps)->j.Window}local k={}::Rayfield
-local function l()local m=Instance.new'ScreenGui'm.Name=f.httpService:GenerateGUID(false)m.ClipToDeviceSafeArea=false m.
-DisplayOrder=i.displayOrder.banner m.IgnoreGuiInset=true m.ResetOnSpawn=false m.Enabled=true m.SafeAreaCompatibility=
-Enum.SafeAreaCompatibility.None m.ScreenInsets=Enum.ScreenInsets.DeviceSafeInsets m.ZIndexBehavior=Enum.ZIndexBehavior.
-Sibling m.Parent=f.guiContainer local n=Instance.new'ImageLabel'n.Name='Banner'n.AnchorPoint=Vector2.new(0.5,0.5)n.
-BackgroundColor3=Color3.fromRGB(255,255,255)n.BackgroundTransparency=1 n.BorderColor3=Color3.fromRGB(0,0,0)n.
-BorderSizePixel=0 n.Image=g.resolve(i.icons.banner)n.Position=UDim2.fromScale(0.5,0.5)n.Size=UDim2.fromOffset(262,60)n.
-Parent=m return m end function k.CreateWindow(m,n:j.WindowProps):j.Window local o,p:j.Window?,q:(()->())?=(l())if f.
-secureMode then g.preload(function(r)if r<=0 then return end local function s()if not p or p.unloaded then return end p:
-Notify{title=h.resolve'Secure mode',content=if r==1 then h.resolve"An asset couldn't be cached and won't appear."else h.
-resolve"Some assets couldn't be cached and won't appear."}end if p then s()else q=s end end)end local r,s=pcall(function
-()return(d(c.components.window)::WindowModule).new(n)end)if not r then o:Destroy()error(s,0)end local t=s::j.Window p=t
-if q then task.spawn(q)q=nil end if f.secureMode then task.spawn(function()local u,v=f.fontManager:loadFont(i.fontAsset,
-Enum.FontWeight.Medium),f.fontManager:loadFont(i.fontAsset,Enum.FontWeight.SemiBold)if not t.unloaded and u and v and u
-~=f.fallbackFont and v~=f.fallbackFont then t:ChangeTheme{Font=u,TitleFont=v}end end)end task.spawn(function()task.wait(
-0.5)o:Destroy()task.wait(0.5)if not t.unloaded then t:Show()end end)return t end return k end)()end,[3]=function()local
-b,c,d=a(3)local e return(function(...)local f={}f.__index=f f.__type='Action'local g=c.Parent.Parent.utility local h,i,j
-,k,l,m,n,o,p,q,r=d(g.variables),d(g.log),d(g.HapticEngine),24,20,44,30,64,30,12,22 function f.new(s,t)t=if typeof(t)==
-'table'then t else{}local u=setmetatable({window=assert(s,'Missing argument #1 (Window expected)'),name=t.name or t.Name
-or'Action',icon=assert(t.icon or t.Icon,'Missing argument (Icon expected)'),callback=assert(t.callback or t.Callback,
-'Missing argument (Function expected)'),linkedTab=t.linkedTab or t.LinkedTab},f)table.insert(u.window.actions,u)u.action
-=u.window:Create('Frame',{Name=u.name,BorderSizePixel=0,LayoutOrder=-(t.order or 0),Size=UDim2.fromOffset(24,24),
-BackgroundTransparency=1,Parent=u.window.actionContainer})u.iconLabel=u.window:Create('ImageLabel',{Image=u.icon,Size=
+function k.CreateWindow(l,m:j.WindowProps):j.Window local n:j.Window?,o:(()->())?if f.secureMode then g.preload(function
+(p)if p<=0 then return end local function q()if not n or n.unloaded then return end n:Notify{title=h.resolve
+'Secure mode',content=if p==1 then h.resolve"An asset couldn't be cached and won't appear."else h.resolve
+"Some assets couldn't be cached and won't appear."}end if n then q()else o=q end end)end local p=(d(c.components.window)
+::WindowModule).new(m)n=p if o then task.spawn(o)o=nil end if f.secureMode then task.spawn(function()local q,r=f.
+fontManager:loadFont(i.fontAsset,Enum.FontWeight.Medium),f.fontManager:loadFont(i.fontAsset,Enum.FontWeight.SemiBold)if
+not p.unloaded and q and r and q~=f.fallbackFont and r~=f.fallbackFont then p:ChangeTheme{Font=q,TitleFont=r}end end)end
+task.spawn(function()task.wait(0.5)if not p.unloaded then p:Show()end end)return p end return k end)()end,[3]=function()
+local b,c,d=a(3)local e return(function(...)local f={}f.__index=f f.__type='Action'local g=c.Parent.Parent.utility local
+h,i,j,k,l,m,n,o,p,q,r=d(g.variables),d(g.log),d(g.HapticEngine),24,20,44,30,64,30,12,22 function f.new(s,t)t=if typeof(t
+)=='table'then t else{}local u=setmetatable({window=assert(s,'Missing argument #1 (Window expected)'),name=t.name or t.
+Name or'Action',icon=assert(t.icon or t.Icon,'Missing argument (Icon expected)'),callback=assert(t.callback or t.
+Callback,'Missing argument (Function expected)'),linkedTab=t.linkedTab or t.LinkedTab},f)table.insert(u.window.actions,u
+)u.action=u.window:Create('Frame',{Name=u.name,BorderSizePixel=0,LayoutOrder=-(t.order or 0),Size=UDim2.fromOffset(24,24
+),BackgroundTransparency=1,Parent=u.window.actionContainer})u.iconLabel=u.window:Create('ImageLabel',{Image=u.icon,Size=
 UDim2.fromOffset(20,20),BorderSizePixel=0,AnchorPoint=Vector2.new(0.5,0.5),Position=UDim2.fromScale(0.5,0.5),
 BackgroundTransparency=1,ImageTransparency=1,Parent=u.action},{ImageColor3='ActionColor'})u.interact=u.window:Create(
 'TextButton',{BackgroundTransparency=1,Size=UDim2.fromScale(1,1),BorderSizePixel=0,Position=UDim2.fromScale(0.5,0.5),
@@ -2398,38 +2391,38 @@ return nil end return af end)()end,[45]=function()local aa,ab,ac=a(45)local ad r
 fontAsset='rbxassetid://12187365364'ae.pillResizeInfo=TweenInfo.new(0.4,Enum.EasingStyle.Exponential,Enum.
 EasingDirection.Out)ae.icons={close=83277910885129,minimise=108115485663409,maximise=88738500661569,settings=
 129180860773723,search=100604009889706,chevron=88479147175134,check=125626312718314,dot=91452555903853,colorpicker=
-91452555903853,banner=111263549366178,config=125823673784681,rayfield=80387863064905}ae.builtInThemes={'Default',
-'Amethyst','Cobalt','Ember','Frost','Rose'}ae.pageScrollbar={thickness=3,transparency=0.6}ae.accent={on=Color3.fromRGB(
-23,153,110),onStroke=Color3.fromRGB(32,201,144)}ae.statAccents={positive={fill=ColorSequence.new(Color3.fromRGB(0,170,
-127),Color3.fromRGB(0,134,98)),stroke=ColorSequence.new(Color3.fromRGB(0,213,156),Color3.fromRGB(0,189,135))},negative={
-fill=ColorSequence.new(Color3.fromRGB(172,47,47),Color3.fromRGB(135,37,37)),stroke=ColorSequence.new(Color3.fromRGB(255,
-75,75),Color3.fromRGB(244,67,67))},neutral={fill=ColorSequence.new(Color3.fromRGB(0,170,127),Color3.fromRGB(0,134,98)),
-stroke=ColorSequence.new(Color3.fromRGB(0,213,156),Color3.fromRGB(0,189,135))}}ae.zIndex={elementLock=60,
-elementLockContent=65,bottomFade=100,notification=1500,drag=1000,toast=2000,toastContent=2001,restoreContent=100001,
-restoreInteract=100002}ae.displayOrder={window=99999,banner=100000,popup=100001}return ae end)()end,[46]=function()local
-aa,ab,ac=a(46)local ad return(function(...)local ae={}function ae.itemFromValue(af,ag)local ah,ai=pcall(function()return
-af:FromValue(ag)end)if ah and ai then return ai end local aj,ak=pcall(function()return af:GetEnumItems()end)if not aj
-then return nil end for al,am in ak do if am.Value==ag then return am end end return nil end return ae end)()end,[47]=
-function()local aa,ab,ac=a(47)local ad return(function(...)local ae,af=ac(ab.Parent.services),{}local ag=ae.getService
-'RunService':IsStudio()local ah=not ag and typeof(writefile)=='function'and typeof(readfile)=='function'and typeof(
-isfile)=='function'and typeof(isfolder)=='function'and typeof(makefolder)=='function'and typeof(listfiles)=='function'
-and typeof(delfile)=='function'and typeof(delfolder)=='function'if ah then function af.writefile(ai:string,aj:string)
-writefile(ai,aj)end function af.readfile(ai:string):string return readfile(ai)end if typeof(appendfile)=='function'then
-function af.appendfile(ai:string,aj:string)appendfile(ai,aj)end end function af.isfile(ai:string):boolean return isfile(
-ai)end function af.delfile(ai:string)delfile(ai)end function af.listfiles(ai:string):{string}return listfiles(ai)end
-function af.makefolder(ai:string)makefolder(ai)end function af.isfolder(ai:string):boolean return isfolder(ai)end
-function af.delfolder(ai:string)delfolder(ai)end elseif ag then local ai=Instance.new'Folder'ai.Name='Filesystem'ai.
-Parent=ae.getService'ReplicatedStorage'local function aj(ak:string):{string}local al={}for am in string.gmatch(ak,
-'[^/]+')do table.insert(al,am)end return al end local function ak(al:{string},am:boolean):Instance?local b:Instance=ai
-for c=1,#al-1 do local d=b:FindFirstChild(al[c])if not d then if not am then return nil end local e=Instance.new'Folder'
-e.Name=al[c]e.Parent=b d=e end b=d::Instance end return b end local function al(am:Instance?):StringValue?if am and am:
-IsA'StringValue'then return am end return nil end function af.writefile(am:string,b:string)local c=aj(am)assert(#c>0,
-'Invalid path')local d=ak(c,true)assert(d,'Invalid path')local e=c[#c]local f=d:FindFirstChild(e)local g=al(f)if g then
-g.Value=b else if f then f:Destroy()end local h=Instance.new'StringValue'h.Name=e h.Value=b h.Parent=d end end function
-af.readfile(am:string):string local b=aj(am)assert(#b>0,'Invalid path')local c=ak(b,false)assert(c,'File not found: '..
-am)local d=c:FindFirstChild(b[#b])local e=al(d)assert(e,'File not found: '..am)return e.Value end function af.isfile(am:
-string):boolean local b=aj(am)if#b==0 then return false end local c=ak(b,false)if not c then return false end return al(
-c:FindFirstChild(b[#b]))~=nil end function af.listfiles(am:string):{string}local b,c:Instance=aj(am),ai for d,e in b do
+91452555903853,config=125823673784681,rayfield=80387863064905}ae.builtInThemes={'Default','Amethyst','Cobalt','Ember',
+'Frost','Rose'}ae.pageScrollbar={thickness=3,transparency=0.6}ae.accent={on=Color3.fromRGB(23,153,110),onStroke=Color3.
+fromRGB(32,201,144)}ae.statAccents={positive={fill=ColorSequence.new(Color3.fromRGB(0,170,127),Color3.fromRGB(0,134,98))
+,stroke=ColorSequence.new(Color3.fromRGB(0,213,156),Color3.fromRGB(0,189,135))},negative={fill=ColorSequence.new(Color3.
+fromRGB(172,47,47),Color3.fromRGB(135,37,37)),stroke=ColorSequence.new(Color3.fromRGB(255,75,75),Color3.fromRGB(244,67,
+67))},neutral={fill=ColorSequence.new(Color3.fromRGB(0,170,127),Color3.fromRGB(0,134,98)),stroke=ColorSequence.new(
+Color3.fromRGB(0,213,156),Color3.fromRGB(0,189,135))}}ae.zIndex={elementLock=60,elementLockContent=65,bottomFade=100,
+notification=1500,drag=1000,toast=2000,toastContent=2001,restoreContent=100001,restoreInteract=100002}ae.displayOrder={
+window=99999,popup=100001}return ae end)()end,[46]=function()local aa,ab,ac=a(46)local ad return(function(...)local ae={
+}function ae.itemFromValue(af,ag)local ah,ai=pcall(function()return af:FromValue(ag)end)if ah and ai then return ai end
+local aj,ak=pcall(function()return af:GetEnumItems()end)if not aj then return nil end for al,am in ak do if am.Value==ag
+then return am end end return nil end return ae end)()end,[47]=function()local aa,ab,ac=a(47)local ad return(function(
+...)local ae,af=ac(ab.Parent.services),{}local ag=ae.getService'RunService':IsStudio()local ah=not ag and typeof(
+writefile)=='function'and typeof(readfile)=='function'and typeof(isfile)=='function'and typeof(isfolder)=='function'and
+typeof(makefolder)=='function'and typeof(listfiles)=='function'and typeof(delfile)=='function'and typeof(delfolder)==
+'function'if ah then function af.writefile(ai:string,aj:string)writefile(ai,aj)end function af.readfile(ai:string):
+string return readfile(ai)end if typeof(appendfile)=='function'then function af.appendfile(ai:string,aj:string)
+appendfile(ai,aj)end end function af.isfile(ai:string):boolean return isfile(ai)end function af.delfile(ai:string)
+delfile(ai)end function af.listfiles(ai:string):{string}return listfiles(ai)end function af.makefolder(ai:string)
+makefolder(ai)end function af.isfolder(ai:string):boolean return isfolder(ai)end function af.delfolder(ai:string)
+delfolder(ai)end elseif ag then local ai=Instance.new'Folder'ai.Name='Filesystem'ai.Parent=ae.getService
+'ReplicatedStorage'local function aj(ak:string):{string}local al={}for am in string.gmatch(ak,'[^/]+')do table.insert(al
+,am)end return al end local function ak(al:{string},am:boolean):Instance?local b:Instance=ai for c=1,#al-1 do local d=b:
+FindFirstChild(al[c])if not d then if not am then return nil end local e=Instance.new'Folder'e.Name=al[c]e.Parent=b d=e
+end b=d::Instance end return b end local function al(am:Instance?):StringValue?if am and am:IsA'StringValue'then return
+am end return nil end function af.writefile(am:string,b:string)local c=aj(am)assert(#c>0,'Invalid path')local d=ak(c,
+true)assert(d,'Invalid path')local e=c[#c]local f=d:FindFirstChild(e)local g=al(f)if g then g.Value=b else if f then f:
+Destroy()end local h=Instance.new'StringValue'h.Name=e h.Value=b h.Parent=d end end function af.readfile(am:string):
+string local b=aj(am)assert(#b>0,'Invalid path')local c=ak(b,false)assert(c,'File not found: '..am)local d=c:
+FindFirstChild(b[#b])local e=al(d)assert(e,'File not found: '..am)return e.Value end function af.isfile(am:string):
+boolean local b=aj(am)if#b==0 then return false end local c=ak(b,false)if not c then return false end return al(c:
+FindFirstChild(b[#b]))~=nil end function af.listfiles(am:string):{string}local b,c:Instance=aj(am),ai for d,e in b do
 local f=c:FindFirstChild(e)if not f or not f:IsA'Folder'then error('Folder not found: '..am)end c=f end local d:{string}
 ={}for e,f in c:GetChildren()do table.insert(d,am..'/'..f.Name)end return d end function af.delfile(am:string)local b=
 aj(am)assert(#b>0,'Invalid path')local c=ak(b,false)assert(c,'File not found: '..am)local d=c:FindFirstChild(b[#b])local
@@ -2577,7 +2570,7 @@ m)if ae.isfile(o)then local p,q=pcall(getfenv().getcustomasset,o)if p and type(q
 then return''end local p=k[m]if p then if n then table.insert(p,n)end return''end if n then k[m]={n}task.spawn(function(
 )local q,r=j(m),k[m]k[m]=nil if not q then l[m]=true return end if r then for s,t in r do pcall(t,q)end end end)end
 return''end return ai end)()end,[54]=function()local aa,ab,ac=a(54)local ad return(function(...)local ae,af={},64 local
-ag,ah,ai=af-1,38,3 export type Mode='top'|'sidebar'export type Layout={mode:Mode,topbarHeight:number,chromeHeight:number
+ag,ah,ai=af+7,38,3 export type Mode='top'|'sidebar'export type Layout={mode:Mode,topbarHeight:number,chromeHeight:number
 ,pageDirection:Enum.FillDirection,fadeSize:UDim2,fadeTransparency:NumberSequence,fadeCorners:{string}?,tabStripTop:
 number?,tabStripHeight:number?,railWidth:number?,railCollapsedWidth:number?,railCollapseBelow:number?,rowHeight:number?,
 rowCornerRadius:number?,rowSpacing:number?,railPadding:number?,rowInset:number?,rowPadding:number?,rowContentSpacing:
@@ -2816,18 +2809,18 @@ min(c.X*am/e.defaultSize.X,c.Y*b/e.defaultSize.Y)return math.floor(math.clamp(f,
 fit(c:Vector2?,d:ae.Mode?):UDim2 local e=af.profile(d)if not c or c.X<ag or c.Y<ag then return UDim2.fromOffset(e.
 defaultSize.X,e.defaultSize.Y)end local f,g=math.min(c.X*e.maxOccupancyX,c.X-e.marginFloorX),ai(e,c.Y)if e.
 minAspectRatio then return al(e,f,g)end return ak(e,f,g)end return af end)()end},{{1,2,{'Rayfield'},{{32,1,{'themes'},{{
-38,2,{'rose'}},{36,2,{'ember'}},{33,2,{'amethyst'}},{35,2,{'default'}},{37,2,{'frost'}},{34,2,{'cobalt'}}}},{2,1,{
-'components'},{{19,2,{'search'}},{26,2,{'tabSelector'}},{18,2,{'progress'}},{11,2,{'drag'}},{3,2,{'action'}},{13,2,{
-'group'}},{31,2,{'window'}},{30,2,{'toggle'}},{29,2,{'toast'}},{20,2,{'section'}},{27,2,{'tag'}},{25,2,{'tabSection'}},{
-24,2,{'tab'}},{8,2,{'console'}},{10,2,{'divider'}},{16,2,{'notification'}},{15,2,{'keybind'}},{22,2,{'slider'}},{17,2,{
-'popup'}},{14,2,{'input'}},{21,2,{'sidebar'}},{28,2,{'text'}},{9,2,{'descriptor'}},{7,2,{'column'}},{5,2,{'chrome'}},{6,
-2,{'colorpicker'}},{23,2,{'stat'}},{4,2,{'button'}},{12,2,{'dropdown'}}}},{39,2,{'types'}},{40,1,{'utility'},{{50,2,{
-'fontManager'}},{53,2,{'imageCache'}},{49,2,{'flagNames'}},{71,2,{'variables'}},{44,2,{'columns'}},{70,2,{'textMetrics'}
-},{69,2,{'services'}},{45,2,{'constants'}},{68,2,{'runtime'}},{57,2,{'log'}},{58,2,{'moveable'}},{59,2,{'network'}},{63,
-2,{'persistence'}},{41,2,{'HapticEngine'}},{46,2,{'enums'}},{62,2,{'path'}},{65,2,{'persistencePaths'}},{61,2,{
-'ordering'}},{60,2,{'odometer'}},{55,2,{'locale'}},{52,2,{'image'}},{64,2,{'persistenceConfig'}},{67,2,{
-'persistenceWrite'}},{56,2,{'lockable'}},{72,2,{'windowSizing'}},{54,2,{'layouts'}},{48,2,{'filesystemManager'}},{47,2,{
-'filesystem'}},{51,2,{'functions'}},{43,2,{'colors'}},{42,2,{'assetResolver'}},{66,2,{'persistenceSettings'}}}}}}},
+37,2,{'frost'}},{34,2,{'cobalt'}},{38,2,{'rose'}},{36,2,{'ember'}},{33,2,{'amethyst'}},{35,2,{'default'}}}},{40,1,{
+'utility'},{{55,2,{'locale'}},{69,2,{'services'}},{59,2,{'network'}},{70,2,{'textMetrics'}},{61,2,{'ordering'}},{72,2,{
+'windowSizing'}},{53,2,{'imageCache'}},{58,2,{'moveable'}},{52,2,{'image'}},{67,2,{'persistenceWrite'}},{49,2,{
+'flagNames'}},{54,2,{'layouts'}},{66,2,{'persistenceSettings'}},{41,2,{'HapticEngine'}},{65,2,{'persistencePaths'}},{64,
+2,{'persistenceConfig'}},{63,2,{'persistence'}},{71,2,{'variables'}},{60,2,{'odometer'}},{43,2,{'colors'}},{42,2,{
+'assetResolver'}},{48,2,{'filesystemManager'}},{62,2,{'path'}},{50,2,{'fontManager'}},{47,2,{'filesystem'}},{68,2,{
+'runtime'}},{45,2,{'constants'}},{57,2,{'log'}},{44,2,{'columns'}},{56,2,{'lockable'}},{51,2,{'functions'}},{46,2,{
+'enums'}}}},{39,2,{'types'}},{2,1,{'components'},{{5,2,{'chrome'}},{26,2,{'tabSelector'}},{24,2,{'tab'}},{27,2,{'tag'}},
+{17,2,{'popup'}},{9,2,{'descriptor'}},{31,2,{'window'}},{30,2,{'toggle'}},{29,2,{'toast'}},{28,2,{'text'}},{12,2,{
+'dropdown'}},{25,2,{'tabSection'}},{15,2,{'keybind'}},{23,2,{'stat'}},{16,2,{'notification'}},{22,2,{'slider'}},{8,2,{
+'console'}},{13,2,{'group'}},{3,2,{'action'}},{10,2,{'divider'}},{18,2,{'progress'}},{7,2,{'column'}},{14,2,{'input'}},{
+6,2,{'colorpicker'}},{21,2,{'sidebar'}},{4,2,{'button'}},{11,2,{'drag'}},{20,2,{'section'}},{19,2,{'search'}}}}}}},
 '0.4.1','Rayfield',string,task,setmetatable,error,next,table,unpack,coroutine,script,type,require,pcall,xpcall,tostring,
 tonumber,_VERSION local j,k,l,m,n,o,p=aj.insert,aj.remove,aj.freeze or function(j)return j end,al.wrap,ae.sub,ae.match,
 ae.gmatch if h and n(h,1,4)=='Lune'then local q,r=d(c,'@lune/task')if q and r then af=r end end local q=af and af.defer

@@ -4,6 +4,8 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: the tab strip sits 8px lower, clear of the subtitle.
 
 -- Where a window puts its tab selector, and every measurement that follows from it.
 -- "top" is the horizontal pill strip under the topbar. "sidebar" is a vertical rail down the
@@ -15,8 +17,9 @@ local layouts = {}
 -- The same bar in both layouts: title and subtitle left, actions right.
 local topbarHeight = 64
 
--- The strip hangs a pixel into the topbar's base, and the content starts a small gap below it.
-local tabStripTop = topbarHeight - 1
+-- The strip sits a clear gap under the topbar so the title block and the tabs read as two
+-- separate rows, and the content starts a small gap below it.
+local tabStripTop = topbarHeight + 7
 local tabStripHeight = 38
 local tabStripGap = 3
 

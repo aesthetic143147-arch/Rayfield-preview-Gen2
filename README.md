@@ -149,6 +149,9 @@ settings page (cog icon).
   become about 44 points on screen, so they're easy to tap.
 - **Theme picker.** The settings page (the cog) has a Theme dropdown listing every built-in
   theme. The player's pick is remembered between sessions and wins over the script's theme.
+- **No loading banner.** The Rayfield logo that Gen2 flashes in the middle of the screen before
+  the window opens is gone; the window just opens.
+- The tab strip sits 8px lower, so the title and subtitle have room above the tabs.
 - In a column, sliders use Gen2's stacked layout (name and value on top, full-width track below),
   a long dropdown value is shortened with "…", and an input field never grows over its title.
 - Configs and settings are saved under `RayfieldColumns/`, separate from an official Rayfield

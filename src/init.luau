@@ -5,7 +5,7 @@
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
 --
--- Modified for Rayfield Columns: exports the Column type.
+-- Modified for Rayfield Columns: exports the Column type and drops the loading banner.
 
 local variables = require(script.utility.variables)
 local image = require(script.utility.image)
@@ -72,37 +72,7 @@ type WindowModule = { new: (types.WindowProps) -> types.Window }
 
 local rayfield = {} :: Rayfield
 
-local function createBanner()
-    local ui = Instance.new("ScreenGui")
-    ui.Name = variables.httpService:GenerateGUID(false)
-    ui.ClipToDeviceSafeArea = false
-    ui.DisplayOrder = constants.displayOrder.banner
-    ui.IgnoreGuiInset = true
-    ui.ResetOnSpawn = false
-    ui.Enabled = true
-    ui.SafeAreaCompatibility = Enum.SafeAreaCompatibility.None
-    ui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
-    ui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    ui.Parent = variables.guiContainer
-
-    local banner = Instance.new("ImageLabel")
-    banner.Name = "Banner"
-    banner.AnchorPoint = Vector2.new(0.5, 0.5)
-    banner.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    banner.BackgroundTransparency = 1
-    banner.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    banner.BorderSizePixel = 0
-    banner.Image = image.resolve(constants.icons.banner)
-    banner.Position = UDim2.fromScale(0.5, 0.5)
-    banner.Size = UDim2.fromOffset(262, 60)
-    banner.Parent = ui
-
-    return ui
-end
-
 function rayfield:CreateWindow(properties: types.WindowProps): types.Window
-    local banner = createBanner()
-
     local window: types.Window? -- forward declared so the settle callback below can reach it
     -- preload can settle before the window is built; hold the notify until it is
     local queuedNotify: (() -> ())?
@@ -134,17 +104,7 @@ function rayfield:CreateWindow(properties: types.WindowProps): types.Window
         end)
     end
 
-    -- the banner is only torn down once the window is up, so a throw in here (bad props) would
-    -- otherwise strand it in the gui container for the rest of the session
-    local made, result = pcall(function()
-        return (require(script.components.window) :: WindowModule).new(properties)
-    end)
-    if not made then
-        banner:Destroy()
-        error(result, 0)
-    end
-
-    local built = result :: types.Window
+    local built = (require(script.components.window) :: WindowModule).new(properties)
     window = built
 
     if queuedNotify then
@@ -171,11 +131,8 @@ function rayfield:CreateWindow(properties: types.WindowProps): types.Window
         end)
     end
 
+    -- a short beat so the script can build its tabs before the window opens (no loading banner)
     task.spawn(function()
-        task.wait(0.5)
-
-        banner:Destroy()
-
         task.wait(0.5)
         -- the window can be unloaded inside this delay; showing it then would fire
         -- saved-config callbacks and build toasts on destroyed instances
