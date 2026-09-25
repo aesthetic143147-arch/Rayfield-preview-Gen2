@@ -4,6 +4,8 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: the card is drawn at the window's scale.
 
 -- Popup: a modal that dims the screen and floats a card in the centre. Modular by design -
 -- give it a title and buttons for a choice dialog, or a list of boxes for a changelog. Built
@@ -184,6 +186,8 @@ function Popup:_build()
         Parent = self.screenGui,
     })
     self:_fade(self.card, "BackgroundTransparency", 0)
+    -- drawn at the window's scale, so a phone gets a card sized like the window it belongs to
+    window:_scaleSurface(self.card)
 
     window:Create("UIGradient", {
         Rotation = 270,

@@ -193,6 +193,27 @@ return function()
             expect(window.settings.haptics).to.equal(false)
         end)
 
+        it("saves and restores the theme picked on the settings page", function()
+            local window = makeWindow()
+            window.settings.theme = "Azure"
+            expect(persistenceSettings.saveSettings(window)).to.equal(true)
+            expect(encodedData.theme).to.equal("Azure")
+
+            local restored = makeWindow()
+            files["Root/Settings/rayfield.rfld"] = "settings-json"
+            decodedData = { theme = "Azure" }
+            expect(persistenceSettings.loadSettings(restored)).to.equal(true)
+            expect(restored.settings.theme).to.equal("Azure")
+        end)
+
+        it("drops a saved theme that isn't built in", function()
+            local window = makeWindow()
+            files["Root/Settings/rayfield.rfld"] = "settings-json"
+            decodedData = { theme = "Neon" }
+            expect(persistenceSettings.loadSettings(window)).to.equal(true)
+            expect(window.settings.theme).to.equal(nil)
+        end)
+
         it("ignores non-boolean persisted settings", function()
             local window = makeWindow()
             files["Root/Settings/rayfield.rfld"] = "settings-json"

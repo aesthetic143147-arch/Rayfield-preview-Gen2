@@ -263,6 +263,101 @@ return function()
             expect(page.ScrollBarImageColor3).to.equal(w.theme.ContentColor)
         end)
 
+        it("draws notifications, toasts and popups at the window's scale, and rescales them", function()
+            local w = wideWindow()
+            w.scale = 0.7
+            w.uiScale.Scale = 0.7
+
+            w:Notify({ title = "Saved", content = "Your settings were saved.", duration = 1 })
+            w:Toast({ title = "Heading to work", duration = 1 })
+            local popup = w:Popup({ title = "Reset everything?", content = "This can't be undone." })
+
+            local notifyScale = w.notifications:FindFirstChild("UIScale")
+            local toastScale = w._toastsTop:FindFirstChild("UIScale")
+            local cardScale = popup.card:FindFirstChild("UIScale")
+            expect(notifyScale.Scale).to.equal(0.7)
+            expect(toastScale.Scale).to.equal(0.7)
+            expect(cardScale.Scale).to.equal(0.7)
+
+            -- a rotation or resize rescales every one of them with the window
+            w.scale = 0.85
+            w:_rescaleSurfaces()
+            expect(notifyScale.Scale).to.equal(0.85)
+            expect(toastScale.Scale).to.equal(0.85)
+            expect(cardScale.Scale).to.equal(0.85)
+        end)
+
+        it("offers every built-in theme on the settings page, and remembers the pick", function()
+            local w = wideWindow()
+            local saved = 0
+            w.SaveSettings = function()
+                saved += 1
+                return true
+            end
+
+            local picker
+            for _, element in w.rfSettings.elements do
+                if element.__type == "Dropdown" and element.name == "Theme" then
+                    picker = element
+                end
+            end
+            expect(picker).never.to.equal(nil)
+            expect(table.find(picker.options, "Azure")).never.to.equal(nil)
+            expect(#picker.options).to.equal(7)
+            expect(picker.value[1]).to.equal("Default")
+
+            -- Lune can't require from inside the coroutine a callback runs in (Roblox can), so load
+            -- the theme module up front the way an earlier ChangeTheme would have
+            helpers.requireTheme("azure")
+            picker:Set("Azure")
+            expect(w.settings.theme).to.equal("Azure")
+            expect(w.theme.AccentColor).to.equal(Color3.fromRGB(30, 144, 255))
+            expect(saved > 0).to.equal(true)
+        end)
+
+        it("shows the script's own theme in the picker until the player picks one", function()
+            local w = makeWindow({
+                name = "Themed",
+                theme = "cobalt",
+                configuration = { autoSave = false, autoLoad = false },
+            })
+            for _, element in w.rfSettings.elements do
+                if element.__type == "Dropdown" and element.name == "Theme" then
+                    expect(element.value[1]).to.equal("Cobalt")
+                end
+            end
+        end)
+
+        it("gives the title-bar buttons finger-sized targets on a touch screen", function()
+            local uis = helpers.services.UserInputService
+            local before = uis.TouchEnabled
+            uis.TouchEnabled = true
+
+            local w = wideWindow()
+            w.scale = 0.7
+            for _, action in w.actions do
+                action:_fit()
+            end
+            uis.TouchEnabled = before
+
+            expect(#w.actions).to.equal(4) -- close, minimise, settings, search
+            for _, action in w.actions do
+                local drawn = action.action.Size.X.Offset * w.scale
+                expect(drawn >= 40).to.equal(true) -- about 44pt on screen, a comfortable tap
+                expect(action.action.Size.X.Offset <= 64).to.equal(true) -- no taller than the title bar
+            end
+            expect(w.actionsListLayout.Padding.Offset).to.equal(0)
+        end)
+
+        it("keeps the compact title-bar buttons with a mouse", function()
+            local w = wideWindow()
+            for _, action in w.actions do
+                expect(action.action.Size).to.equal(UDim2.fromOffset(24, 24))
+                expect(action.iconLabel.Size).to.equal(UDim2.fromOffset(20, 20))
+            end
+            expect(w.actionsListLayout.Padding.Offset).to.equal(5)
+        end)
+
         it("takes every element a tab takes", function()
             local tab = wideWindow():CreateTab({ name = "Everything" })
 

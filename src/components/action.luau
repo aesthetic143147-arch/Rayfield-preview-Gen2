@@ -4,6 +4,8 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: finger-sized buttons on touch screens.
 
 local Action = {}
 Action.__index = Action
@@ -17,6 +19,13 @@ local variables = require(utility.variables)
 local log = require(utility.log)
 local hapticEngine = require(utility.HapticEngine)
 
+-- How big a title-bar button is, in logical pixels. With a mouse it hugs its 20px icon. On a touch
+-- screen it becomes a finger-sized target: about 44 points on screen once the window's scale is
+-- applied (the size phone guidelines ask for), capped at the 64px title bar's height, and the
+-- icon grows a little so it reads at that size.
+local mouseFrame, mouseIcon = 24, 20
+local touchTarget, touchFrameMin, touchFrameMax, touchIcon = 44, 30, 64, 24
+
 function Action.new(window, properties)
     properties = if typeof(properties) == "table" then properties else {}
 
@@ -27,6 +36,8 @@ function Action.new(window, properties)
         callback = assert(properties.callback or properties.Callback, "Missing argument (Function expected)"),
         linkedTab = properties.linkedTab or properties.LinkedTab,
     }, Action)
+
+    table.insert(self.window.actions, self)
 
     self.action = self.window:Create("Frame", {
         Name = self.name,
@@ -119,7 +130,24 @@ function Action.new(window, properties)
 
     self.window:Connect(self.interact.MouseLeave, settleIcon)
 
+    self:_fit()
+
     return self
+end
+
+-- Size the button for how it's being pressed: a mouse keeps the compact look, a finger gets a
+-- target it can actually hit. Called again whenever the window rescales.
+function Action:_fit()
+    local touch = variables.userInputService.TouchEnabled == true
+    local frame, icon = mouseFrame, mouseIcon
+    if touch then
+        frame = math.clamp(math.ceil(touchTarget / (self.window.scale or 1)), touchFrameMin, touchFrameMax)
+        icon = touchIcon
+    end
+    self.action.Size = UDim2.fromOffset(frame, frame)
+    self.iconLabel.Size = UDim2.fromOffset(icon, icon)
+    -- the bigger targets already carry their own room, so they sit edge to edge
+    self.window.actionsListLayout.Padding = UDim.new(0, if touch then 0 else 5)
 end
 
 return Action

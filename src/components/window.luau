@@ -6,7 +6,8 @@
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
 --
 -- Modified for Rayfield Columns: pages are two columns, which the window re-lays out as the screen
--- changes and reveals top to bottom across both, and draws the window smaller on small screens.
+-- changes and reveals top to bottom across both, and draws the window (with its notifications,
+-- toasts and popups) smaller on small screens. The settings page has a theme picker.
 
 -- Utility
 local utility = script.Parent.Parent.utility
@@ -166,6 +167,20 @@ end
 -- Resolve a theme arg to its raw key set: a table is taken as-is (partial is fine), a known
 -- name is required, anything else falls back to default. Read-only - callers never mutate it,
 -- so the require()-cached module stays clean for other windows.
+-- The built-in name a theme arg picks, in the settings page's spelling, or nil for a table or an
+-- unknown name.
+local function builtInName(value)
+    if typeof(value) ~= "string" then
+        return nil
+    end
+    for _, name in constants.builtInThemes do
+        if string.lower(name) == string.lower(value) then
+            return name
+        end
+    end
+    return nil
+end
+
 local function themeOverrides(value)
     if typeof(value) == "table" then
         return value
@@ -260,12 +275,15 @@ function Window.new(properties)
         profileText = properties.profile or properties.Profile,
 
         themeProperties = {},
+        _scaledSurfaces = {},
+        actions = {}, -- the title-bar buttons, resized for touch as the window rescales
         localeProperties = {},
         tabs = {},
         tabSections = {},
         tags = {},
         selectedTab = nil,
         theme = resolveTheme(properties.theme or properties.Theme),
+        themeName = builtInName(properties.theme or properties.Theme) or "Default",
 
         controls = {},
 
@@ -320,6 +338,7 @@ function Window.new(properties)
         welcomeToast = true, -- the "signed in as" toast on first open for a new/changed account
         haptics = true, -- buzzes on presses and notifications; silent where the device has none
         showProfile = true, -- the player chip at the base of the sidebar rail
+        theme = nil, -- a built-in theme the player picked on the settings page; nil keeps the script's
     }
 
     -- Rayfield Gen2 Screen
@@ -719,6 +738,10 @@ function Window.new(properties)
 
     -- saved settings land after the rail was built against the defaults, so let it settle again
     self:LoadSettings()
+    -- the player's own pick from the settings page wins over the script's default look
+    if self.settings.theme then
+        self:ChangeTheme(self.settings.theme)
+    end
     if self.layout.mode == "sidebar" then
         sidebar.reflowProfile(self)
         sidebar.setSubtitle(self, self.profileText)
@@ -775,7 +798,14 @@ function Window:_syncLiveAnimation()
     end)
 end
 
+-- The built-in theme the window is wearing, for the settings picker. nil after a hand-written one.
+function Window:_builtInThemeName()
+    return self.themeName
+end
+
 function Window:ChangeTheme(theme)
+    -- remember which built-in this is, so the picker shows it; a table isn't one of them
+    self.themeName = builtInName(theme)
     -- A named theme fully switches: resolve against default so keys it omits reset rather than
     -- lingering from the previous theme. A partial table just overrides the keys it names.
     local overrides = if typeof(theme) == "table" then theme else resolveTheme(theme)
@@ -996,6 +1026,7 @@ function Window:Notify(properties)
 
             Parent = self.screenGui,
         })
+        self:_scaleSurface(self.notifications)
 
         self:Create("UIListLayout", {
             FillDirection = Enum.FillDirection.Vertical,
@@ -1053,6 +1084,7 @@ function Window:Toast(properties)
         })
 
         self[containerKey] = container
+        self:_scaleSurface(container)
 
         -- the pill may already hold the top slot, so let the one rule place it rather than
         -- restating it here. nothing's been on screen yet, so there's nothing to move
@@ -1368,6 +1400,10 @@ function Window:_applyWindowSize()
     self.size = size
     self.scale = scale
     self.uiScale.Scale = scale
+    self:_rescaleSurfaces()
+    for _, action in self.actions do
+        action:_fit()
+    end
 
     -- the rail is sized off main, so setting it now is right whether main resizes on the spot
     -- below or grows into the banked size on its next show
@@ -1667,6 +1703,21 @@ function Window:_buildSettingsUI()
     })
 
     self.rfSettings:CreateSection({ name = "Window" })
+
+    self.rfSettings:CreateDropdown({
+        name = "Theme",
+        description = "Changes the colours of this menu. Your choice is remembered next time.",
+        options = constants.builtInThemes,
+        value = self.settings.theme or self:_builtInThemeName() or constants.builtInThemes[1],
+        callback = function(name)
+            if typeof(name) ~= "string" or name == "" then
+                return
+            end
+            self.settings.theme = name
+            self:ChangeTheme(name)
+            self:SaveSettings()
+        end,
+    })
 
     -- only the sidebar layout has somewhere to put a profile, so only it offers the switch
     if self.layout.mode == "sidebar" and self.profile then
@@ -2820,6 +2871,31 @@ function Window:_collapsedRect()
     return home, size
 end
 
+-- Draw a surface that lives outside main (notifications, toasts, a popup card) at the window's
+-- scale too, so on a phone they shrink with the window instead of staying full size beside it.
+-- A UIScale keeps the surface's anchor point where it is, so a stack pinned to a corner or a card
+-- centred on screen stays put. Every one is kept in step when the screen rescales the window.
+function Window:_scaleSurface(surface)
+    local uiScale = self:Create("UIScale", {
+        Scale = self.scale,
+
+        Parent = surface,
+    })
+    table.insert(self._scaledSurfaces, uiScale)
+    return uiScale
+end
+
+function Window:_rescaleSurfaces()
+    for index = #self._scaledSurfaces, 1, -1 do
+        local uiScale = self._scaledSurfaces[index]
+        if uiScale.Parent then
+            uiScale.Scale = self.scale
+        else
+            table.remove(self._scaledSurfaces, index) -- its popup closed, or it was torn down
+        end
+    end
+end
+
 -- How far below main's centre the drag bar hangs, on screen, for a window this tall. main is
 -- drawn at self.scale and the bar isn't, so the height is scaled before it is halved.
 function Window:_hang(height: number): number
@@ -2992,6 +3068,7 @@ function Window:Unload()
     table.clear(self.localeProperties)
     table.clear(self.controls)
     table.clear(self.tabs)
+    table.clear(self._scaledSurfaces)
 end
 
 return Window

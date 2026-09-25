@@ -145,7 +145,12 @@ settings page (cog icon).
   Default, Amethyst, Cobalt, Ember, Frost and Rose.
 - **Automatic UI scaling.** On small screens such as phones, the whole window is drawn smaller
   (down to 70%) instead of squeezing full-size elements into a short strip, so more rows fit.
-  PCs and tablets stay at full size. Pass `scale = 0.8` (or any number) to fix it yourself.
+  PCs and tablets stay at full size. Notifications, toasts and popups scale with the window.
+  Pass `scale = 0.8` (or any number) to fix it yourself.
+- **Finger-sized buttons.** On touch screens the search, settings, minimise and close buttons
+  become about 44 points on screen, so they're easy to tap.
+- **Theme picker.** The settings page (the cog) has a Theme dropdown listing every built-in
+  theme. The player's pick is remembered between sessions and wins over the script's theme.
 - In a column, sliders use Gen2's stacked layout (name and value on top, full-width track below),
   a long dropdown value is shortened with "…", and an input field never grows over its title.
 - Configs and settings are saved under `RayfieldColumns/`, separate from an official Rayfield

@@ -4,12 +4,15 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: remembers the theme picked on the settings page.
 
 local variables = require(script.Parent.variables)
 local filesystem = require(script.Parent.filesystem)
 local paths = require(script.Parent.persistencePaths)
 local atomic = require(script.Parent.persistenceWrite)
 local enums = require(script.Parent.enums)
+local constants = require(script.Parent.constants)
 
 local persistenceSettings = {}
 
@@ -21,6 +24,7 @@ type SettingsWindow = {
         welcomeToast: boolean,
         haptics: boolean,
         showProfile: boolean,
+        theme: string?,
     },
 }
 
@@ -31,6 +35,7 @@ type DecodedSettings = {
     welcomeToast: unknown?,
     haptics: unknown?,
     showProfile: unknown?,
+    theme: unknown?,
 }
 
 function persistenceSettings.getSettingsPath(): (string, string)
@@ -50,6 +55,7 @@ function persistenceSettings.saveSettings(window: SettingsWindow): boolean
         welcomeToast = window.settings.welcomeToast,
         haptics = window.settings.haptics,
         showProfile = window.settings.showProfile,
+        theme = window.settings.theme,
     }
 
     local ok, encoded = pcall(variables.httpService.JSONEncode, variables.httpService, data)
@@ -140,6 +146,11 @@ function persistenceSettings.loadSettings(window: SettingsWindow): boolean
 
     if type(settings.showProfile) == "boolean" then
         window.settings.showProfile = settings.showProfile
+    end
+
+    -- only a theme that's still built in; a name from an older or newer version is dropped
+    if type(settings.theme) == "string" and table.find(constants.builtInThemes, settings.theme) then
+        window.settings.theme = settings.theme
     end
 
     return true

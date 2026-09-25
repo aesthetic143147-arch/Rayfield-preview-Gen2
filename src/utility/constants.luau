@@ -5,7 +5,7 @@
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
 --
--- Modified for Rayfield Columns: adds the page scrollbar's look.
+-- Modified for Rayfield Columns: adds the page scrollbar's look and the built-in theme list.
 
 -- Shared visual constants. Theme-varying colours/fonts live in themes/; these dont.
 
@@ -34,6 +34,10 @@ constants.icons = {
     config = 125823673784681, -- saved-configurations picker
     rayfield = 80387863064905, -- default show icon on the sign-in toast
 }
+
+-- Every built-in theme, in the order the settings page lists them. Each name matches a module in
+-- themes/ (lowercased), so ChangeTheme(name) resolves it.
+constants.builtInThemes = { "Default", "Amethyst", "Azure", "Cobalt", "Ember", "Frost", "Rose" }
 
 -- The slim bar down the right of a scrolling page, so it's clear there is more below. It sits in
 -- the page's own 10px side margin, clear of the elements, and only draws while the page scrolls.
