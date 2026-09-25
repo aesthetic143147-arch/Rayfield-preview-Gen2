@@ -112,7 +112,7 @@
   .brand-mark { width: 26px; height: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 5px; border-radius: 8px; background: var(--text); flex: none; }
   .brand-mark span { border-radius: 2px; background: var(--bg); }
   .brand-mark span:first-child { background: var(--accent); }
-  .brand-name { font-weight: 600; font-size: 15px; letter-spacing: -.01em; }
+  .brand-name { font-weight: 600; font-size: 15px; letter-spacing: -.01em; white-space: nowrap; }
   .brand-version { margin-left: auto; font-size: 12px; color: var(--text-3); }
 
   .search-wrap { position: relative; margin: 20px 0 8px; }
@@ -1121,7 +1121,15 @@ Window:SetLocale("fr")</code></pre>
   segD.addEventListener("click", () => setWidth(false));
   segP.addEventListener("click", () => setWidth(true));
   placeThumb(segD);
-  document.fonts?.ready.then(() => { placeThumb(rf.classList.contains("phone") ? segP : segD); movePill(active); });
+  // late fonts shift the layout, so land a deep link again once they're in
+  const settle = () => {
+    placeThumb(rf.classList.contains("phone") ? segP : segD);
+    const target = location.hash && document.getElementById(location.hash.slice(1));
+    if (target) target.scrollIntoView({ block: "start", behavior: "instant" });
+    spy();
+    movePill(active);
+  };
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(settle);
 })();
 </script>
 </body>
