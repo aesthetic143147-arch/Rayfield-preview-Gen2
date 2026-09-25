@@ -20,11 +20,13 @@ local log = require(utility.log)
 local hapticEngine = require(utility.HapticEngine)
 
 -- How big a title-bar button is, in logical pixels. With a mouse it hugs its 20px icon. On a touch
--- screen it becomes a finger-sized target: about 44 points on screen once the window's scale is
--- applied (the size phone guidelines ask for), capped at the 64px title bar's height, and the
--- icon grows a little so it reads at that size.
+-- screen it becomes a finger-sized target: about 44 points tall on screen once the window's scale
+-- is applied (the size phone guidelines ask for), capped at the 64px title bar's height. It stays
+-- narrow, so the icons keep the same tight spacing they have with a mouse, and the tap area
+-- reaches a little past each side instead (neighbours split the overlap between them).
 local mouseFrame, mouseIcon = 24, 20
-local touchTarget, touchFrameMin, touchFrameMax, touchIcon = 44, 30, 64, 24
+local touchTarget, touchHeightMin, touchHeightMax = 44, 30, 64
+local touchWidth, touchReach, touchIcon = 30, 12, 22
 
 function Action.new(window, properties)
     properties = if typeof(properties) == "table" then properties else {}
@@ -139,15 +141,17 @@ end
 -- target it can actually hit. Called again whenever the window rescales.
 function Action:_fit()
     local touch = variables.userInputService.TouchEnabled == true
-    local frame, icon = mouseFrame, mouseIcon
     if touch then
-        frame = math.clamp(math.ceil(touchTarget / (self.window.scale or 1)), touchFrameMin, touchFrameMax)
-        icon = touchIcon
+        local height = math.clamp(math.ceil(touchTarget / (self.window.scale or 1)), touchHeightMin, touchHeightMax)
+        self.action.Size = UDim2.fromOffset(touchWidth, height)
+        self.iconLabel.Size = UDim2.fromOffset(touchIcon, touchIcon)
+        self.interact.Size = UDim2.new(1, touchReach, 1, 0)
+    else
+        self.action.Size = UDim2.fromOffset(mouseFrame, mouseFrame)
+        self.iconLabel.Size = UDim2.fromOffset(mouseIcon, mouseIcon)
+        self.interact.Size = UDim2.fromScale(1, 1)
     end
-    self.action.Size = UDim2.fromOffset(frame, frame)
-    self.iconLabel.Size = UDim2.fromOffset(icon, icon)
-    -- the bigger targets already carry their own room, so they sit edge to edge
-    self.window.actionsListLayout.Padding = UDim.new(0, if touch then 0 else 5)
+    self.window.actionsListLayout.Padding = UDim.new(0, if touch then 4 else 5)
 end
 
 return Action

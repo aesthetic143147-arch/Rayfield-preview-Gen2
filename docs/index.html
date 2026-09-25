@@ -913,12 +913,11 @@ print(Window:ListConfigs())</code></pre>
 
   <section id="theming">
     <h2><a class="anchor" href="#theming">Theming<span class="hash">#</span></a></h2>
-    <p>Rayfield Columns ships seven themes: the six from Rayfield Gen2 plus Azure. Default is used unless you pick another one. The chips above the preview show each of them.</p>
+    <p>Rayfield Columns ships the same six themes as Rayfield Gen2. Default is used unless you pick another one. The chips above the preview show each of them.</p>
     <div class="table-wrap"><table>
       <tr><th>Theme</th><th>Look</th></tr>
       <tr><td><code>"Default"</code></td><td>Graphite with a green accent.</td></tr>
       <tr><td><code>"Amethyst"</code></td><td>Deep violet with a purple accent.</td></tr>
-      <tr><td><code>"Azure"</code></td><td>Deep midnight blue with a bright azure accent.</td></tr>
       <tr><td><code>"Cobalt"</code></td><td>Navy with a blue accent.</td></tr>
       <tr><td><code>"Ember"</code></td><td>Warm charcoal with an orange accent.</td></tr>
       <tr><td><code>"Frost"</code></td><td>Light, with a cyan accent.</td></tr>
@@ -1144,7 +1143,7 @@ Window:SetLocale("fr")</code></pre>
 
 
   // theme chips: the preview wears each built-in theme
-  const PALETTES = {"Default": ["#0a0a0a", "#191919", "#1e1e1e", "#232323", "#232323", "#ffffff", "#17996e", "#20c990", "#2f2f2f", "#00aa7f", "#008662", "#323232", "#232323", "#5f5f5f", "#ffffff", "rgba(255,255,255,.2)"], "Amethyst": ["#161020", "#1e162e", "#201830", "#241c36", "#362a4a", "#ffffff", "#a86ef6", "#c89aff", "#2e2444", "#aa70f8", "#8a50e0", "#362a50", "#221a34", "#584680", "#ffffff", "rgba(224,214,236,.25)"], "Azure": ["#070d1a", "#0b1528", "#0d192f", "#111f38", "#1c2e4c", "#ffffff", "#1e90ff", "#74c4ff", "#182a46", "#38a2ff", "#1680ec", "#1c345a", "#101f39", "#3a64a0", "#ffffff", "rgba(198,220,246,.25)"], "Cobalt": ["#0c1022", "#141a32", "#1a203a", "#1e2642", "#2c3452", "#ffffff", "#3078f0", "#60a4ff", "#28304e", "#4084f8", "#2a68e0", "#303a5c", "#1e2640", "#4e5c8c", "#ffffff", "rgba(196,206,232,.25)"], "Ember": ["#161210", "#201b17", "#201b17", "#26201b", "#362e28", "#ffffff", "#f08e28", "#ffb65c", "#302822", "#f4982c", "#dc6e18", "#382f28", "#241e1a", "#5c4e42", "#ffffff", "rgba(232,224,214,.25)"], "Frost": ["#f6f9fb", "#ecf1f5", "#ffffff", "#ffffff", "#dae0e4", "#2a2e34", "#00b0d0", "#60d2e8", "#e0e6ea", "#00b6d6", "#0092b6", "#00b0d0", "#0096b8", "#50cee6", "#262a2e", "rgba(255,255,255,.95)"], "Rose": ["#1a1216", "#241a1f", "#22191d", "#281e22", "#3a2c32", "#ffffff", "#f0528a", "#ff86b2", "#32262c", "#f4588c", "#dc3c74", "#3e2e35", "#261d21", "#664e58", "#ffffff", "rgba(236,220,226,.25)"]};
+  const PALETTES = {"Default": ["#0a0a0a", "#191919", "#1e1e1e", "#232323", "#232323", "#ffffff", "#17996e", "#20c990", "#2f2f2f", "#00aa7f", "#008662", "#323232", "#232323", "#5f5f5f", "#ffffff", "rgba(255,255,255,.2)"], "Amethyst": ["#161020", "#1e162e", "#201830", "#241c36", "#362a4a", "#ffffff", "#a86ef6", "#c89aff", "#2e2444", "#aa70f8", "#8a50e0", "#362a50", "#221a34", "#584680", "#ffffff", "rgba(224,214,236,.25)"], "Cobalt": ["#0c1022", "#141a32", "#1a203a", "#1e2642", "#2c3452", "#ffffff", "#3078f0", "#60a4ff", "#28304e", "#4084f8", "#2a68e0", "#303a5c", "#1e2640", "#4e5c8c", "#ffffff", "rgba(196,206,232,.25)"], "Ember": ["#161210", "#201b17", "#201b17", "#26201b", "#362e28", "#ffffff", "#f08e28", "#ffb65c", "#302822", "#f4982c", "#dc6e18", "#382f28", "#241e1a", "#5c4e42", "#ffffff", "rgba(232,224,214,.25)"], "Frost": ["#f6f9fb", "#ecf1f5", "#ffffff", "#ffffff", "#dae0e4", "#2a2e34", "#00b0d0", "#60d2e8", "#e0e6ea", "#00b6d6", "#0092b6", "#00b0d0", "#0096b8", "#50cee6", "#262a2e", "rgba(255,255,255,.95)"], "Rose": ["#1a1216", "#241a1f", "#22191d", "#281e22", "#3a2c32", "#ffffff", "#f0528a", "#ff86b2", "#32262c", "#f4588c", "#dc3c74", "#3e2e35", "#261d21", "#664e58", "#ffffff", "rgba(236,220,226,.25)"]};
   const KEYS = ["w0", "w1", "e0", "e1", "st", "tx", "ac", "ed", "tr", "sp0", "sp1", "tb0", "tb1", "tbs", "tbt", "kn"];
   const themesEl = document.getElementById("themes");
   const chips = Object.keys(PALETTES).map((name) => {

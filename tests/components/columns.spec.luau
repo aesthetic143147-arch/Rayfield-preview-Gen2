@@ -302,16 +302,16 @@ return function()
                 end
             end
             expect(picker).never.to.equal(nil)
-            expect(table.find(picker.options, "Azure")).never.to.equal(nil)
-            expect(#picker.options).to.equal(7)
+            expect(table.find(picker.options, "Cobalt")).never.to.equal(nil)
+            expect(#picker.options).to.equal(6)
             expect(picker.value[1]).to.equal("Default")
 
             -- Lune can't require from inside the coroutine a callback runs in (Roblox can), so load
             -- the theme module up front the way an earlier ChangeTheme would have
-            helpers.requireTheme("azure")
-            picker:Set("Azure")
-            expect(w.settings.theme).to.equal("Azure")
-            expect(w.theme.AccentColor).to.equal(Color3.fromRGB(30, 144, 255))
+            helpers.requireTheme("rose")
+            picker:Set("Rose")
+            expect(w.settings.theme).to.equal("Rose")
+            expect(w.theme.AccentColor).to.equal(Color3.fromRGB(240, 82, 138))
             expect(saved > 0).to.equal(true)
         end)
 
@@ -342,11 +342,14 @@ return function()
 
             expect(#w.actions).to.equal(4) -- close, minimise, settings, search
             for _, action in w.actions do
-                local drawn = action.action.Size.X.Offset * w.scale
-                expect(drawn >= 40).to.equal(true) -- about 44pt on screen, a comfortable tap
-                expect(action.action.Size.X.Offset <= 64).to.equal(true) -- no taller than the title bar
+                local tall = action.action.Size.Y.Offset
+                expect(tall * w.scale >= 40).to.equal(true) -- about 44pt tall on screen, a comfortable tap
+                expect(tall <= 64).to.equal(true) -- no taller than the title bar
+                -- narrow, so the icons keep tight spacing; the tap area reaches past each side
+                expect(action.action.Size.X.Offset <= 32).to.equal(true)
+                expect(action.interact.Size.X.Offset > 0).to.equal(true)
             end
-            expect(w.actionsListLayout.Padding.Offset).to.equal(0)
+            expect(w.actionsListLayout.Padding.Offset <= 5).to.equal(true)
         end)
 
         it("keeps the compact title-bar buttons with a mouse", function()

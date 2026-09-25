@@ -125,7 +125,7 @@ Everything there applies here, and this README covers only what's different.
 | `sidebarLayout` | `true` puts the tabs in a rail on the left instead of across the top |
 | `scale` | Draw the window at a fixed scale (`1` is full size). Leave it out and the window scales itself to the screen |
 | `configuration` | `{ autoSave, autoLoad, fileName, customFolder }` for saving settings between sessions |
-| `theme` | A built-in theme (`"Default"`, `"Amethyst"`, `"Azure"`, `"Cobalt"`, `"Ember"`, `"Frost"`, `"Rose"`) or a table of theme keys to override. Default when left out |
+| `theme` | A built-in theme (`"Default"`, `"Amethyst"`, `"Cobalt"`, `"Ember"`, `"Frost"`, `"Rose"`) or a table of theme keys to override. Default when left out |
 | `showName`, `showIcon`, `showIconOnly` | What the collapsed pill shows while the window is hidden |
 | `locale`, `translations`, `translator` | Localisation, as in Gen2 |
 
@@ -141,8 +141,6 @@ settings page (cog icon).
   work as before.
 - The window is landscape by default (760×520 with top tabs, 900×540 with the sidebar), so each
   column gets a full-size element.
-- **An extra built-in theme, Azure**: deep midnight blue with a bright azure accent, alongside Gen2's
-  Default, Amethyst, Cobalt, Ember, Frost and Rose.
 - **Automatic UI scaling.** On small screens such as phones, the whole window is drawn smaller
   (down to 70%) instead of squeezing full-size elements into a short strip, so more rows fit.
   PCs and tablets stay at full size. Notifications, toasts and popups scale with the window.

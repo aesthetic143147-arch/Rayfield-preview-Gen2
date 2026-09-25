@@ -37,7 +37,7 @@ constants.icons = {
 
 -- Every built-in theme, in the order the settings page lists them. Each name matches a module in
 -- themes/ (lowercased), so ChangeTheme(name) resolves it.
-constants.builtInThemes = { "Default", "Amethyst", "Azure", "Cobalt", "Ember", "Frost", "Rose" }
+constants.builtInThemes = { "Default", "Amethyst", "Cobalt", "Ember", "Frost", "Rose" }
 
 -- The slim bar down the right of a scrolling page, so it's clear there is more below. It sits in
 -- the page's own 10px side margin, clear of the elements, and only draws while the page scrolls.

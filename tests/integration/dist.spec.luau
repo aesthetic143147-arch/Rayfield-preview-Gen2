@@ -57,7 +57,6 @@ return function()
 
             local accents = {
                 Amethyst = Color3.fromRGB(168, 110, 246),
-                Azure = Color3.fromRGB(30, 144, 255),
                 Cobalt = Color3.fromRGB(48, 120, 240),
                 Ember = Color3.fromRGB(240, 142, 40),
                 Frost = Color3.fromRGB(0, 176, 208),

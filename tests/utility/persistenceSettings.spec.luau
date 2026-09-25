@@ -195,15 +195,15 @@ return function()
 
         it("saves and restores the theme picked on the settings page", function()
             local window = makeWindow()
-            window.settings.theme = "Azure"
+            window.settings.theme = "Rose"
             expect(persistenceSettings.saveSettings(window)).to.equal(true)
-            expect(encodedData.theme).to.equal("Azure")
+            expect(encodedData.theme).to.equal("Rose")
 
             local restored = makeWindow()
             files["Root/Settings/rayfield.rfld"] = "settings-json"
-            decodedData = { theme = "Azure" }
+            decodedData = { theme = "Rose" }
             expect(persistenceSettings.loadSettings(restored)).to.equal(true)
-            expect(restored.settings.theme).to.equal("Azure")
+            expect(restored.settings.theme).to.equal("Rose")
         end)
 
         it("drops a saved theme that isn't built in", function()
