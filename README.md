@@ -9,13 +9,13 @@ API as Gen2, but every tab page is split into a **left and a right column** you 
 > [Credits](#credits).
 
 ```lua
-local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/aesthetic143147-arch/rayfield-columns/main/dist/RayfieldColumns.luau"))()
+local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/aesthetic143147-arch/Rayfiend-preview-Gen2/main/dist/RayfieldColumns.luau"))()
 ```
 
 ## Quick start
 
 ```lua
-local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/aesthetic143147-arch/rayfield-columns/main/dist/RayfieldColumns.luau"))()
+local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/aesthetic143147-arch/Rayfiend-preview-Gen2/main/dist/RayfieldColumns.luau"))()
 
 local Window = Rayfield:CreateWindow({
     name = "Pulse",
@@ -189,7 +189,7 @@ exactly what this edition changes.
   of this library, including the design, animations, elements and config system, is their work.
 - **Rayfield Columns** (the two-column layout and the other changes listed above) is a fan-made
   edition maintained at
-  [aesthetic143147-arch/rayfield-columns](https://github.com/aesthetic143147-arch/rayfield-columns).
+  [aesthetic143147-arch/Rayfiend-preview-Gen2](https://github.com/aesthetic143147-arch/Rayfiend-preview-Gen2).
 - The bundle is built with [Wax](https://github.com/latte-soft/wax) (MIT, Latte Softworks) and
   minified with [Darklua](https://github.com/seaofvoices/darklua).
 

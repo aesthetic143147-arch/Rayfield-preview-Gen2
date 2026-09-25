@@ -15,7 +15,7 @@ local process = require("@lune/process")
 local input = process.args[1] or "build/bundled.luau"
 local output = process.args[2] or "dist/RayfieldColumns.luau"
 
-local repository = "aesthetic143147-arch/rayfield-columns"
+local repository = "aesthetic143147-arch/Rayfiend-preview-Gen2"
 local upstreamVersion = "1.2.0"
 
 local function trim(text: string): string
