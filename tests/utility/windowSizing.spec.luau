@@ -26,15 +26,18 @@ return function()
             end
         end)
 
-        it("only widens once height is actually constrained", function()
-            -- tall enough for the full height, so width stays exactly default
+        it("ships landscape, with room for two columns side by side", function()
+            expect(top.defaultSize.X > top.defaultSize.Y).to.equal(true)
+
+            -- a roomy screen keeps the ideal width exactly
             local wideWidth = fit(2560, 1440)
             expect(wideWidth).to.equal(top.defaultSize.X)
 
-            -- a short screen gives height up, and earns width back for it
+            -- a short screen gives height up without buying width it doesnt need back for it
             local phoneWidth, phoneHeight = fit(844, 390)
             expect(phoneHeight < top.defaultSize.Y).to.equal(true)
-            expect(phoneWidth > top.defaultSize.X).to.equal(true)
+            expect(phoneWidth <= top.defaultSize.X).to.equal(true)
+            expect(phoneWidth > phoneHeight).to.equal(true)
         end)
 
         it("leaves exactly the topbar's room above, and gives the rest to the window", function()
@@ -131,10 +134,11 @@ return function()
     end
 
     describe("utility.windowSizing sidebar", function()
-        it("ships a landscape window where the top layout ships a portrait one", function()
+        it("ships wider than the top window, to leave the card room for two columns", function()
             expect(sidebar.defaultSize.X > sidebar.defaultSize.Y).to.equal(true)
-            expect(top.defaultSize.Y > top.defaultSize.X).to.equal(true)
             expect(sidebar.defaultSize.X > top.defaultSize.X).to.equal(true)
+            -- the rail's full width still leaves the card at least the top window's page
+            expect(sidebar.defaultSize.X - 219 >= top.defaultSize.X - 100).to.equal(true)
         end)
 
         it("leaves roomy screens on the default size", function()

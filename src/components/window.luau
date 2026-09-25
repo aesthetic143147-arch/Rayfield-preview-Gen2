@@ -4,6 +4,9 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: pages are two columns, which the window re-lays out as the screen
+-- changes and reveals top to bottom across both; the default theme is the only built-in one.
 
 -- Utility
 local utility = script.Parent.Parent.utility
@@ -157,7 +160,8 @@ end
 
 -- Resolve a theme arg to its raw key set: a table is taken as-is (partial is fine), a known
 -- name is required, anything else falls back to default. Read-only - callers never mutate it,
--- so the require()-cached module stays clean for other windows.
+-- so the require()-cached module stays clean for other windows. Rayfield Columns ships the
+-- default theme as its only built-in one, so "Default" is the one name there is to ask for.
 local function themeOverrides(value)
     if typeof(value) == "table" then
         return value
@@ -167,9 +171,9 @@ local function themeOverrides(value)
             return require(named)
         end
         -- a typo'd name shouldnt crash the menu; warn and fall back so the UI still builds
-        log.warn("Rayfield: unknown theme '" .. value .. "', using default")
+        log.warn("Rayfield: unknown theme '" .. value .. "', using default (the only built-in theme)")
     elseif value ~= nil then
-        log.warn("Rayfield: invalid theme (expected a built-in name or a theme table), using default")
+        log.warn('Rayfield: invalid theme (expected "Default" or a theme table), using default')
     end
     return require(themes["default"])
 end
@@ -940,8 +944,9 @@ function Window:_unregisterControl(control)
 end
 
 -- find a keybind element currently bound to `key`, skipping `exclude` and unbound keys. lets
--- the menu-toggle keybind refuse a key an element keybind already owns. keybinds only live at
--- tab level (groups dont hold them), so a scan over each tab's elements catches them all.
+-- the menu-toggle keybind refuse a key an element keybind already owns. keybinds live in a tab's
+-- columns (groups dont hold them), and every column files its elements on the tab too, so a scan
+-- over each tab's elements catches them all.
 function Window:_keybindUsing(key, exclude)
     if typeof(key) ~= "EnumItem" or key == Enum.KeyCode.Unknown then
         return nil
@@ -1345,6 +1350,11 @@ function Window:_applyWindowSize()
     -- below or grows into the banked size on its next show
     self:_applyRailWidth()
 
+    -- columns go off the settled size too, so a page that has to stack does it before it's seen
+    if changed then
+        self:_layoutColumns()
+    end
+
     -- a window mid-animation is already tweening toward the old size, so bank the change and
     -- let the reconcile apply it once the tween is done rather than fighting it
     if self.hidden or self.minimised or self.animating or self._revealing then
@@ -1360,6 +1370,13 @@ function Window:_applyWindowSize()
     self.main.Size = size
     self:_clampToScreen()
     self:_syncDragBar()
+end
+
+-- Put every tab's columns side by side or stacked, for the size the window has settled on.
+function Window:_layoutColumns()
+    for _, tab in self.tabs do
+        tab:_layoutColumns()
+    end
 end
 
 -- The rail keeps its labels while there's width to spare and drops to icons when there isn't,
@@ -1968,9 +1985,28 @@ function Window:_revealElements(perElementDelay, budget)
     local viewTop = page.AbsolutePosition.Y
     local viewBottom = viewTop + page.AbsoluteWindowSize.Y
 
+    -- the page is two columns, so creation order would sweep down one and then jump back up for
+    -- the other. Go by where each element actually sits instead: top to bottom, and left before
+    -- right on the same line, so the reveal runs down both columns together.
+    local ordered = table.clone(tab.elements)
+    local indexOf = {}
+    for index, element in ordered do
+        indexOf[element] = index
+    end
+    table.sort(ordered, function(a, b)
+        local aAt, bAt = a.main.AbsolutePosition, b.main.AbsolutePosition
+        if aAt.Y ~= bAt.Y then
+            return aAt.Y < bAt.Y
+        end
+        if aAt.X ~= bAt.X then
+            return aAt.X < bAt.X
+        end
+        return indexOf[a] < indexOf[b]
+    end)
+
     local maxStaggered = math.floor(budget / perElementDelay)
     local staggered = 0
-    for _, element in ipairs(tab.elements) do
+    for _, element in ordered do
         local top = element.main.AbsolutePosition.Y
         local onScreen = (top + element.main.AbsoluteSize.Y) > viewTop and top < viewBottom
         if onScreen then

@@ -4,6 +4,9 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: a tab's page is two columns (tab.Left, tab.Right), and the
+-- tab's own CreateX calls land in one of them.
 
 local Tab = {}
 Tab.__index = Tab
@@ -14,10 +17,12 @@ local utility = script.Parent.Parent.utility
 
 -- Variables
 local variables = require(utility.variables)
-local assignOrder = require(utility.ordering)
 local hapticEngine = require(utility.HapticEngine)
+local log = require(utility.log)
+local columns = require(utility.columns)
 local search = require(script.Parent.search)
 local tabSelector = require(script.Parent.tabSelector)
+local Column = require(script.Parent.column)
 
 -- Walk a tab or group's children (groups nest) and tear each element down: drop its flag from
 -- the window registry and disconnect every connection it owns, so nothing outlives the
@@ -116,6 +121,37 @@ function Tab.new(window, properties)
 
         Parent = self.tabPage,
     })
+
+    -- The page is one row holding the two columns. Each column sizes to what it holds and the
+    -- row to the taller of them, so the page scrolls both columns together.
+    self.columnsRow = self.window:Create("Frame", {
+        Name = "Columns",
+        BackgroundTransparency = 1,
+        BorderSizePixel = 0,
+        AutomaticSize = Enum.AutomaticSize.Y,
+        Size = UDim2.fromScale(1, 0),
+
+        Parent = self.tabPage,
+    })
+
+    self.columnsLayout = self.window:Create("UIListLayout", {
+        FillDirection = Enum.FillDirection.Horizontal,
+        -- top, not centre: a column growing (a dropdown opening) pushes down its own column
+        -- and leaves the other where it is
+        VerticalAlignment = Enum.VerticalAlignment.Top,
+        HorizontalAlignment = Enum.HorizontalAlignment.Left,
+        SortOrder = Enum.SortOrder.LayoutOrder,
+
+        Parent = self.columnsRow,
+    })
+
+    self.Left = Column.new(self, "Left")
+    self.Right = Column.new(self, "Right")
+    -- camelCase reads the same, the way every other Rayfield key does
+    self.left = self.Left
+    self.right = self.Right
+
+    self:_layoutColumns()
 
     if not self.neglectSelector then
         table.insert(
@@ -224,106 +260,122 @@ function Tab:Deselect(noAnimation)
     end
 end
 
--- shared tail for every CreateX: track it, order it, and reveal it if the window is
--- already open. without this, elements added after Window:Show stay fully transparent.
-function Tab:_register(element)
-    table.insert(self.elements, element)
-    assignOrder(element, #self.elements * 10)
-    self.window:_restoreLate(element)
+-- One of the tab's two columns, by side ("Left" / "Right", any case) or index (1 / 2). Nothing
+-- means the left one. A side that isn't either warns and falls back to the left, so a typo still
+-- builds the element rather than taking the whole script down with it.
+function Tab:GetColumn(side)
+    local resolved = columns.resolveSide(side)
+    if not resolved then
+        log.warn(`Rayfield: unknown column '{tostring(side)}', using the left one. Use "Left" or "Right".`)
+        resolved = "Left"
+    end
+    return if resolved == "Right" then self.Right else self.Left
+end
 
-    if not self.window.hidden then
-        element:_setShown(true, true)
+-- The column a tab-level CreateX lands in: props.side, or the left column when it isn't given.
+function Tab:_columnFor(properties)
+    if typeof(properties) ~= "table" then
+        return self.Left
+    end
+    return self:GetColumn(properties.side or properties.Side or properties.column or properties.Column)
+end
+
+-- Lay the two columns out for the page width the window has settled on: side by side with a 10px
+-- gutter where there's room, stacked where there isn't. A column holding nothing takes no room,
+-- so a tab that only fills one column reads like an ordinary single-column page.
+function Tab:_layoutColumns()
+    local left, right = self.Left, self.Right
+    if not left or not right or not self.columnsRow then
+        return
     end
 
-    return element
+    local window = self.window
+    local pageWidth = if window.size then columns.pageWidth(window.size.X.Offset, window.layout) else 0
+    local stacked = columns.shouldStack(pageWidth)
+    local leftUsed, rightUsed = #left.elements > 0, #right.elements > 0
+
+    left.main.Visible = leftUsed
+    right.main.Visible = rightUsed
+    self.stacked = stacked
+
+    if stacked or not (leftUsed and rightUsed) then
+        self.columnsLayout.FillDirection = Enum.FillDirection.Vertical
+        -- stacked, the right column reads as the next block down the page: the page's own
+        -- element gap plus the room a section leaves above itself
+        self.columnsLayout.Padding = UDim.new(0, if leftUsed and rightUsed then 20 else 0)
+        left.main.Size = UDim2.fromScale(1, 0)
+        right.main.Size = UDim2.fromScale(1, 0)
+    else
+        -- each column is half the row plus half the overlap, and the layout pulls the second
+        -- back by the full overlap, so the two still span exactly the row
+        self.columnsLayout.FillDirection = Enum.FillDirection.Horizontal
+        self.columnsLayout.Padding = UDim.new(0, -columns.overlap)
+        left.main.Size = UDim2.new(0.5, columns.overlap / 2, 0, 0)
+        right.main.Size = UDim2.new(0.5, columns.overlap / 2, 0, 0)
+    end
 end
 
--- Button
+-- Every element a column takes, the tab takes too, and hands to props.side (left by default).
 function Tab:CreateButton(properties)
-    return self:_register(require(script.Parent.button).new(self, properties))
+    return self:_columnFor(properties):CreateButton(properties)
 end
 
--- Switch/Toggle
 function Tab:CreateToggle(properties)
-    return self:_register(require(script.Parent.toggle).new(self, properties))
+    return self:_columnFor(properties):CreateToggle(properties)
 end
 
 function Tab:CreateSwitch(properties)
     return self:CreateToggle(properties)
 end
 
--- Section
 function Tab:CreateSection(properties)
-    return self:_register(require(script.Parent.section).new(self, properties))
+    return self:_columnFor(properties):CreateSection(properties)
 end
 
--- Text (a title, a body, or both)
 function Tab:CreateText(properties)
-    return self:_register(require(script.Parent.text).new(self, properties))
+    return self:_columnFor(properties):CreateText(properties)
 end
 
--- Divider
 function Tab:CreateDivider(properties)
-    return self:_register(require(script.Parent.divider).new(self, properties))
+    return self:_columnFor(properties):CreateDivider(properties)
 end
 
--- Stat
--- Progress bar
 function Tab:CreateProgress(properties)
-    return self:_register(require(script.Parent.progress).new(self, properties))
+    return self:_columnFor(properties):CreateProgress(properties)
 end
 
--- Console / code block
 function Tab:CreateConsole(properties)
-    return self:_register(require(script.Parent.console).new(self, properties))
+    return self:_columnFor(properties):CreateConsole(properties)
 end
 
 function Tab:CreateStat(properties)
-    return self:_register(require(script.Parent.stat).new(self, properties))
+    return self:_columnFor(properties):CreateStat(properties)
 end
 
--- Slider
 function Tab:CreateSlider(properties)
-    return self:_register(require(script.Parent.slider).new(self, properties))
+    return self:_columnFor(properties):CreateSlider(properties)
 end
 
--- Dropdown
 function Tab:CreateDropdown(properties)
-    return self:_register(require(script.Parent.dropdown).new(self, properties))
+    return self:_columnFor(properties):CreateDropdown(properties)
 end
 
--- Input
 function Tab:CreateInput(properties)
-    return self:_register(require(script.Parent.input).new(self, properties))
+    return self:_columnFor(properties):CreateInput(properties)
 end
 
--- Keybind
 function Tab:CreateKeybind(properties)
-    return self:_register(require(script.Parent.keybind).new(self, properties))
+    return self:_columnFor(properties):CreateKeybind(properties)
 end
 
--- Color picker
 function Tab:CreateColorPicker(properties)
-    return self:_register(require(script.Parent.colorpicker).new(self, properties))
+    return self:_columnFor(properties):CreateColorPicker(properties)
 end
 
 -- Group (layout container). A row that wraps by default; pass direction="column" for a
 -- column. Nest a row of columns for a grid. Add elements via group:CreateX.
 function Tab:CreateGroup(properties)
-    return self:_register(require(script.Parent.group).new(self, properties))
-end
-
-function Tab:_moveElement(element, targetIndex)
-    local idx = table.find(self.elements, element)
-    if not idx then
-        return
-    end
-    table.remove(self.elements, idx)
-    targetIndex = math.clamp(targetIndex, 1, #self.elements + 1)
-    table.insert(self.elements, targetIndex, element)
-    for i, el in self.elements do
-        assignOrder(el, i * 10)
-    end
+    return self:_columnFor(properties):CreateGroup(properties)
 end
 
 function Tab:Remove()
@@ -370,7 +422,11 @@ function Tab:Remove()
     end
     self.topbarItem = nil
     self.tabPage = nil
+    self.columnsRow = nil
     self.elements = {}
+    for _, column in { self.Left, self.Right } do
+        column.elements = {}
+    end
 end
 
 return Tab

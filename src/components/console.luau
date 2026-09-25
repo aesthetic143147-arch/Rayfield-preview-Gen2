@@ -4,6 +4,8 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: Remove takes the element out of its column as well.
 
 -- A monospaced block for code or log output. It holds the height it's given and scrolls inside
 -- itself, so a console that fills up doesn't push the rest of the page down the screen.
@@ -386,7 +388,11 @@ function Console:Remove()
     if self.descriptor then
         self.descriptor:Remove()
     end
-    self.main:Destroy()
+    -- out of the column and the tab's walks, so nothing reveals or reorders a destroyed frame
+    if self.tab._forget then
+        self.tab:_forget(self)
+    end
+    self.window:DestroySubtree(self.main)
 end
 
 moveable(Console)

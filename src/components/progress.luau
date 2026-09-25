@@ -4,6 +4,8 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: Remove takes the element out of its column as well.
 
 -- A progress bar: a title with a readout beside it and a filled track underneath. Read-only,
 -- so it carries no flag and saves nothing. It takes a range the way the slider does, and it
@@ -502,7 +504,11 @@ function Progress:Remove()
     if self.descriptor then
         self.descriptor:Remove()
     end
-    self.main:Destroy()
+    -- out of the column and the tab's walks, so nothing reveals or reorders a destroyed frame
+    if self.tab._forget then
+        self.tab:_forget(self)
+    end
+    self.window:DestroySubtree(self.main)
 end
 
 moveable(Progress)

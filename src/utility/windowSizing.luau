@@ -4,10 +4,13 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: both windows are landscape so a page has room for two columns.
 
 -- Picks the window size for a given screen. Each layout has its own ideal shape and its own
--- idea of which axis matters: the top-tab window is portrait and defends its height, the
--- sidebar window is landscape and defends its width. Anything roomy keeps the ideal untouched.
+-- idea of which axis matters: the top-tab window defends its height, the sidebar window defends
+-- its width. Both are landscape, because every page lays out as two columns side by side. Anything
+-- roomy keeps the ideal untouched.
 
 local layouts = require(script.Parent.layouts)
 
@@ -55,36 +58,40 @@ local minPlausibleViewport = 200
 
 local profiles = {
     top = {
-        defaultSize = Vector2.new(475, 500),
-        minSize = Vector2.new(300, 285),
+        -- wide enough that each column holds a full-size element (slider, dropdown, stat) at the
+        -- same width a single-column Rayfield page gives it. The floor is narrow on purpose: a
+        -- screen that cant fit two columns stacks them instead (see utility/columns).
+        defaultSize = Vector2.new(760, 520),
+        minSize = Vector2.new(320, 285),
 
         -- Height is bounded by the topbar rather than by a fraction. A flat 70% was chosen so a
         -- centred window cleared the Roblox topbar, but on a phone that gave away far more than
         -- the topbar needs: 273px of a 390px screen, leaving four rows of content. Asking for
         -- the clearance directly keeps the same gap above and hands the rest back. On a big
         -- screen nothing changes, because the ideal height caps it long before this does.
-        maxOccupancyX = 0.86,
+        maxOccupancyX = 0.9,
         topbarClearance = 36,
         marginFloorX = 24,
         marginFloorY = 28,
 
-        -- A landscape phone leaves plenty of width spare, and the window could not reach it:
-        -- at a phone's height the aspect ceiling bound the width long before the screen did.
-        -- Both are raised together so a short screen gets a usably wide window, while a roomy
-        -- one is untouched - the compensation only applies once height has actually been lost.
-        maxAspectRatio = 2.3,
-        widthCompensation = 130,
+        -- The window already ships landscape, so a short screen has nothing to buy back: the
+        -- width it wants is the width it has. The ceiling only stops a very short screen turning
+        -- the window into a letterbox.
+        maxAspectRatio = 2.6,
+        widthCompensation = 0,
 
         chromeHeight = layouts.top.chromeHeight,
     } :: Profile,
     sidebar = {
-        defaultSize = Vector2.new(685, 450),
+        -- the rail takes 219px off the left, so the card needs this much to still hold two
+        -- columns side by side on a roomy screen
+        defaultSize = Vector2.new(900, 540),
         -- the floor sits where a rail plus a usable card still fit, in the same band the other
         -- landscape libraries settle on rather than something we invented.
         minSize = Vector2.new(560, 350),
 
-        -- the mirror of the portrait window: width is what the layout is for, so it takes more
-        -- of the screen across. The vertical cap is looser than the top layout's because a
+        -- width is what the layout is for, so it takes more of the screen across than the top
+        -- window does. The vertical cap is looser than the top layout's because a
         -- phone held landscape is short, and a rail of tabs needs the height to be worth using.
         maxOccupancyX = 0.92,
         maxOccupancyY = 0.8,

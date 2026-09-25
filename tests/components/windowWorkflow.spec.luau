@@ -353,7 +353,8 @@ return function()
             expect(column:CreateSection({ name = "Column Section" }).__type).to.equal("Section")
             expect(column:CreateDropdown({ name = "Column Dropdown", options = { "X" } }).__type).to.equal("Dropdown")
 
-            w:ChangeTheme("frost")
+            w:ChangeTheme("default")
+            w:ChangeTheme({ ContentColor = Color3.fromRGB(12, 34, 56) })
             w:RegisterTranslations({
                 ["zz-test"] = {
                     ["Spec Window"] = "Translated Window",
@@ -651,11 +652,12 @@ return function()
 
         it("repaints themed instances on ChangeTheme", function()
             local w = makeWindow()
-            local frost = helpers.requireTheme("frost")
+            -- default is the only built-in theme, so repaint with a hand-written one
+            local custom = { SurfaceStroke = Color3.fromRGB(12, 34, 56) }
 
-            expect(w.windowStroke.Color).never.to.equal(frost.SurfaceStroke)
-            w:ChangeTheme("frost")
-            expect(w.windowStroke.Color).to.equal(frost.SurfaceStroke)
+            expect(w.windowStroke.Color).never.to.equal(custom.SurfaceStroke)
+            w:ChangeTheme(custom)
+            expect(w.windowStroke.Color).to.equal(custom.SurfaceStroke)
         end)
 
         it("settles the window stroke through show and hide", function()
@@ -695,7 +697,8 @@ return function()
             expect(w._searching).to.equal(false)
             expect(alpha.main.Visible).to.equal(true)
             expect(beta.main.Visible).to.equal(true)
-            expect(alpha.main.Parent).to.equal(tab.tabPage)
+            -- home is the column it was built into, not the page the columns sit on
+            expect(alpha.main.Parent).to.equal(tab.Left.tabPage)
         end)
 
         it("rejects a malformed slider range with a clear error", function()
@@ -1652,23 +1655,23 @@ return function()
         end)
 
         it("sizes a new window from the current viewport", function()
-            setViewport(844, 390)
+            setViewport(667, 375)
             local w = makeWindow()
-            -- a short screen gives height up and earns a little width back for it
-            expect(w.size.Y.Offset < 500).to.equal(true)
-            expect(w.size.X.Offset > 475).to.equal(true)
+            -- a phone gives up height and width both, to what it can actually show
+            expect(w.size.Y.Offset < 520).to.equal(true)
+            expect(w.size.X.Offset < 760).to.equal(true)
         end)
 
         it("re-fits a live window when the viewport changes", function()
             setViewport(1920, 1080)
             local w = makeWindow()
             w.hidden = false
-            expect(w.size.X.Offset).to.equal(475)
+            expect(w.size.X.Offset).to.equal(760)
 
-            setViewport(844, 390)
+            setViewport(667, 375)
             w:_applyWindowSize()
 
-            expect(w.size.X.Offset > 475).to.equal(true)
+            expect(w.size.X.Offset < 760).to.equal(true)
             expect(w.main.Size).to.equal(w.size)
         end)
 
@@ -1677,11 +1680,11 @@ return function()
             local w = makeWindow()
             local before = w.main.Size
 
-            setViewport(844, 390)
+            setViewport(667, 375)
             w:_applyWindowSize()
 
             -- the size is taken, but a collapsed window must not be yanked open by a rotation
-            expect(w.size.X.Offset > 475).to.equal(true)
+            expect(w.size.X.Offset < 760).to.equal(true)
             expect(w.main.Size).to.equal(before)
         end)
 
@@ -1744,13 +1747,13 @@ return function()
             local camera = setViewport(1920, 1080)
             local w = makeWindow()
             w.hidden = false
-            expect(w.size.X.Offset).to.equal(475)
+            expect(w.size.X.Offset).to.equal(760)
 
             -- the watcher alone must carry this through, so nothing calls _applyWindowSize here
-            camera.ViewportSize = Vector2.new(844, 390)
+            camera.ViewportSize = Vector2.new(667, 375)
             camera.changed.fire()
 
-            expect(w.size.X.Offset > 475).to.equal(true)
+            expect(w.size.X.Offset < 760).to.equal(true)
             expect(w.main.Size).to.equal(w.size)
         end)
 
@@ -1759,20 +1762,20 @@ return function()
             local w = makeWindow()
             w.hidden = false
 
-            local replacement = setViewport(844, 390)
+            local replacement = setViewport(667, 375)
             cameraSwapped.fire() -- respawn, or the game swapping CurrentCamera
 
             -- rebinding re-fits straight away, off the new camera
-            expect(w.size.X.Offset > 475).to.equal(true)
+            expect(w.size.X.Offset < 760).to.equal(true)
 
             -- and the replacement drives it from here, while the dead camera does not
             replacement.ViewportSize = Vector2.new(1920, 1080)
             replacement.changed.fire()
-            expect(w.size.X.Offset).to.equal(475)
+            expect(w.size.X.Offset).to.equal(760)
 
-            first.ViewportSize = Vector2.new(667, 375)
+            first.ViewportSize = Vector2.new(640, 360)
             first.changed.fire()
-            expect(w.size.X.Offset).to.equal(475)
+            expect(w.size.X.Offset).to.equal(760)
             expect(first.changed.connected()).to.equal(0)
         end)
 

@@ -4,6 +4,8 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: the field never grows over the title in a narrow column.
 
 local Input = {}
 Input.__index = Input
@@ -24,6 +26,15 @@ local hapticEngine = require(utility.HapticEngine)
 local resizeInfo = constants.pillResizeInfo
 -- text is muted at rest, opaque while typing
 local focusInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+
+-- the pill hugs its text between these: never narrower than a readable pill, never wider than a
+-- full-width row can give it without reaching the title
+local minBoxWidth = 70
+local maxBoxWidth = 220
+
+-- where the title's room ends: its 20px inset and 150px width, a 5px gap, and the 7px the pill
+-- keeps off the right edge
+local titleReach = 20 + 150 + 5 + 7
 
 -- Parse a simple exponent expression like "5^3" → 125. Falls back to tonumber for
 -- plain numbers and scientific notation ("9e9" → 9000000000).
@@ -212,14 +223,35 @@ function Input.new(tab, properties)
 
     self:_sizeBox(false) -- initial hug, no animation
 
+    -- a row only knows its width once it's laid out, and a column's is narrower than a page's, so
+    -- hug again when it settles. Same guard as the slider: the widths the window sweeps through
+    -- as it opens and closes aren't ones to settle on.
+    self.window:ConnectFor(self, self.main:GetPropertyChangedSignal("AbsoluteSize"), function()
+        if self.window.animating or (self.window.hidden and self.window.hasShownOnce) then
+            return
+        end
+        self:_sizeBox(false)
+    end)
+
     return self
+end
+
+-- The widest the pill may get before it reaches the title: the full 220 on a full-width row, less
+-- in a column. A row that hasn't been laid out yet gets the full width until it has.
+function Input:_maxBoxWidth()
+    local rowWidth = self.main.AbsoluteSize.X
+    if rowWidth <= 0 then
+        return maxBoxWidth
+    end
+    return math.clamp(rowWidth - titleReach, minBoxWidth, maxBoxWidth)
 end
 
 -- width the pill needs to hug its text (placeholder when empty), floored so it stays a
 -- readable pill and capped so a long value can't run over the title
 function Input:_sizeBox(animate)
     local shown = self.input.Text ~= "" and self.input.Text or self.placeholder
-    local width = math.clamp(functions.textWidth(self.window.theme.Font, 15, shown) + 30, 70, 220)
+    local width =
+        math.clamp(functions.textWidth(self.window.theme.Font, 15, shown) + 30, minBoxWidth, self:_maxBoxWidth())
     if animate then
         variables.tweenService:Create(self.box, resizeInfo, { Size = UDim2.fromOffset(width, 30) }):Play()
     else

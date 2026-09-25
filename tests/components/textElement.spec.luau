@@ -156,16 +156,21 @@ return function()
 
         it("restyles on a theme change", function()
             local w = makeWindow()
-            local frost = helpers.requireTheme("frost")
+            -- default is the only built-in theme, so restyle with a hand-written one
+            local custom = {
+                TitlingColor = Color3.fromRGB(12, 34, 56),
+                ContentColor = Color3.fromRGB(65, 87, 109),
+                ElementStroke = Color3.fromRGB(21, 43, 65),
+            }
             local tab = w:CreateTab({ name = "Main" })
             local text = tab:CreateText({ name = "Heading", text = "Body" })
 
-            expect(text.title.TextColor3).never.to.equal(frost.TitlingColor)
+            expect(text.title.TextColor3).never.to.equal(custom.TitlingColor)
 
-            w:ChangeTheme("frost")
-            expect(text.title.TextColor3).to.equal(frost.TitlingColor)
-            expect(text.body.TextColor3).to.equal(frost.ContentColor)
-            expect(text.stroke.Color).to.equal(frost.ElementStroke)
+            w:ChangeTheme(custom)
+            expect(text.title.TextColor3).to.equal(custom.TitlingColor)
+            expect(text.body.TextColor3).to.equal(custom.ContentColor)
+            expect(text.stroke.Color).to.equal(custom.ElementStroke)
         end)
 
         it("holds no value, so nothing about it is saved", function()
@@ -186,11 +191,12 @@ return function()
             tab:CreateButton({ name = "First" })
             local text = tab:CreateText({ text = "Second" })
 
+            -- order lives in the column the element was built into
             text:MoveToTop()
-            expect(tab.elements[1]).to.equal(text)
+            expect(tab.Left.elements[1]).to.equal(text)
 
             text:MoveToBottom()
-            expect(tab.elements[#tab.elements]).to.equal(text)
+            expect(tab.Left.elements[#tab.Left.elements]).to.equal(text)
         end)
 
         it("goes home when its tab is removed, connections and all", function()

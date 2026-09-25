@@ -4,12 +4,14 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: files live in their own folder, apart from Rayfield's.
 
 local filesystem = require(script.Parent.filesystem)
 local path = require(script.Parent.path)
 
--- defaults
-local DEFAULT_ROOT_PATH = "Rayfield"
+-- defaults. Its own folder, so configs and settings never mix with an official Rayfield install's.
+local DEFAULT_ROOT_PATH = "RayfieldColumns"
 
 local fileSystemManager = {}
 fileSystemManager.__index = fileSystemManager

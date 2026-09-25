@@ -4,6 +4,8 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: tabs are two columns, and element props can pick one.
 
 -- Public API types. camelCase is the documented surface; PascalCase keys still work.
 
@@ -41,6 +43,10 @@ export type WindowProps = {
     translator: Translator?, -- resolve copy yourself; falls back to the built-in tables
 }
 
+-- Which of a tab's two columns a tab-level CreateX puts the element in: "Left" or "Right" (any
+-- case), or 1 / 2. Left when it's left out. Creating straight on a column ignores it.
+export type ColumnSide = string | number
+
 export type TabProps = {
     name: string?,
     icon: (string | number)?,
@@ -55,27 +61,32 @@ export type TagProps = {
 }
 
 export type SectionProps = {
+    side: ColumnSide?, -- tab-level only: which column it goes in
     name: string?,
     icon: (string | number)?,
 }
 
 export type TextProps = {
+    side: ColumnSide?, -- tab-level only: which column it goes in
     name: string?, -- the title above the body; either half can be left out
     text: string?, -- the body
     icon: (string | number)?,
 }
 
 export type DividerProps = {
+    side: ColumnSide?, -- tab-level only: which column it goes in
     text: string?, -- an optional word in the middle of the rule
     spacing: number?, -- room above and below, in pixels
     line: boolean?, -- false draws no rule, leaving only the room
 }
 
 export type GroupProps = {
+    side: ColumnSide?, -- tab-level only: which column it goes in
     direction: string?, -- "row" | "column" (default row); "horizontal"/"vertical" also work
 }
 
 export type ButtonProps = {
+    side: ColumnSide?, -- tab-level only: which column it goes in
     name: string?,
     description: string?,
     icon: (string | number)?,
@@ -83,6 +94,7 @@ export type ButtonProps = {
 }
 
 export type ToggleProps = {
+    side: ColumnSide?, -- tab-level only: which column it goes in
     name: string?,
     description: string?,
     icon: (string | number)?,
@@ -93,6 +105,7 @@ export type ToggleProps = {
 }
 
 export type SliderProps = {
+    side: ColumnSide?, -- tab-level only: which column it goes in
     name: string?,
     description: string?,
     icon: (string | number)?,
@@ -108,6 +121,7 @@ export type SliderProps = {
 }
 
 export type DropdownProps = {
+    side: ColumnSide?, -- tab-level only: which column it goes in
     name: string?,
     description: string?,
     icon: (string | number)?,
@@ -121,6 +135,7 @@ export type DropdownProps = {
 }
 
 export type InputProps = {
+    side: ColumnSide?, -- tab-level only: which column it goes in
     name: string?,
     description: string?,
     icon: (string | number)?,
@@ -134,6 +149,7 @@ export type InputProps = {
 }
 
 export type KeybindProps = {
+    side: ColumnSide?, -- tab-level only: which column it goes in
     name: string?,
     description: string?,
     icon: (string | number)?,
@@ -148,6 +164,7 @@ export type KeybindProps = {
 }
 
 export type ColorPickerProps = {
+    side: ColumnSide?, -- tab-level only: which column it goes in
     name: string?,
     description: string?,
     icon: (string | number)?,
@@ -159,6 +176,7 @@ export type ColorPickerProps = {
 }
 
 export type StatProps = {
+    side: ColumnSide?, -- tab-level only: which column it goes in
     name: string?,
     description: string?,
     icon: (string | number)?,
@@ -173,6 +191,7 @@ export type StatProps = {
 }
 
 export type ProgressProps = {
+    side: ColumnSide?, -- tab-level only: which column it goes in
     name: string?,
     description: string?,
     icon: (string | number)?,
@@ -186,6 +205,7 @@ export type ProgressProps = {
 }
 
 export type ConsoleProps = {
+    side: ColumnSide?, -- tab-level only: which column it goes in
     name: string?,
     description: string?,
     text: string?, -- the body
@@ -366,7 +386,33 @@ export type Group = Moveable & {
     CreateGroup: (self: Group, props: GroupProps?) -> Group,
 }
 
+-- One of a tab's two columns. It takes every element a tab takes, laid out top to bottom.
+export type Column = {
+    CreateButton: (self: Column, props: ButtonProps) -> Button,
+    CreateToggle: (self: Column, props: ToggleProps) -> Toggle,
+    CreateSwitch: (self: Column, props: ToggleProps) -> Toggle,
+    CreateSlider: (self: Column, props: SliderProps) -> Slider,
+    CreateDropdown: (self: Column, props: DropdownProps) -> Dropdown,
+    CreateInput: (self: Column, props: InputProps) -> Input,
+    CreateKeybind: (self: Column, props: KeybindProps) -> Keybind,
+    CreateColorPicker: (self: Column, props: ColorPickerProps) -> ColorPicker,
+    CreateStat: (self: Column, props: StatProps) -> Stat,
+    CreateProgress: (self: Column, props: ProgressProps) -> Progress,
+    CreateConsole: (self: Column, props: ConsoleProps) -> Console,
+    CreateSection: (self: Column, props: SectionProps) -> Section,
+    CreateText: (self: Column, props: TextProps) -> Text,
+    CreateDivider: (self: Column, props: DividerProps?) -> Divider,
+    CreateGroup: (self: Column, props: GroupProps?) -> Group,
+}
+
+-- A tab's page is two columns. Build into tab.Left / tab.Right directly, or call CreateX on the
+-- tab itself with `side = "Right"` (the left column when it isn't given).
 export type Tab = {
+    Left: Column,
+    Right: Column,
+    left: Column,
+    right: Column,
+    GetColumn: (self: Tab, side: ColumnSide?) -> Column,
     Select: (self: Tab, noAnimation: boolean?) -> (),
     Deselect: (self: Tab, noAnimation: boolean?) -> (),
     Remove: (self: Tab) -> (),

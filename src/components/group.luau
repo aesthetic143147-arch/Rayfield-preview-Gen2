@@ -4,6 +4,8 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: a group remembers the scrolling page it sits on.
 
 local Group = {}
 Group.__index = Group
@@ -76,8 +78,10 @@ function Group.new(tab, properties)
         })
     end
 
-    -- children parent here
+    -- children parent here. The page that scrolls is still the tab's (a dropdown scrolls it to
+    -- bring an open list into view), whatever the group is nested in.
     self.tabPage = self.main
+    self.scrollPage = tab.scrollPage or tab.tabPage
 
     self.layout = self.window:Create("UIListLayout", {
         FillDirection = direction,

@@ -157,16 +157,17 @@ return function()
 
         it("restyles on a theme change", function()
             local w = makeWindow()
-            local frost = helpers.requireTheme("frost")
+            -- default is the only built-in theme, so restyle with a hand-written one
+            local custom = { ContentColor = Color3.fromRGB(12, 34, 56) }
             local tab = w:CreateTab({ name = "Main" })
             local divider = tab:CreateDivider({ text = "Advanced" })
 
-            expect(divider.left.BackgroundColor3).never.to.equal(frost.ContentColor)
+            expect(divider.left.BackgroundColor3).never.to.equal(custom.ContentColor)
 
-            w:ChangeTheme("frost")
-            expect(divider.left.BackgroundColor3).to.equal(frost.ContentColor)
-            expect(divider.right.BackgroundColor3).to.equal(frost.ContentColor)
-            expect(divider.title.TextColor3).to.equal(frost.ContentColor)
+            w:ChangeTheme(custom)
+            expect(divider.left.BackgroundColor3).to.equal(custom.ContentColor)
+            expect(divider.right.BackgroundColor3).to.equal(custom.ContentColor)
+            expect(divider.title.TextColor3).to.equal(custom.ContentColor)
         end)
 
         it("holds no value, so nothing about it is saved", function()
@@ -187,11 +188,12 @@ return function()
             tab:CreateButton({ name = "First" })
             local divider = tab:CreateDivider()
 
+            -- order lives in the column the element was built into
             divider:MoveToTop()
-            expect(tab.elements[1]).to.equal(divider)
+            expect(tab.Left.elements[1]).to.equal(divider)
 
             divider:MoveToBottom()
-            expect(tab.elements[#tab.elements]).to.equal(divider)
+            expect(tab.Left.elements[#tab.Left.elements]).to.equal(divider)
         end)
 
         it("goes home when its tab is removed, connections and all", function()

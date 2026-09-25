@@ -4,6 +4,9 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: the selected value fits a half-width column, and an open list
+-- scrolls the tab's page into view from inside a column or group.
 
 local Dropdown = {}
 Dropdown.__index = Dropdown
@@ -243,15 +246,17 @@ function Dropdown.new(tab, properties)
         Parent = self.container,
     }, { TextColor3 = "ContentColor", FontFace = "Font" })
 
+    -- the value takes the right half of the header, never more than it always has, so in a
+    -- narrow column a long value ellipsizes instead of running over the title
     self.selectedLabel = self.window:Create("TextLabel", {
         AnchorPoint = Vector2.new(1, 0.5),
         Position = UDim2.new(1, -41, 0.5, 0),
-        Size = UDim2.fromOffset(168, 15),
+        Size = UDim2.new(0.5, -41, 0, 15),
         BorderSizePixel = 0,
         BackgroundTransparency = 1,
         TextSize = 15,
         TextXAlignment = Enum.TextXAlignment.Right,
-        TextWrapped = true,
+        TextTruncate = Enum.TextTruncate.AtEnd,
 
         -- Animation
         TextTransparency = 1, -- In = 0.5
@@ -259,6 +264,12 @@ function Dropdown.new(tab, properties)
         ZIndex = 5,
         Parent = self.top,
     }, { TextColor3 = "ContentColor", FontFace = "Font" })
+
+    self.window:Create("UISizeConstraint", {
+        MaxSize = Vector2.new(168, 15),
+
+        Parent = self.selectedLabel,
+    })
 
     self.chevron = self.window:Create("ImageLabel", {
         AnchorPoint = Vector2.new(1, 0.5),
@@ -1143,8 +1154,10 @@ end
 -- are off screen. Rather than flip it above the header, which only moves the problem to the top
 -- edge, the page comes to it: scroll just far enough that the open card ends inside the view.
 function Dropdown:_bringIntoView()
-    local page = self.tab and self.tab.tabPage
-    if not page then
+    -- the scrolling page, which is the tab's own even when this sits in a column or a group
+    local host = self.tab
+    local page = host and (host.scrollPage or host.tabPage)
+    if not page or not page:IsA("ScrollingFrame") then
         return
     end
 

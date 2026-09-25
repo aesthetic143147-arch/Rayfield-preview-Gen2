@@ -4,6 +4,8 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: exports the Column type.
 
 local variables = require(script.utility.variables)
 local image = require(script.utility.image)
@@ -15,6 +17,7 @@ local types = require(script.types)
 export type Theme = types.Theme
 export type Translator = types.Translator
 export type Translations = types.Translations
+export type ColumnSide = types.ColumnSide
 export type WindowConfiguration = types.WindowConfiguration
 
 export type WindowProps = types.WindowProps
@@ -44,6 +47,7 @@ export type Moveable = types.Moveable
 export type Lockable = types.Lockable
 export type Window = types.Window
 export type Tab = types.Tab
+export type Column = types.Column
 export type Group = types.Group
 export type Button = types.Button
 export type Toggle = types.Toggle

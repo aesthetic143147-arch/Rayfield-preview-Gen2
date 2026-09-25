@@ -56,5 +56,21 @@ return function(window: Rayfield.Window, tab: Rayfield.Tab)
     button:Unlock()
     local locked: boolean = toggle:IsLocked()
 
+    -- the page is two columns: build into either one directly, or pick one from the tab
+    local left: Rayfield.Column = tab.Left
+    local right: Rayfield.Column = tab:GetColumn("Right")
+    local leftSection: Rayfield.Section = left:CreateSection({ name = "Job" })
+    local leftDropdown: Rayfield.Dropdown = left:CreateDropdown({ name = "Select Job", options = { "Baker" } })
+    local rightSlider: Rayfield.Slider = right:CreateSlider({ name = "Work Time", range = { 1, 60 } })
+    local rightStat: Rayfield.Stat = right:CreateStat({ name = "Shift Earnings", prefix = "$" })
+    local sided: Rayfield.Toggle = tab:CreateToggle({ name = "Enable Breaks", side = "Right" })
+    local nested: Rayfield.Group = right:CreateGroup({ direction = "column" })
+    leftSection:MoveToTop()
+    leftDropdown:Lock()
+    rightSlider:Set(30)
+    rightStat:Set(349)
+    sided:Set(true)
+    nested:CreateToggle({ name = "Nested" })
+
     return progressValue, progressRatio, consoleBody, copied, locked
 end

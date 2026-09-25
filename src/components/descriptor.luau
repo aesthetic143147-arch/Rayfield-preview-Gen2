@@ -4,6 +4,8 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: a descriptor can be removed with the element it describes.
 
 local Descriptor = {}
 Descriptor.__index = Descriptor
@@ -59,6 +61,14 @@ function Descriptor.new(tab, properties)
     })
 
     return self
+end
+
+-- Progress and Console call this from their own Remove, so the line under them goes with them.
+function Descriptor:Remove()
+    if self.main then
+        self.window:DestroySubtree(self.main)
+        self.main = nil
+    end
 end
 
 return Descriptor

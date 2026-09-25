@@ -1,4 +1,4 @@
-# Convenience targets for Rayfield Gen2.
+# Convenience targets for Rayfield Columns, a fan-made two-column edition of Rayfield Gen2.
 # Requires GNU Make plus the Rokit-managed tools listed in rokit.toml.
 
 .DEFAULT_GOAL := help
@@ -29,6 +29,8 @@ WAX_PROJECT ?= wax.project.json
 PLACE_FILE ?= Rayfield Gen2.rbxlx
 TEST_PLACE_FILE ?= Rayfield Gen2 Tests.rbxlx
 BUNDLE_FILE ?= build/bundled.luau
+# the file that ships: the bundle with its header, loaded with loadstring from GitHub
+DIST_FILE ?= dist/RayfieldColumns.luau
 TESTEZ_MODEL ?= build/TestEZ.rbxm
 TESTEZ_MODEL_URL ?= https://github.com/Roblox/testez/releases/download/v0.3.2/TestEZ.rbxm
 SOURCEMAP ?= sourcemap.json
@@ -40,10 +42,10 @@ GLOBAL_TYPES_URL ?= https://raw.githubusercontent.com/JohnnyMorganz/luau-lsp/$(L
 GLOBAL_TYPES_STAMP ?= $(GLOBAL_TYPES).ref
 COVERAGE_THRESHOLD ?= 70
 
-.PHONY: help install hooks ci check test test-verbose coverage coverage-baseline testez-model test-place format format-check lint typecheck build bundle serve sourcemap-watch dev clean
+.PHONY: help install hooks ci check test test-verbose coverage coverage-baseline testez-model test-place format format-check lint typecheck build bundle dist serve sourcemap-watch dev clean
 
 help:
-	@echo Rayfield Gen2 Make targets:
+	@echo Rayfield Columns Make targets:
 	@echo   install    Trust and install Rokit tools
 	@echo   hooks      Configure Git to use repository hooks
 	@echo   ci         Run the required format, lint, typecheck, test, and coverage gate
@@ -60,6 +62,7 @@ help:
 	@echo   typecheck  Generate sourcemap and run luau-lsp analysis
 	@echo   build      Build the Rojo place file
 	@echo   bundle     Build the release Luau bundle
+	@echo   dist       Build the bundle and stamp it into dist/ for loadstring
 	@echo   serve      Start the Rojo development server
 	@echo   clean      Remove generated local outputs
 	@echo   dev        Start Rojo serve and watch sourcemap generation
@@ -135,6 +138,10 @@ build:
 bundle:
 	$(MKDIR) "$(dir $(BUNDLE_FILE))"
 	$(LUNE) run wax bundle output="$(BUNDLE_FILE)" input="$(WAX_PROJECT)" minify=true env-name=Rayfield
+
+# the bundle, stamped with its header, where the loadstring URL points
+dist: bundle
+	$(LUNE) run scripts/dist.luau -- "$(BUNDLE_FILE)" "$(DIST_FILE)"
 
 serve:
 	$(ROJO) serve $(PROJECT_FILE)

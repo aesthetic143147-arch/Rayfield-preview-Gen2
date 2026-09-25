@@ -4,6 +4,8 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+--
+-- Modified for Rayfield Columns: a slider in a column takes the stacked layout.
 
 local Slider = {}
 Slider.__index = Slider
@@ -50,10 +52,11 @@ local followInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirecti
 
 -- Below this element width we reflow to the stacked layout (title/value on top, full-width
 -- track under it) so the slider stays usable in a narrow column or small window instead of
--- overlapping. Sits well below a full-width slider (~435) - including the slightly narrower
--- width it has before the window's intro grow finishes - and well above a grid column (~180),
--- so those two cases land cleanly on either side and open/close transients never straddle it.
-local narrowWidth = 300
+-- overlapping. The wide layout needs 20 + 170 (title/value) + 222 (track) + 15 of edge, plus a
+-- gap, so anything under ~440 stacks: every half-page column (~355 in the default window) does,
+-- while a full-width row (~720) - including the slightly narrower width it has before the
+-- window's intro grow finishes - stays wide, so open/close transients never straddle it.
+local narrowWidth = 440
 
 -- The pill's two sizes: at rest, and while it's held. Where the pill sits depends on how wide it
 -- currently is, so the sizes live next to the geometry that reads them.

@@ -1200,11 +1200,22 @@ local function instrumentSourceForTest(relativePath, source)
     return instrumented, fileCoverage
 end
 
+-- Run a bundled build (dist/) the way an executor's loadstring would, against the same shimmed
+-- globals the source runs on, so a spec can check the file that actually ships.
+local function loadBundle(relativePath)
+    local luau = require("@lune/luau")
+    local path = root .. "/" .. relativePath
+    assert(fs.isFile(path), string.format("No bundle at %s - run make dist first", relativePath))
+    local chunk = luau.load(fs.readFile(path), { debugName = relativePath, environment = getfenv(1) })
+    return chunk()
+end
+
 _G.__RAYFIELD_TEST_HELPERS = {
     requireUtility = _G.__RAYFIELD_TEST_REQUIRE_UTILITY,
     requireComponent = requireComponent,
     requireTheme = requireTheme,
     requireRayfield = requireRayfield,
+    loadBundle = loadBundle,
     services = services,
     makeSignal = makeSignal,
     instrumentSource = instrumentSourceForTest,
