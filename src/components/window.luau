@@ -6,7 +6,7 @@
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
 --
 -- Modified for Rayfield Columns: pages are two columns, which the window re-lays out as the screen
--- changes and reveals top to bottom across both; the default theme is the only built-in one.
+-- changes and reveals top to bottom across both.
 
 -- Utility
 local utility = script.Parent.Parent.utility
@@ -160,8 +160,7 @@ end
 
 -- Resolve a theme arg to its raw key set: a table is taken as-is (partial is fine), a known
 -- name is required, anything else falls back to default. Read-only - callers never mutate it,
--- so the require()-cached module stays clean for other windows. Rayfield Columns ships the
--- default theme as its only built-in one, so "Default" is the one name there is to ask for.
+-- so the require()-cached module stays clean for other windows.
 local function themeOverrides(value)
     if typeof(value) == "table" then
         return value
@@ -171,9 +170,9 @@ local function themeOverrides(value)
             return require(named)
         end
         -- a typo'd name shouldnt crash the menu; warn and fall back so the UI still builds
-        log.warn("Rayfield: unknown theme '" .. value .. "', using default (the only built-in theme)")
+        log.warn("Rayfield: unknown theme '" .. value .. "', using default")
     elseif value ~= nil then
-        log.warn('Rayfield: invalid theme (expected "Default" or a theme table), using default')
+        log.warn("Rayfield: invalid theme (expected a built-in name or a theme table), using default")
     end
     return require(themes["default"])
 end

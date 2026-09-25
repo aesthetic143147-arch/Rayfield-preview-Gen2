@@ -28,16 +28,12 @@ return function()
         end)
 
         it("requires every built-in theme", function()
-            -- Rayfield Columns ships the default theme and nothing else
-            for _, name in { "default" } do
+            for _, name in { "default", "amethyst", "cobalt", "ember", "frost", "rose" } do
                 local theme = helpers.requireTheme(name)
                 expect(type(theme)).to.equal("table")
                 expect(theme.WindowColor).to.be.ok()
                 expect(theme.AccentColor).to.be.ok()
             end
-            expect(function()
-                helpers.requireTheme("cobalt")
-            end).to.throw()
         end)
 
         it("creates a window through the public init module", function()

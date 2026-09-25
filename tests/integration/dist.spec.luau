@@ -47,16 +47,26 @@ return function()
             expect(window.Flags.SelectJob[1]).to.equal("PizzaPlanetBaker")
         end)
 
-        it("ships the default theme as its only built-in one", function()
+        it("starts on the default theme and ships every built-in one", function()
             local Rayfield = helpers.loadBundle("dist/RayfieldColumns.luau")
             window = Rayfield:CreateWindow({
                 name = "Theme",
-                theme = "Cobalt",
                 configuration = { autoSave = false, autoLoad = false },
             })
-
-            -- asking for a theme that isn't built in gets the default one
             expect(window.theme.AccentColor).to.equal(Color3.fromRGB(23, 153, 110))
+
+            local accents = {
+                Amethyst = Color3.fromRGB(168, 110, 246),
+                Cobalt = Color3.fromRGB(48, 120, 240),
+                Ember = Color3.fromRGB(240, 142, 40),
+                Frost = Color3.fromRGB(0, 176, 208),
+                Rose = Color3.fromRGB(240, 82, 138),
+                Default = Color3.fromRGB(23, 153, 110),
+            }
+            for name, accent in accents do
+                window:ChangeTheme(name)
+                expect(window.theme.AccentColor).to.equal(accent)
+            end
         end)
     end)
 end

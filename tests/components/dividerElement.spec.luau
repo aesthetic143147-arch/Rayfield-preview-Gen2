@@ -157,7 +157,7 @@ return function()
 
         it("restyles on a theme change", function()
             local w = makeWindow()
-            -- default is the only built-in theme, so restyle with a hand-written one
+            -- a hand-written theme restyles it the same way a built-in one does
             local custom = { ContentColor = Color3.fromRGB(12, 34, 56) }
             local tab = w:CreateTab({ name = "Main" })
             local divider = tab:CreateDivider({ text = "Advanced" })

@@ -353,7 +353,7 @@ return function()
             expect(column:CreateSection({ name = "Column Section" }).__type).to.equal("Section")
             expect(column:CreateDropdown({ name = "Column Dropdown", options = { "X" } }).__type).to.equal("Dropdown")
 
-            w:ChangeTheme("default")
+            w:ChangeTheme("frost")
             w:ChangeTheme({ ContentColor = Color3.fromRGB(12, 34, 56) })
             w:RegisterTranslations({
                 ["zz-test"] = {
@@ -652,7 +652,7 @@ return function()
 
         it("repaints themed instances on ChangeTheme", function()
             local w = makeWindow()
-            -- default is the only built-in theme, so repaint with a hand-written one
+            -- a hand-written theme repaints it the same way a built-in one does
             local custom = { SurfaceStroke = Color3.fromRGB(12, 34, 56) }
 
             expect(w.windowStroke.Color).never.to.equal(custom.SurfaceStroke)

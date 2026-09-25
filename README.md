@@ -124,14 +124,14 @@ Everything there applies here, and this README covers only what's different.
 | `name`, `subtitle`, `icon` | The title bar |
 | `sidebarLayout` | `true` puts the tabs in a rail on the left instead of across the top |
 | `configuration` | `{ autoSave, autoLoad, fileName, customFolder }` for saving settings between sessions |
-| `theme` | `"Default"` (the only built-in theme) or a table of theme keys to override |
+| `theme` | A built-in theme (`"Default"`, `"Amethyst"`, `"Cobalt"`, `"Ember"`, `"Frost"`, `"Rose"`) or a table of theme keys to override. Default when left out |
 | `showName`, `showIcon`, `showIconOnly` | What the collapsed pill shows while the window is hidden |
 | `locale`, `translations`, `translator` | Localisation, as in Gen2 |
 
 The window object has the same methods as in Gen2: `CreateTab`, `CreateTag`, `CreateSection`
 (sidebar headings), `Notify`, `Toast`, `Popup`, `Navigate`, `Show` / `Hide` / `ToggleHide`,
 `Save` / `Load` / `ListConfigs` / `DeleteConfig`, `Get` / `Set`, the live `Flags` table, `SetLocale`,
-`ChangeTheme` and `Unload`. The menu toggles with **K** by default, and players can rebind it on the
+`ChangeTheme` (switch theme at any time, e.g. `Window:ChangeTheme("Cobalt")`) and `Unload`. The menu toggles with **K** by default, and players can rebind it on the
 settings page (cog icon).
 
 ## Differences from Rayfield Gen2
@@ -140,9 +140,6 @@ settings page (cog icon).
   work as before.
 - The window is landscape by default (760×520 with top tabs, 900×540 with the sidebar), so each
   column gets a full-size element. It still shrinks to fit smaller screens.
-- **Default is the only built-in theme.** Cobalt, Amethyst, Ember, Frost and Rose are not included.
-  Asking for another theme by name falls back to Default with a warning. A custom theme table
-  still works if you need your own colours.
 - In a column, sliders use Gen2's stacked layout (name and value on top, full-width track below),
   a long dropdown value is shortened with "…", and an input field never grows over its title.
 - Configs and settings are saved under `RayfieldColumns/`, separate from an official Rayfield
