@@ -12,6 +12,8 @@ API as Gen2, but every tab page is split into a **left and a right column** you 
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/aesthetic143147-arch/Rayfiend-preview-Gen2/main/dist/RayfieldColumns.luau"))()
 ```
 
+**Documentation:** https://aesthetic143147-arch.github.io/Rayfiend-preview-Gen2/ (source in [`docs/`](docs/index.html))
+
 ## Quick start
 
 ```lua

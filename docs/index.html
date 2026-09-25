@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rayfield Columns Docs</title>
+<meta name="description" content="Documentation for Rayfield Columns, a fan-made two-column edition of the Rayfield Gen2 Roblox UI library.">
+<style>
+  :root {
+    --bg: #0c0c0c;
+    --panel: #141414;
+    --panel-2: #1b1b1b;
+    --line: #262626;
+    --text: #e8e8e8;
+    --muted: #9a9a9a;
+    --accent: #1fb07d;
+    --code: #111;
+    --radius: 10px;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.65 var(--sans); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .layout { display: flex; min-height: 100vh; }
+  aside {
+    position: sticky; top: 0; height: 100vh; width: 250px; flex: none;
+    overflow-y: auto; padding: 24px 16px; border-right: 1px solid var(--line); background: var(--bg);
+  }
+  .brand { font-weight: 600; font-size: 16px; margin: 0 8px 4px; }
+  .brand small { display: block; color: var(--muted); font-weight: 400; font-size: 12px; }
+  .search {
+    width: 100%; margin: 16px 0 12px; padding: 8px 12px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--panel); color: var(--text); font: inherit; font-size: 14px;
+  }
+  .search:focus { outline: none; border-color: var(--accent); }
+  nav .group { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; margin: 18px 8px 6px; }
+  nav a { display: block; padding: 4px 8px; border-radius: 6px; color: var(--text); font-size: 14px; opacity: .8; }
+  nav a:hover { background: var(--panel); text-decoration: none; opacity: 1; }
+  nav a.active { color: var(--accent); opacity: 1; }
+
+  main { flex: 1; min-width: 0; padding: 48px 56px 120px; max-width: 860px; }
+  section { padding-top: 8px; margin-bottom: 48px; }
+  h1 { font-size: 30px; margin: 0 0 8px; letter-spacing: -.01em; }
+  h2 { font-size: 22px; margin: 0 0 8px; padding-top: 8px; border-top: 1px solid var(--line); padding-top: 32px; }
+  section:first-of-type h2 { border-top: 0; padding-top: 0; }
+  h3 { font-size: 16px; margin: 24px 0 6px; }
+  p { margin: 8px 0; color: #cfcfcf; }
+  .lead { color: var(--muted); font-size: 16px; }
+  .note { border-left: 3px solid var(--accent); background: var(--panel); padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 14px 0; color: #cfcfcf; font-size: 14px; }
+  code { font-family: var(--mono); font-size: 13px; background: var(--panel-2); padding: 1px 5px; border-radius: 5px; }
+
+  .code { position: relative; margin: 12px 0; }
+  pre {
+    margin: 0; padding: 14px 72px 14px 16px; overflow-x: auto; background: var(--code);
+    border: 1px solid var(--line); border-radius: var(--radius); font: 13px/1.6 var(--mono); color: #d6d6d6;
+  }
+  pre code { background: none; padding: 0; font-size: inherit; }
+  .copy {
+    position: absolute; top: 8px; right: 8px; padding: 4px 10px; font: 12px var(--sans);
+    color: var(--muted); background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; cursor: pointer;
+  }
+  .copy:hover { color: var(--text); }
+  .tk-k { color: #c792ea; } .tk-s { color: #9ece6a; } .tk-c { color: #6b6b6b; font-style: italic; } .tk-n { color: #ff9e64; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+  td:first-child { white-space: nowrap; }
+  .table-wrap { overflow-x: auto; }
+
+  .menu { display: none; }
+  footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 24px; }
+
+  @media (max-width: 860px) {
+    .layout { display: block; }
+    aside { position: fixed; z-index: 10; left: 0; top: 0; transform: translateX(-100%); transition: transform .2s; box-shadow: 0 0 40px #000; }
+    aside.open { transform: none; }
+    main { padding: 72px 16px 80px; }
+    .menu {
+      display: block; position: fixed; z-index: 11; top: 12px; left: 12px; padding: 6px 12px;
+      background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 8px; font: 14px var(--sans);
+    }
+    h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu" aria-label="Menu">Menu</button>
+<div class="layout">
+<aside>
+  <div class="brand">Rayfield Columns<small>Two-column Rayfield Gen2 · v1.0.0</small></div>
+  <input class="search" type="search" placeholder="Search docs" aria-label="Search docs">
+  <nav>
+    <div class="group">Start</div>
+    <a href="#getting-started">Getting started</a>
+    <a href="#window">Window</a>
+    <a href="#tabs">Tabs</a>
+    <a href="#columns">Columns</a>
+    <div class="group">Layout</div>
+    <a href="#section">Section</a>
+    <a href="#text">Text</a>
+    <a href="#divider">Divider</a>
+    <a href="#group">Group</a>
+    <div class="group">Elements</div>
+    <a href="#button">Button</a>
+    <a href="#toggle">Toggle</a>
+    <a href="#slider">Slider</a>
+    <a href="#dropdown">Dropdown</a>
+    <a href="#input">Input</a>
+    <a href="#keybind">Keybind</a>
+    <a href="#colorpicker">Color Picker</a>
+    <a href="#stat">Stat</a>
+    <a href="#progress">Progress</a>
+    <a href="#console">Console</a>
+    <div class="group">Feedback</div>
+    <a href="#notifications">Notifications</a>
+    <a href="#toasts">Toasts</a>
+    <a href="#popups">Popups</a>
+    <a href="#tags">Tags</a>
+    <div class="group">More</div>
+    <a href="#locking">Locking</a>
+    <a href="#saving">Saving &amp; flags</a>
+    <a href="#theming">Theming</a>
+    <a href="#localization">Localization</a>
+    <a href="#credits">Credits &amp; license</a>
+  </nav>
+</aside>
+
+<main>
+
+<section id="getting-started">
+  <h1>Rayfield Columns</h1>
+  <p class="lead">A two-column edition of Rayfield Gen2. Same elements, same API, but every tab has a left and a right column.</p>
+  <div class="note">Fan-made and unofficial. Built on <a href="https://github.com/SiriusSoftwareLtd/rayfield-gen2">Rayfield Gen2</a> by <a href="https://sirius.menu">Sirius</a>, not made or supported by them. See <a href="#credits">credits</a>.</div>
+
+  <h3>Load the library</h3>
+<pre><code>local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/aesthetic143147-arch/Rayfiend-preview-Gen2/main/dist/RayfieldColumns.luau"))()</code></pre>
+
+  <h3>Your first window</h3>
+<pre><code>local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/aesthetic143147-arch/Rayfiend-preview-Gen2/main/dist/RayfieldColumns.luau"))()
+
+local Window = Rayfield:CreateWindow({
+    name = "Pulse",
+    configuration = { autoSave = true, autoLoad = true, fileName = "Pulse" },
+})
+
+local Main = Window:CreateTab({ name = "Main", icon = 84750991656135 })
+
+Main.Left:CreateSection({ name = "Farming" })
+Main.Left:CreateToggle({
+    name = "Auto Farm",
+    callback = function(enabled)
+        print("Auto Farm:", enabled)
+    end,
+})
+
+Main.Right:CreateSection({ name = "Settings" })
+Main.Right:CreateSlider({ name = "Speed", range = { 16, 100 }, value = 16 })</code></pre>
+  <p>Press <code>K</code> to show or hide the window. Players can change that key on the settings page (the cog in the title bar).</p>
+</section>
+
+<section id="window">
+  <h2>Window</h2>
+  <p>Create one window per script. Everything else is built on it.</p>
+<pre><code>local Window = Rayfield:CreateWindow({
+    name = "Pulse",
+    subtitle = "Bloxburg",
+    sidebarLayout = false, -- true puts the tabs in a rail on the left
+    configuration = {
+        autoSave = true,
+        autoLoad = true,
+        fileName = "Pulse",
+    },
+})</code></pre>
+  <div class="table-wrap"><table>
+    <tr><th>Option</th><th>Type</th><th>Description</th></tr>
+    <tr><td><code>name</code></td><td>string</td><td>Title shown in the top bar.</td></tr>
+    <tr><td><code>subtitle</code></td><td>string?</td><td>Small line under the title.</td></tr>
+    <tr><td><code>icon</code></td><td>number?</td><td>Asset id shown next to the title.</td></tr>
+    <tr><td><code>sidebarLayout</code></td><td>boolean?</td><td>Tabs in a left rail instead of across the top.</td></tr>
+    <tr><td><code>configuration</code></td><td>table?</td><td><code>autoSave</code>, <code>autoLoad</code>, <code>fileName</code>, <code>customFolder</code>. See <a href="#saving">Saving</a>.</td></tr>
+    <tr><td><code>theme</code></td><td>string | table</td><td><code>"Default"</code> or a table of overrides. See <a href="#theming">Theming</a>.</td></tr>
+    <tr><td><code>showName</code>, <code>showIcon</code></td><td>string, number</td><td>What the collapsed pill shows while hidden.</td></tr>
+    <tr><td><code>showIconOnly</code></td><td>boolean?</td><td>Collapse to a round icon instead of a pill.</td></tr>
+    <tr><td><code>locale</code>, <code>translations</code></td><td>string, table</td><td>See <a href="#localization">Localization</a>.</td></tr>
+  </table></div>
+  <h3>Methods</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Method</th><th>Description</th></tr>
+    <tr><td><code>Window:Show()</code> / <code>Hide()</code> / <code>ToggleHide()</code></td><td>Open or collapse the window.</td></tr>
+    <tr><td><code>Window:Navigate("Main")</code></td><td>Switch to a tab by name or handle.</td></tr>
+    <tr><td><code>Window:Unload()</code></td><td>Destroy the window and everything in it.</td></tr>
+    <tr><td><code>Window.unloaded</code></td><td><code>true</code> once unloaded. Handy for ending loops.</td></tr>
+  </table></div>
+</section>
+
+<section id="tabs">
+  <h2>Tabs</h2>
+  <p>A tab needs a name, an icon, or both. The first tab opens automatically.</p>
+<pre><code>local Main = Window:CreateTab({ name = "Main", icon = 84750991656135 })
+local Home = Window:CreateTab({ icon = 93364949241311 }) -- icon only</code></pre>
+  <p>Icons are Roblox image asset ids. <code>Tab:Select()</code> opens a tab, <code>Tab:Remove()</code> deletes it.</p>
+</section>
+
+<section id="columns">
+  <h2>Columns</h2>
+  <p>Every tab has two columns: <code>Tab.Left</code> and <code>Tab.Right</code>. Every element can go in either one.</p>
+<pre><code>Main.Left:CreateToggle({ name = "On the left" })
+Main.Right:CreateToggle({ name = "On the right" })</code></pre>
+  <p>You can also create on the tab and pick a side. Without <code>side</code>, elements go left, so old Rayfield scripts keep working.</p>
+<pre><code>Main:CreateToggle({ name = "Goes left" })
+Main:CreateToggle({ name = "Goes right", side = "Right" })
+
+local Right = Main:GetColumn("Right") -- also accepts 1 or 2</code></pre>
+  <ul>
+    <li>Columns sit side by side and scroll together.</li>
+    <li>On narrow screens (phones) they stack: left first, then right.</li>
+    <li>If a tab only uses one column, it takes the full width.</li>
+  </ul>
+</section>
+
+<section id="section">
+  <h2>Section</h2>
+  <p>A small heading inside a column.</p>
+<pre><code>Main.Left:CreateSection({ name = "Farming" })</code></pre>
+</section>
+
+<section id="text">
+  <h2>Text</h2>
+  <p>A card with a title, a body, or both.</p>
+<pre><code>local Status = Main.Left:CreateText({ name = "Status", text = "Waiting" })
+
+Status:Set("Running")      -- change the body
+Status:SetTitle("Farming") -- change the title</code></pre>
+</section>
+
+<section id="divider">
+  <h2>Divider</h2>
+<pre><code>Main.Left:CreateDivider()                   -- a plain line
+Main.Left:CreateDivider({ text = "or" })    -- a line with a word
+Main.Left:CreateDivider({ line = false, spacing = 20 }) -- empty space</code></pre>
+</section>
+
+<section id="group">
+  <h2>Group</h2>
+  <p>Puts buttons, toggles, stats or sliders side by side in a row.</p>
+<pre><code>local Row = Main.Right:CreateGroup()
+
+Row:CreateButton({ name = "Save", callback = function() end })
+Row:CreateButton({ name = "Load", callback = function() end })</code></pre>
+  <p>Pass <code>{ direction = "column" }</code> for a vertical group, which also takes dropdowns, sections, text and dividers.</p>
+</section>
+
+<section id="button">
+  <h2>Button</h2>
+<pre><code>Main.Left:CreateButton({
+    name = "Go To Work",
+    callback = function()
+        print("clicked")
+    end,
+})</code></pre>
+  <div class="table-wrap"><table>
+    <tr><th>Option</th><th>Description</th></tr>
+    <tr><td><code>name</code></td><td>Button label.</td></tr>
+    <tr><td><code>description</code></td><td>Optional line under the button.</td></tr>
+    <tr><td><code>icon</code></td><td>Optional asset id.</td></tr>
+    <tr><td><code>callback</code></td><td>Runs when clicked.</td></tr>
+  </table></div>
+</section>
+
+<section id="toggle">
+  <h2>Toggle</h2>
+<pre><code>local AutoFarm = Main.Left:CreateToggle({
+    name = "Auto Farm",
+    value = false,
+    callback = function(enabled)
+        print(enabled)
+    end,
+})
+
+AutoFarm:Set(true)
+print(AutoFarm.value)</code></pre>
+  <div class="table-wrap"><table>
+    <tr><th>Option</th><th>Description</th></tr>
+    <tr><td><code>name</code></td><td>Label.</td></tr>
+    <tr><td><code>value</code></td><td>Starting state (default <code>false</code>).</td></tr>
+    <tr><td><code>description</code>, <code>icon</code></td><td>Optional.</td></tr>
+    <tr><td><code>flag</code></td><td>Save key. Defaults to the name without spaces.</td></tr>
+    <tr><td><code>forgetState</code></td><td><code>true</code> to never save it.</td></tr>
+    <tr><td><code>callback(value)</code></td><td>Runs with the new state.</td></tr>
+  </table></div>
+</section>
+
+<section id="slider">
+  <h2>Slider</h2>
+<pre><code>local WorkTime = Main.Right:CreateSlider({
+    name = "Work Time",
+    range = { 5, 120 },
+    increment = 5,
+    value = 30,
+    suffix = "min",
+    callback = function(value, dragging)
+        print(value)
+    end,
+})
+
+WorkTime:Set(60)</code></pre>
+  <div class="table-wrap"><table>
+    <tr><th>Option</th><th>Description</th></tr>
+    <tr><td><code>range</code></td><td><code>{ min, max }</code>.</td></tr>
+    <tr><td><code>increment</code></td><td>Step size (default <code>1</code>).</td></tr>
+    <tr><td><code>value</code></td><td>Starting value.</td></tr>
+    <tr><td><code>suffix</code></td><td>Text after the number, like <code>"min"</code> or <code>"%"</code>.</td></tr>
+    <tr><td><code>minimal</code></td><td>Just the bar, no label.</td></tr>
+    <tr><td><code>callback(value, dragging)</code></td><td><code>dragging</code> is <code>true</code> while held.</td></tr>
+  </table></div>
+</section>
+
+<section id="dropdown">
+  <h2>Dropdown</h2>
+<pre><code>local Job = Main.Left:CreateDropdown({
+    name = "Select Job",
+    options = { "Baker", "Cashier", "Delivery" },
+    value = "Baker",
+    callback = function(option)
+        print(option)
+    end,
+})
+
+Job:Set("Cashier")
+Job:Refresh({ "Baker", "Cashier", "Miner" }) -- replace the options
+Job:Add("Janitor")
+Job:Remove("Miner")</code></pre>
+  <p>With <code>multiSelect = true</code>, <code>value</code> is a list and the callback gets a list.</p>
+<pre><code>Main.Left:CreateDropdown({
+    name = "Modules",
+    options = { "ESP", "Tracers", "Chams" },
+    multiSelect = true,
+    value = { "ESP" },
+    placeholder = "None selected",
+    callback = function(selected)
+        print(table.concat(selected, ", "))
+    end,
+})</code></pre>
+</section>
+
+<section id="input">
+  <h2>Input</h2>
+<pre><code>Main.Left:CreateInput({
+    name = "Player Name",
+    placeholder = "Enter a name",
+    callback = function(text)
+        print(text)
+    end,
+})</code></pre>
+  <p><code>numeric = true</code> only allows numbers. <code>clearOnFocus = true</code> empties the box when clicked. The callback runs on Enter or when the box loses focus.</p>
+</section>
+
+<section id="keybind">
+  <h2>Keybind</h2>
+<pre><code>Main.Right:CreateKeybind({
+    name = "Sprint",
+    value = Enum.KeyCode.LeftShift,
+    callback = function(key)
+        print("pressed", key)
+    end,
+})
+
+-- hold mode: true when held, false when released
+Main.Right:CreateKeybind({
+    name = "Zoom",
+    value = Enum.KeyCode.C,
+    hold = true,
+    callback = function(holding)
+        print(holding)
+    end,
+})</code></pre>
+</section>
+
+<section id="colorpicker">
+  <h2>Color Picker</h2>
+<pre><code>Main.Right:CreateColorPicker({
+    name = "Highlight",
+    color = Color3.fromRGB(235, 90, 215),
+    callback = function(color, alpha)
+        print(color, alpha)
+    end,
+})</code></pre>
+  <p>Accepts a hex string for <code>color</code> too. <code>alpha</code> (0–1) sets the starting opacity.</p>
+</section>
+
+<section id="stat">
+  <h2>Stat</h2>
+  <p>A card that shows a number and how much it changed.</p>
+<pre><code>local Earnings = Main.Right:CreateStat({
+    name = "Shift Earnings",
+    prefix = "$",
+    value = 349,
+})
+
+Earnings:Set(Earnings.value + 50)</code></pre>
+  <p>Options: <code>prefix</code>, <code>suffix</code>, <code>compact</code> (a smaller card), <code>display = "change"</code> (show the change instead of the value on a compact card), <code>changeMode = "absolute"</code> (show the difference instead of a percentage).</p>
+</section>
+
+<section id="progress">
+  <h2>Progress</h2>
+<pre><code>local Download = Main.Right:CreateProgress({
+    name = "Download",
+    range = { 0, 100 },
+    value = 35,
+})
+
+Download:Set(80)
+Download:SetText("Almost done")
+
+Main.Right:CreateProgress({ name = "Setup", steps = 5, value = 2 })             -- segmented
+Main.Right:CreateProgress({ name = "Loading", indeterminate = true })          -- endless sweep</code></pre>
+</section>
+
+<section id="console">
+  <h2>Console</h2>
+  <p>A scrollable text box for logs.</p>
+<pre><code>local Log = Main.Right:CreateConsole({
+    name = "Console",
+    height = 120,
+    follow = true, -- stay scrolled to the newest line
+})
+
+Log:Append("[12:00] started")
+Log:Clear()
+Log:Copy() -- copies to clipboard where supported</code></pre>
+</section>
+
+<section id="notifications">
+  <h2>Notifications</h2>
+<pre><code>Window:Notify({
+    title = "Saved",
+    content = "Your settings were saved.",
+    duration = 5,
+    icon = 125823673784681,
+})</code></pre>
+  <p><code>duration</code> is optional. Without it, the notification stays longer for longer text.</p>
+</section>
+
+<section id="toasts">
+  <h2>Toasts</h2>
+  <p>A short message at the top or bottom of the screen.</p>
+<pre><code>Window:Toast({ title = "Heading to work" })
+Window:Toast({ title = "Saved", subtitle = "Pulse", position = "Bottom" })</code></pre>
+</section>
+
+<section id="popups">
+  <h2>Popups</h2>
+<pre><code>Window:Popup({
+    title = "Reset everything?",
+    content = "This can't be undone.",
+    options = {
+        { text = "Cancel" },
+        { text = "Reset", style = "danger", callback = function()
+            print("reset")
+        end },
+    },
+})</code></pre>
+  <p>Option styles: <code>"neutral"</code> (default), <code>"primary"</code>, <code>"danger"</code>.</p>
+</section>
+
+<section id="tags">
+  <h2>Tags</h2>
+  <p>Small badges next to the window title.</p>
+<pre><code>Window:CreateTag({ text = "Bloxburg", color = Color3.fromRGB(235, 90, 215) })</code></pre>
+</section>
+
+<section id="locking">
+  <h2>Locking</h2>
+  <p>Buttons, toggles, sliders, dropdowns, inputs, keybinds and color pickers can be locked. A locked element dims, ignores input and never fires its callback.</p>
+<pre><code>AutoFarm:Lock("Needs a premium key")
+AutoFarm:Unlock()
+print(AutoFarm:IsLocked())</code></pre>
+</section>
+
+<section id="saving">
+  <h2>Saving &amp; flags</h2>
+  <p>Turn on <code>configuration</code> in <code>CreateWindow</code> and element values save automatically. Each element is saved under its <code>flag</code>, which defaults to its name without spaces (<code>"Work Time"</code> becomes <code>WorkTime</code>).</p>
+<pre><code>print(Window.Flags.WorkTime)   -- read any saved value
+Window.Flags.WorkTime = 60      -- set it (updates the UI and runs the callback)
+
+Window:Save("PvP")              -- save a named config
+Window:Load("PvP")
+print(Window:ListConfigs())</code></pre>
+  <p>Files go in <code>RayfieldColumns/Configurations</code>. Players can also save and load configs from the settings page.</p>
+</section>
+
+<section id="theming">
+  <h2>Theming</h2>
+  <p>The Default theme is the only built-in theme. To change colors, pass a table with just the keys you want:</p>
+<pre><code>Window:ChangeTheme({
+    AccentColor = Color3.fromRGB(235, 90, 215),
+    SliderProgress = Color3.fromRGB(235, 90, 215),
+})</code></pre>
+</section>
+
+<section id="localization">
+  <h2>Localization</h2>
+  <p>Give translations keyed by language, using the English text as the key. Missing entries stay in English.</p>
+<pre><code>local Window = Rayfield:CreateWindow({
+    name = "Pulse",
+    translations = {
+        fr = { ["Auto Farm"] = "Farm auto" },
+    },
+})
+
+Window:SetLocale("fr")</code></pre>
+</section>
+
+<section id="credits">
+  <h2>Credits &amp; license</h2>
+  <p><a href="https://sirius.menu/products/rayfield">Rayfield</a> and Rayfield Gen2 are made by <a href="https://sirius.menu">Sirius</a>. Rayfield Gen2 is © 2026 Corridon Capital. Almost all of this library is their work.</p>
+  <p>Rayfield Columns adds the two-column layout. It's fan-made, unofficial and open source under the <a href="https://github.com/aesthetic143147-arch/Rayfiend-preview-Gen2/blob/main/LICENSE">Mozilla Public License 2.0</a>, the same license as Rayfield Gen2.</p>
+  <p>Source: <a href="https://github.com/aesthetic143147-arch/Rayfiend-preview-Gen2">github.com/aesthetic143147-arch/Rayfiend-preview-Gen2</a></p>
+</section>
+
+<footer>Rayfield Columns v1.0.0 · Not affiliated with Sirius.</footer>
+</main>
+</div>
+
+<script>
+  // copy buttons + light Lua highlighting
+  const KEYWORDS = /\b(local|function|end|if|then|else|elseif|return|for|in|do|while|not|and|or|true|false|nil)\b/g;
+  function highlight(src) {
+    const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return src.split("\n").map((line) => {
+      const out = [];
+      let rest = line;
+      const re = /(--.*$)|("(?:[^"\\]|\\.)*")|(\b\d+(?:\.\d+)?\b)/;
+      while (rest.length) {
+        const m = rest.match(re);
+        if (!m) { out.push(esc(rest).replace(KEYWORDS, '<span class="tk-k">$1</span>')); break; }
+        out.push(esc(rest.slice(0, m.index)).replace(KEYWORDS, '<span class="tk-k">$1</span>'));
+        const cls = m[1] ? "tk-c" : m[2] ? "tk-s" : "tk-n";
+        out.push('<span class="' + cls + '">' + esc(m[0]) + "</span>");
+        rest = rest.slice(m.index + m[0].length);
+      }
+      return out.join("");
+    }).join("\n");
+  }
+
+  document.querySelectorAll("pre").forEach((pre) => {
+    const code = pre.querySelector("code");
+    const raw = code.textContent;
+    code.innerHTML = highlight(raw);
+    const wrap = document.createElement("div");
+    wrap.className = "code";
+    pre.replaceWith(wrap);
+    wrap.appendChild(pre);
+    const btn = document.createElement("button");
+    btn.className = "copy";
+    btn.textContent = "Copy";
+    btn.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(raw); btn.textContent = "Copied"; }
+      catch { btn.textContent = "Press Ctrl+C"; const r = document.createRange(); r.selectNodeContents(code); getSelection().removeAllRanges(); getSelection().addRange(r); }
+      setTimeout(() => (btn.textContent = "Copy"), 1500);
+    });
+    wrap.appendChild(btn);
+  });
+
+  // search filters the sidebar
+  const links = [...document.querySelectorAll("nav a")];
+  const text = Object.fromEntries(links.map((a) => {
+    const s = document.querySelector(a.getAttribute("href"));
+    return [a.getAttribute("href"), (a.textContent + " " + (s ? s.textContent : "")).toLowerCase()];
+  }));
+  document.querySelector(".search").addEventListener("input", (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    links.forEach((a) => (a.style.display = !q || text[a.getAttribute("href")].includes(q) ? "" : "none"));
+    document.querySelectorAll("nav .group").forEach((g) => (g.style.display = q ? "none" : ""));
+  });
+
+  // highlight the current section
+  const sections = [...document.querySelectorAll("main section")];
+  const spy = () => {
+    let current = sections[0];
+    for (const s of sections) if (s.getBoundingClientRect().top < 120) current = s;
+    links.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === "#" + current.id));
+  };
+  addEventListener("scroll", spy, { passive: true });
+  spy();
+
+  // mobile menu
+  const aside = document.querySelector("aside");
+  document.querySelector(".menu").addEventListener("click", () => aside.classList.toggle("open"));
+  links.forEach((a) => a.addEventListener("click", () => aside.classList.remove("open")));
+</script>
+</body>
+</html>
