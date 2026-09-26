@@ -2392,7 +2392,7 @@ fontAsset='rbxassetid://12187365364'ae.pillResizeInfo=TweenInfo.new(0.4,Enum.Eas
 EasingDirection.Out)ae.icons={close=83277910885129,minimise=108115485663409,maximise=88738500661569,settings=
 129180860773723,search=100604009889706,chevron=88479147175134,check=125626312718314,dot=91452555903853,colorpicker=
 91452555903853,config=125823673784681,rayfield=80387863064905}ae.actionIconScale={[ae.icons.close]=1,[ae.icons.settings]
-=0.78,[ae.icons.search]=0.78,[ae.icons.minimise]=1.2,[ae.icons.maximise]=1.15}ae.builtInThemes={'Default','Amethyst',
+=0.95,[ae.icons.search]=1.05,[ae.icons.minimise]=1.2,[ae.icons.maximise]=1.15}ae.builtInThemes={'Default','Amethyst',
 'Cobalt','Ember','Frost','Rose'}ae.pageScrollbar={thickness=3,transparency=0.6}ae.accent={on=Color3.fromRGB(23,153,110),
 onStroke=Color3.fromRGB(32,201,144)}ae.statAccents={positive={fill=ColorSequence.new(Color3.fromRGB(0,170,127),Color3.
 fromRGB(0,134,98)),stroke=ColorSequence.new(Color3.fromRGB(0,213,156),Color3.fromRGB(0,189,135))},negative={fill=
@@ -2809,51 +2809,51 @@ scaleFor(c:Vector2?,d:ae.Mode?):number if not c or c.X<ag or c.Y<ag then return 
 min(c.X*am/e.defaultSize.X,c.Y*b/e.defaultSize.Y)return math.floor(math.clamp(f,af.minScale,1)*100)/100 end function af.
 fit(c:Vector2?,d:ae.Mode?):UDim2 local e=af.profile(d)if not c or c.X<ag or c.Y<ag then return UDim2.fromOffset(e.
 defaultSize.X,e.defaultSize.Y)end local f,g=math.min(c.X*e.maxOccupancyX,c.X-e.marginFloorX),ai(e,c.Y)if e.
-minAspectRatio then return al(e,f,g)end return ak(e,f,g)end return af end)()end},{{1,2,{'Rayfield'},{{32,1,{'themes'},{{
-33,2,{'amethyst'}},{38,2,{'rose'}},{37,2,{'frost'}},{36,2,{'ember'}},{35,2,{'default'}},{34,2,{'cobalt'}}}},{39,2,{
-'types'}},{40,1,{'utility'},{{68,2,{'runtime'}},{71,2,{'variables'}},{48,2,{'filesystemManager'}},{57,2,{'log'}},{63,2,{
-'persistence'}},{50,2,{'fontManager'}},{54,2,{'layouts'}},{47,2,{'filesystem'}},{46,2,{'enums'}},{51,2,{'functions'}},{
-58,2,{'moveable'}},{69,2,{'services'}},{72,2,{'windowSizing'}},{67,2,{'persistenceWrite'}},{49,2,{'flagNames'}},{59,2,{
-'network'}},{66,2,{'persistenceSettings'}},{44,2,{'columns'}},{64,2,{'persistenceConfig'}},{53,2,{'imageCache'}},{43,2,{
-'colors'}},{70,2,{'textMetrics'}},{61,2,{'ordering'}},{60,2,{'odometer'}},{45,2,{'constants'}},{56,2,{'lockable'}},{52,2
-,{'image'}},{55,2,{'locale'}},{62,2,{'path'}},{42,2,{'assetResolver'}},{65,2,{'persistencePaths'}},{41,2,{'HapticEngine'
-}}}},{2,1,{'components'},{{11,2,{'drag'}},{9,2,{'descriptor'}},{16,2,{'notification'}},{6,2,{'colorpicker'}},{26,2,{
-'tabSelector'}},{7,2,{'column'}},{31,2,{'window'}},{30,2,{'toggle'}},{8,2,{'console'}},{29,2,{'toast'}},{25,2,{
-'tabSection'}},{4,2,{'button'}},{27,2,{'tag'}},{28,2,{'text'}},{20,2,{'section'}},{17,2,{'popup'}},{24,2,{'tab'}},{23,2,
-{'stat'}},{13,2,{'group'}},{10,2,{'divider'}},{22,2,{'slider'}},{5,2,{'chrome'}},{19,2,{'search'}},{15,2,{'keybind'}},{
-18,2,{'progress'}},{14,2,{'input'}},{21,2,{'sidebar'}},{3,2,{'action'}},{12,2,{'dropdown'}}}}}}},'0.4.1','Rayfield',
-string,task,setmetatable,error,next,table,unpack,coroutine,script,type,require,pcall,xpcall,tostring,tonumber,_VERSION
-local j,k,l,m,n,o,p=aj.insert,aj.remove,aj.freeze or function(j)return j end,al.wrap,ae.sub,ae.match,ae.gmatch if h and
-n(h,1,4)=='Lune'then local q,r=d(c,'@lune/task')if q and r then af=r end end local q=af and af.defer local r,s,t,u,v,w,x
-,y,z=q or function(r,...)m(r)(...)end,{[1]='Folder',[2]='ModuleScript',[3]='Script',[4]='LocalScript',[5]='StringValue'}
-,{},{},{},{},{},{},{}local A,B={GetFullName={{},function(A)local B,C=A.Name,A.Parent while C do B=C.Name..'.'..B C=C.
-Parent end return B end},GetChildren={{},function(A)local B={}for C in ai,z[A]do j(B,C)end return B end},GetDescendants=
-{{},function(A)local B={}for C in ai,z[A]do j(B,C)for D,E in ai,C:GetDescendants()do j(B,E)end end return B end},
-FindFirstChild={{'string','boolean?'},function(A,B,C)local D=z[A]for E in ai,D do if E.Name==B then return E end end if
-C then for E in ai,D do return E:FindFirstChild(B,true)end end end},FindFirstAncestor={{'string'},function(A,B)local C=A
-.Parent while C do if C.Name==B then return C end C=C.Parent end end},WaitForChild={{'string','number?'},function(A,B)
-return A:FindFirstChild(B)end}},{}for C,D in ai,A do local E,F,G=D[1],D[2],{}for H,I in ai,E do local J,K=o(I,
-'^([^%?]+)(%??)')G[H]={J,K}end B[C]=function(H,...)if not z[H]then ah("Expected ':' not '.' calling member function "..C
-,2)end local I={...}for J,K in ai,G do local L=I[J]local M,N,O=b(L),K[1],K[2]if L==nil and not O then ah('Argument '..L
-..' missing or nil',3)end if N~='any'and M~=N and not(M=='nil'and O)then ah('Argument '..J..' expects type "'..N..
-'", got "'..M..'"',2)end end return F(H,...)end end local function C(D,E,F)local G,H=(ag({},{__mode='k'}))local function
-I(J)ah(J..' is not a valid (virtual) member of '..D..' "'..E..'"',3)end local function J(K)ah(
-'Unable to assign (virtual) property '..K..'. Property is read only',3)end local K,L={},{}L.__metatable=false L.__index=
-function(M,N)if N=='ClassName'then return D elseif N=='Name'then return E elseif N=='Parent'then return F elseif D==
-'StringValue'and N=='Value'then return H else local O=B[N]if O then return O end end for O in ai,G do if O.Name==N then
-return O end end I(N)end L.__newindex=function(M,N,O)if N=='ClassName'then J(N)elseif N=='Name'then E=O elseif N==
-'Parent'then if O==K then return end if F~=nil then z[F][K]=nil end F=O if O~=nil then z[O][K]=true end elseif D==
-'StringValue'and N=='Value'then H=O else I(N)end end L.__tostring=function()return E end ag(K,L)z[K]=G if F~=nil then z[
-F][K]=true end return K end local function D(E,F)local G,H,I,J=E[1],E[2],E[3],E[4]local K=s[H]local L=I and k(I,1)or K
-local M=C(K,L,F)t[G]=M if I then for N,O in ai,I do M[N]=O end end if J then for N,O in ai,J do D(O,M)end end return M
-end local E=C('Folder','['..ad..']')for F,G in ai,ab do D(G,E)end for F,G in ai,aa do local H=t[F]u[H]=G v[H]=F local I=
-H.ClassName if I=='LocalScript'or I=='Script'then j(x,H)end end local function F(G)local H,I=G.ClassName,w[G]if I and H
-=='ModuleScript'then return ak(I)end local J=u[G]local function K(L)local M,N,O=nil,d(function()return debug.traceback(
-nil,2)end)if N then M=O end return{Message=L,Traceback=M}end local function L(M)local N,O=f(M.Message),G:GetFullName()
-local P,Q=o(N,'[^:]+:(%d+): (.+)')local R if not P or not i then R=O..':*: '..(Q or N)else P=g(P)local S=v[G]local T=i[S
-]local U=P-T+1 if U<0 then U='?'end R=O..':'..U..': '..Q end local S=M.Traceback if S and S~=''then R=R..'\n'..S end
-return R end if H=='LocalScript'or H=='Script'then local M,N=e(J,K)if not M then ah(L(N),0)end else local M={e(J,K)}
-local N=k(M,1)if not N then local O=k(M,1)ah(L(O),0)end w[G]=M return ak(M)end end function a(G)local H=t[G]
+minAspectRatio then return al(e,f,g)end return ak(e,f,g)end return af end)()end},{{1,2,{'Rayfield'},{{2,1,{'components'}
+,{{11,2,{'drag'}},{31,2,{'window'}},{3,2,{'action'}},{30,2,{'toggle'}},{27,2,{'tag'}},{13,2,{'group'}},{8,2,{'console'}}
+,{20,2,{'section'}},{23,2,{'stat'}},{6,2,{'colorpicker'}},{28,2,{'text'}},{29,2,{'toast'}},{26,2,{'tabSelector'}},{25,2,
+{'tabSection'}},{16,2,{'notification'}},{14,2,{'input'}},{24,2,{'tab'}},{21,2,{'sidebar'}},{22,2,{'slider'}},{15,2,{
+'keybind'}},{19,2,{'search'}},{9,2,{'descriptor'}},{10,2,{'divider'}},{5,2,{'chrome'}},{18,2,{'progress'}},{12,2,{
+'dropdown'}},{17,2,{'popup'}},{4,2,{'button'}},{7,2,{'column'}}}},{40,1,{'utility'},{{46,2,{'enums'}},{72,2,{
+'windowSizing'}},{53,2,{'imageCache'}},{71,2,{'variables'}},{51,2,{'functions'}},{42,2,{'assetResolver'}},{49,2,{
+'flagNames'}},{70,2,{'textMetrics'}},{69,2,{'services'}},{64,2,{'persistenceConfig'}},{48,2,{'filesystemManager'}},{43,2
+,{'colors'}},{44,2,{'columns'}},{65,2,{'persistencePaths'}},{59,2,{'network'}},{50,2,{'fontManager'}},{62,2,{'path'}},{
+67,2,{'persistenceWrite'}},{41,2,{'HapticEngine'}},{57,2,{'log'}},{68,2,{'runtime'}},{63,2,{'persistence'}},{54,2,{
+'layouts'}},{61,2,{'ordering'}},{66,2,{'persistenceSettings'}},{60,2,{'odometer'}},{52,2,{'image'}},{55,2,{'locale'}},{
+58,2,{'moveable'}},{56,2,{'lockable'}},{45,2,{'constants'}},{47,2,{'filesystem'}}}},{32,1,{'themes'},{{36,2,{'ember'}},{
+38,2,{'rose'}},{33,2,{'amethyst'}},{35,2,{'default'}},{37,2,{'frost'}},{34,2,{'cobalt'}}}},{39,2,{'types'}}}}},'0.4.1',
+'Rayfield',string,task,setmetatable,error,next,table,unpack,coroutine,script,type,require,pcall,xpcall,tostring,tonumber
+,_VERSION local j,k,l,m,n,o,p=aj.insert,aj.remove,aj.freeze or function(j)return j end,al.wrap,ae.sub,ae.match,ae.gmatch
+if h and n(h,1,4)=='Lune'then local q,r=d(c,'@lune/task')if q and r then af=r end end local q=af and af.defer local r,s,
+t,u,v,w,x,y,z=q or function(r,...)m(r)(...)end,{[1]='Folder',[2]='ModuleScript',[3]='Script',[4]='LocalScript',[5]=
+'StringValue'},{},{},{},{},{},{},{}local A,B={GetFullName={{},function(A)local B,C=A.Name,A.Parent while C do B=C.Name..
+'.'..B C=C.Parent end return B end},GetChildren={{},function(A)local B={}for C in ai,z[A]do j(B,C)end return B end},
+GetDescendants={{},function(A)local B={}for C in ai,z[A]do j(B,C)for D,E in ai,C:GetDescendants()do j(B,E)end end return
+B end},FindFirstChild={{'string','boolean?'},function(A,B,C)local D=z[A]for E in ai,D do if E.Name==B then return E end
+end if C then for E in ai,D do return E:FindFirstChild(B,true)end end end},FindFirstAncestor={{'string'},function(A,B)
+local C=A.Parent while C do if C.Name==B then return C end C=C.Parent end end},WaitForChild={{'string','number?'},
+function(A,B)return A:FindFirstChild(B)end}},{}for C,D in ai,A do local E,F,G=D[1],D[2],{}for H,I in ai,E do local J,K=
+o(I,'^([^%?]+)(%??)')G[H]={J,K}end B[C]=function(H,...)if not z[H]then ah(
+"Expected ':' not '.' calling member function "..C,2)end local I={...}for J,K in ai,G do local L=I[J]local M,N,O=b(L),K[
+1],K[2]if L==nil and not O then ah('Argument '..L..' missing or nil',3)end if N~='any'and M~=N and not(M=='nil'and O)
+then ah('Argument '..J..' expects type "'..N..'", got "'..M..'"',2)end end return F(H,...)end end local function C(D,E,F
+)local G,H=(ag({},{__mode='k'}))local function I(J)ah(J..' is not a valid (virtual) member of '..D..' "'..E..'"',3)end
+local function J(K)ah('Unable to assign (virtual) property '..K..'. Property is read only',3)end local K,L={},{}L.
+__metatable=false L.__index=function(M,N)if N=='ClassName'then return D elseif N=='Name'then return E elseif N=='Parent'
+then return F elseif D=='StringValue'and N=='Value'then return H else local O=B[N]if O then return O end end for O in ai
+,G do if O.Name==N then return O end end I(N)end L.__newindex=function(M,N,O)if N=='ClassName'then J(N)elseif N=='Name'
+then E=O elseif N=='Parent'then if O==K then return end if F~=nil then z[F][K]=nil end F=O if O~=nil then z[O][K]=true
+end elseif D=='StringValue'and N=='Value'then H=O else I(N)end end L.__tostring=function()return E end ag(K,L)z[K]=G if
+F~=nil then z[F][K]=true end return K end local function D(E,F)local G,H,I,J=E[1],E[2],E[3],E[4]local K=s[H]local L=I
+and k(I,1)or K local M=C(K,L,F)t[G]=M if I then for N,O in ai,I do M[N]=O end end if J then for N,O in ai,J do D(O,M)end
+end return M end local E=C('Folder','['..ad..']')for F,G in ai,ab do D(G,E)end for F,G in ai,aa do local H=t[F]u[H]=G v[
+H]=F local I=H.ClassName if I=='LocalScript'or I=='Script'then j(x,H)end end local function F(G)local H,I=G.ClassName,w[
+G]if I and H=='ModuleScript'then return ak(I)end local J=u[G]local function K(L)local M,N,O=nil,d(function()return debug
+.traceback(nil,2)end)if N then M=O end return{Message=L,Traceback=M}end local function L(M)local N,O=f(M.Message),G:
+GetFullName()local P,Q=o(N,'[^:]+:(%d+): (.+)')local R if not P or not i then R=O..':*: '..(Q or N)else P=g(P)local S=v[
+G]local T=i[S]local U=P-T+1 if U<0 then U='?'end R=O..':'..U..': '..Q end local S=M.Traceback if S and S~=''then R=R..
+'\n'..S end return R end if H=='LocalScript'or H=='Script'then local M,N=e(J,K)if not M then ah(L(N),0)end else local M=
+{e(J,K)}local N=k(M,1)if not N then local O=k(M,1)ah(L(O),0)end w[G]=M return ak(M)end end function a(G)local H=t[G]
 local function I(J,...)local K={d(J,...)}local L=k(K,1)if not L then ah(K[1],3)end return ak(K)end local J=l(ag({},{
 __index=y,__newindex=function(J,K,L)y[K]=L end,__len=function()return#y end,__iter=function()return ai,y end}))local K,L
 =l{version=ac,envname=ad,shared=J,script=am,require=c},H local function M(N,...)local O,P,Q=b(N),

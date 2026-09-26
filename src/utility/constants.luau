@@ -37,13 +37,14 @@ constants.icons = {
 
 -- Every built-in theme, in the order the settings page lists them. Each name matches a module in
 -- themes/ (lowercased), so ChangeTheme(name) resolves it.
--- Title-bar icons don't fill their images equally: the close cross covers 70% of its box, the
--- cog and search 90%, the minimise bar only 50% of the width. Each is drawn at this multiple of
--- the button's icon size so they all look about as big as the cross.
+-- Title-bar icons don't fill their images equally, so each is drawn at its own multiple of the
+-- button's icon size. The search glyph is wide but short, so it gets a touch more; the cog's
+-- open spokes read lighter than a solid shape, so it stays near full size; the minimise bar
+-- only spans half its image, so it's widened to sit level with the close cross.
 constants.actionIconScale = {
     [constants.icons.close] = 1,
-    [constants.icons.settings] = 0.78,
-    [constants.icons.search] = 0.78,
+    [constants.icons.settings] = 0.95,
+    [constants.icons.search] = 1.05,
     [constants.icons.minimise] = 1.2,
     [constants.icons.maximise] = 1.15,
 }

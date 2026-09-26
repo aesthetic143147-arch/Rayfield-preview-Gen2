@@ -366,7 +366,7 @@ return function()
             expect(w.actionsListLayout.Padding.Offset).to.equal(5)
         end)
 
-        it("sizes each title-bar icon so its glyph looks about as big as the close cross", function()
+        it("keeps every title-bar icon about as big as the close cross", function()
             local w = wideWindow()
             local cross
             for _, action in w.actions do
@@ -374,9 +374,9 @@ return function()
                     cross = action.iconLabel.Size.X.Offset
                 end
             end
-            -- the cog and search glyphs fill more of their images, the minimise bar less
-            expect(w.settingsAction.iconLabel.Size.X.Offset < cross).to.equal(true)
-            expect(w.searchAction.iconLabel.Size.X.Offset < cross).to.equal(true)
+            -- none of them drawn noticeably smaller than the cross; the short ones a bit bigger
+            expect(w.settingsAction.iconLabel.Size.X.Offset >= cross - 1).to.equal(true)
+            expect(w.searchAction.iconLabel.Size.X.Offset > cross).to.equal(true)
             expect(w.minimiseAction.iconLabel.Size.X.Offset > cross).to.equal(true)
 
             -- swapping to the maximise icon resizes it for that glyph, and back again
