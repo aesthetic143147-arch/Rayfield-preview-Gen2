@@ -79,7 +79,7 @@ task.spawn(function()
 end)
 
 -- A floating OMNITY nameplate over your head (and, with a relay endpoint, over every other
--- Omnity user in the server)
+-- Omnity user in the server). Players set their own image or GIF in settings -> Nameplate.
 local Plates = Window:CreateNameplate({ title = "OMNITY", endpoint = nil })
 
 -- Community tab: a chat room backed by your Discord channel ---------------------------------
@@ -93,17 +93,6 @@ Community.Left:CreateChat({
     endpoint = nil, -- e.g. "https://your-relay.example.com"
     channel = "general",
     height = 300,
-})
-
-Community.Right:CreateSection({ name = "Your nameplate" })
-Community.Right:CreateInput({
-    name = "Nameplate GIF",
-    placeholder = "Paste an image or GIF link",
-    forgetState = true,
-    callback = function(link)
-        local ok, why = Plates:SetMedia(link)
-        Window:Toast({ title = if ok then "Nameplate updated" else "Couldn't set that", subtitle = why })
-    end,
 })
 
 Community.Right:CreateSection({ name = "About" })

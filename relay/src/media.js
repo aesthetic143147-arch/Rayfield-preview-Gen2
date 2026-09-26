@@ -18,6 +18,9 @@ export const DEFAULT_HOSTS = [
     'tr.rbxcdn.com',
 ];
 
+// Page links players paste; their scripts turn these into the image itself.
+export const PAGE_HOSTS = ['tenor.com', 'giphy.com', 'imgur.com'];
+
 const MAX_BYTES = 8 * 1024 * 1024;
 const MAX_SIDE = 1024;
 
@@ -28,6 +31,23 @@ export const FITS = {
 };
 
 export const mediaId = (url, fit) => createHash('sha1').update(`${fit}|${url}`).digest('hex').slice(0, 16);
+
+// A player's link, checked before it's shared: https, from an allowed host (or a Tenor, Giphy or
+// Imgur page), and not absurdly long.
+export function checkLink(url, hosts = DEFAULT_HOSTS) {
+    let parsed;
+    try {
+        parsed = new URL(url.trim());
+    } catch {
+        throw new MediaError('That isn’t a valid link.');
+    }
+    if (parsed.protocol !== 'https:') throw new MediaError('Links must start with https://');
+    if (!allowedHost(parsed.hostname, [...hosts, ...PAGE_HOSTS])) {
+        throw new MediaError(`Images can come from: ${[...hosts, ...PAGE_HOSTS].join(', ')}`);
+    }
+    if (parsed.href.length > 500) throw new MediaError('That link is too long.');
+    return parsed.href;
+}
 
 function allowedHost(hostname, hosts) {
     return hosts.some((host) => hostname === host || hostname.endsWith(`.${host}`));
@@ -130,6 +150,7 @@ export function createMediaStore({ dir, hosts = DEFAULT_HOSTS, fetcher = fetch, 
     const pngs = new Map();
     const pending = new Map();
     return {
+        hosts,
         async add(url, fit = 'banner') {
             if (!FITS[fit]) fit = 'banner';
             const id = mediaId(url, fit);

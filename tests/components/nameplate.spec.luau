@@ -136,7 +136,13 @@ return function()
 
         it("takes any style setting, presets included, and rebuilds on SetStyle", function()
             local plates, entry = plateFor({
-                style = { sparkles = 2, accent = Color3.fromRGB(255, 0, 0), size = Vector2.new(4, 1), bob = false },
+                style = {
+                    sparkles = 2,
+                    accent = Color3.fromRGB(255, 0, 0),
+                    sizeMode = "world",
+                    size = Vector2.new(4, 1),
+                    bob = false,
+                },
             })
             expect(#entry.parts.sparks).to.equal(2)
             expect(entry.parts.badge.BackgroundColor3).to.equal(Color3.fromRGB(255, 0, 0))
@@ -231,39 +237,28 @@ return function()
             expect(count).to.equal(6) -- every cell of the 3 x 2 grid shows up
         end)
 
-        it("plays a list of frames, and a GIF link goes through the relay", function()
-            local calls = {}
+        it("plays a list of frames, and a GIF link converts on this machine", function()
             local plates, entry = plateFor({
-                endpoint = "https://relay.example.com",
-                autoCheckIn = false,
-                transport = function(method, path, body)
-                    table.insert(calls, { method = method, path = path, body = body })
-                    return true,
-                        {
-                            id = "abcdef0123456789",
-                            frames = 4,
-                            columns = 2,
-                            frameWidth = 160,
-                            frameHeight = 160,
-                            fps = 8,
-                        }
-                end,
                 style = {
                     logo = "https://media.tenor.com/spin.gif",
                     backdrop = { images = { 1, 2, 3 }, fps = 4 },
                 },
             })
-            -- the test stands in for downloads
-            plates._download = function(_, _kind, source, fileName)
-                return "rbxasset://fake/" .. (fileName or source)
+            -- the test stands in for the converter
+            local asked = {}
+            plates._loadMedia = function(_, link, fit)
+                table.insert(asked, { link = link, fit = fit })
+                return {
+                    uri = "rbxasset://fake/spin.png",
+                    sheet = { frames = 4, columns = 2, frameWidth = 128, frameHeight = 128, fps = 8 },
+                }
             end
             plates:SetStyle({})
 
-            expect(calls[1].path).to.equal("/v1/media")
-            expect(calls[1].body.url).to.equal("https://media.tenor.com/spin.gif")
-            expect(calls[1].body.fit).to.equal("square")
-            expect(entry.parts.logo.Image).to.equal("rbxasset://fake/media_abcdef0123456789.png")
-            expect(entry.parts.logo.ImageRectSize).to.equal(Vector2.new(160, 160))
+            expect(asked[1].link).to.equal("https://media.tenor.com/spin.gif")
+            expect(asked[1].fit).to.equal("square")
+            expect(entry.parts.logo.Image).to.equal("rbxasset://fake/spin.png")
+            expect(entry.parts.logo.ImageRectSize).to.equal(Vector2.new(128, 128))
 
             local images = {}
             for i = 0, 3 do
@@ -280,45 +275,28 @@ return function()
             local plates = w:CreateNameplate({
                 endpoint = "https://relay.example.com",
                 autoCheckIn = false,
+                settings = false,
                 transport = function(method, path, body)
                     table.insert(calls, { method = method, path = path, body = body })
                     if path == "/v1/profile" then
-                        return true,
-                            {
-                                ok = true,
-                                token = "secret",
-                                media = {
-                                    id = "1111111111111111",
-                                    frames = 2,
-                                    columns = 2,
-                                    frameWidth = 160,
-                                    frameHeight = 160,
-                                    fps = 5,
-                                    slot = "logo",
-                                },
-                            }
+                        return true, { ok = true, token = "secret", media = body.media }
                     end
                     return true,
                         {
                             users = {
-                                {
-                                    id = 501,
-                                    media = {
-                                        id = "2222222222222222",
-                                        frames = 3,
-                                        columns = 3,
-                                        frameWidth = 320,
-                                        frameHeight = 80,
-                                        fps = 6,
-                                        slot = "backdrop",
-                                    },
-                                },
+                                { id = 501, media = { url = "https://giphy.com/gifs/wave-abc123", slot = "backdrop" } },
                             },
                         }
                 end,
             })
-            plates._download = function(_, _kind, source, fileName)
-                return "rbxasset://fake/" .. (fileName or source)
+            local converted = {}
+            plates._loadMedia = function(_, link)
+                table.insert(converted, link)
+                return {
+                    uri = "rbxasset://fake/" .. link,
+                    sheet = { frames = 3, columns = 3, frameWidth = 256, frameHeight = 64, fps = 6 },
+                },
+                    nil
             end
             plates._listPlayers = function()
                 return { alice }
@@ -326,24 +304,26 @@ return function()
 
             plates:CheckIn()
             local entry = plates.plates[alice]
-            expect(entry.parts.backdrop.Image).to.equal("rbxasset://fake/media_2222222222222222.png")
-            expect(entry.parts.backdrop.ImageRectSize).to.equal(Vector2.new(320, 80))
+            expect(entry.parts.backdrop.Image).to.equal("rbxasset://fake/https://giphy.com/gifs/wave-abc123")
+            expect(entry.parts.backdrop.ImageRectSize).to.equal(Vector2.new(256, 64))
 
             -- a dev can turn players' images off
             plates.playerMedia = false
             plates:_applyImages(entry)
-            expect(entry.parts.backdrop.Image).never.to.equal("rbxasset://fake/media_2222222222222222.png")
+            expect(entry.parts.backdrop.Image).never.to.equal("rbxasset://fake/https://giphy.com/gifs/wave-abc123")
             plates.playerMedia = true
 
-            -- setting your own: sent with the slot, the token kept for next time
-            local ok = plates:SetMedia("https://media.tenor.com/me.gif", "logo")
+            -- setting your own: converted here first, then the link is shared, token kept
+            local ok, note = plates:SetMedia("  https://tenor.com/view/me-gif-1  ", "logo")
             expect(ok).to.equal(true)
+            expect(note:find("Everyone", 1, true)).to.be.ok()
+            expect(converted[#converted]).to.equal("https://tenor.com/view/me-gif-1")
             local put = calls[#calls]
             expect(put.method).to.equal("PUT")
             expect(put.body.media.slot).to.equal("logo")
-            expect(put.body.media.url).to.equal("https://media.tenor.com/me.gif")
+            expect(put.body.media.url).to.equal("https://tenor.com/view/me-gif-1")
             expect(plates:_token()).to.equal("secret")
-            expect(plates.users[12345].media.id).to.equal("1111111111111111")
+            expect(plates.users[12345].media.url).to.equal("https://tenor.com/view/me-gif-1")
 
             expect(plates:ClearMedia()).to.equal(true)
             expect(calls[#calls].method).to.equal("DELETE")
@@ -351,12 +331,47 @@ return function()
             expect(plates.users[12345].media).to.equal(nil)
         end)
 
-        it("says why when custom images can't work", function()
+        it("works without a relay for your own plate, and says why when a link fails", function()
             local plates = plateFor()
-            local ok, reason = plates:SetMedia("https://media.tenor.com/x.gif")
-            expect(ok).to.equal(false)
-            expect(reason:find("relay", 1, true)).to.be.ok()
-            expect(plates:ClearMedia()).to.equal(false)
+            plates._loadMedia = function(_, link)
+                if link == "broken" then
+                    return nil, "No file called broken."
+                end
+                return { uri = "rbxasset://fake/me.png" }
+            end
+            local ok, note = plates:SetMedia("https://i.imgur.com/abc.png")
+            expect(ok).to.equal(true)
+            expect(note:find("Only you", 1, true)).to.be.ok()
+            local failed, why = plates:SetMedia("broken")
+            expect(failed).to.equal(false)
+            expect(why).to.equal("No file called broken.")
+            expect(plates:ClearMedia()).to.equal(true)
+        end)
+
+        it("stays the same size on screen however far away, and adds a Nameplate section to settings", function()
+            local w = makeWindow()
+            local me = variables.localPlayer
+            me.Character = character()
+            local plates = w:CreateNameplate({})
+            local entry = plates.plates[me]
+            me.Character = nil
+            local scale = w.scale or 1
+            expect(entry.gui.Size).to.equal(UDim2.fromOffset(math.round(210 * scale), math.round(50 * scale)))
+            expect(entry.gui.MaxDistance).to.equal(1000)
+
+            local names = {}
+            for _, element in w.rfSettings.elements do
+                names[element.name or ""] = true
+            end
+            expect(names["My image or GIF"]).to.equal(true)
+            expect(names["Show nameplates"]).to.equal(true)
+            expect(names["Remove my image"]).to.equal(true)
+
+            -- the world-sized look is still there for anyone who wants it
+            plates:SetStyle({ sizeMode = "world" })
+            expect(plates.plates[me] == nil or plates.plates[me].gui == nil or plates.plates[me].gui.Size.X.Offset == 0).to.equal(
+                true
+            )
         end)
 
         it("hides and shows every plate, and renames them", function()

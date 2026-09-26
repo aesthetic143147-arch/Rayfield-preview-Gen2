@@ -247,7 +247,9 @@ export type ChatProps = {
 -- Every look setting of a nameplate. A preset fills them all; `style` overrides any of them.
 -- Images take a file in the repo's assets/ ("x.png"), an asset id, any image URI, or false.
 export type NameplateStyle = {
-    size: Vector2?, -- studs (default 5.6 x 1.35)
+    sizeMode: ("screen" | "world")?, -- screen: same size at any distance (default)
+    screenSize: Vector2?, -- pixels in screen mode (default 210 x 50)
+    size: Vector2?, -- studs in world mode
     lift: number?, -- studs above the head
     maxDistance: number?,
     cornerRadius: number?,
@@ -305,6 +307,7 @@ export type NameplateProps = {
     checkInInterval: number?, -- seconds between relay check-ins (default 20)
     autoCheckIn: boolean?, -- false: never check in on its own; call CheckIn yourself
     playerMedia: boolean?, -- false: ignore players' own images (default true)
+    settings: boolean?, -- false: no Nameplate section on the settings page
     -- shorthands for the style keys of the same name
     accent: Color3?,
     logo: (string | number | boolean)?,

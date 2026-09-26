@@ -4,7 +4,7 @@
 
 const MAX_BODY = 4096;
 
-import { MediaError } from './media.js';
+import { checkLink, MediaError, mediaId } from './media.js';
 
 export function createHandler({ core, send, key, media }) {
     return async function handle(req, res) {
@@ -57,9 +57,11 @@ export function createHandler({ core, send, key, media }) {
                             claim.clear();
                             return reply(200, { ok: true, token: claim.token });
                         }
+                        // just the link: every player's script converts it itself, so nothing here can
+                        // fail on an odd GIF, and the relay never has to fetch it
                         const slot = body.media.slot === 'logo' ? 'logo' : 'backdrop';
-                        const meta = await media.add(String(body.media.url), slot === 'logo' ? 'square' : 'banner');
-                        const saved = { ...meta, slot };
+                        const link = checkLink(String(body.media.url), media.hosts);
+                        const saved = { url: link, slot, id: mediaId(link, slot) };
                         claim.save(saved);
                         return reply(200, { ok: true, token: claim.token, media: saved });
                     }

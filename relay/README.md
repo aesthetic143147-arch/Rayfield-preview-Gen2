@@ -17,10 +17,10 @@ players' scripts  ⇄  this relay (holds your bot token)  ⇄  your Discord chan
 - **Nameplates:** players running the script check in every 20 seconds with the Roblox server
   they're in, and get back everyone else there who's running it, so each of them can see the
   others' nameplates. Give people badges with `BADGES=`.
-- **Nameplate images:** players can put their own image or GIF on their plate. The relay downloads
-  it from an allowed host (8 MB at most), turns a GIF into a sprite sheet Roblox can play, and
-  shows it to everyone. Each player gets a token the first time, so nobody else can change theirs.
-  Moderators remove one with `!platereset <robloxId>`.
+- **Nameplate images:** players share the link to their own image or GIF, and the relay hands it
+  to everyone in their server; each script converts it itself. Links must be https, from an
+  allowed host or a Tenor, Giphy or Imgur page. Each player gets a token the first time, so nobody
+  else can change theirs. Moderators remove one with `!platereset <robloxId>`.
 - **Bans:** in the channel, anyone with Manage Messages can type `!chatban <robloxId>`,
   `!chatunban <robloxId>` or `!chatbans`. Bans are saved in `data/bans.json`.
 
@@ -108,7 +108,7 @@ POST   /v1/media     { "url", "fit": "banner" | "square" }       convert a link
   200 { "id", "frames", "columns", "frameWidth", "frameHeight", "fps", "fit" }
 GET    /v1/media/{id}.png                                          the sprite sheet
 PUT    /v1/profile   { "user", "token"?, "media": { "url", "slot": "backdrop" | "logo" } }
-  200 { "ok": true, "token", "media": { …, "slot" } }   the token is needed for later changes
+  200 { "ok": true, "token", "media": { "url", "slot", "id" } }   the token is needed for later changes
 DELETE /v1/profile   { "user", "token" }
 Check-ins include each player's `media`, if they set one.
 

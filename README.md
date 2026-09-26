@@ -199,7 +199,7 @@ Plates:SetStyle("Mono")                    -- or switch preset (your overrides s
 
 | Group | Settings |
 | --- | --- |
-| Shape | `size` (studs), `lift`, `maxDistance`, `cornerRadius` |
+| Shape | `sizeMode` (`"screen"` or `"world"`), `screenSize` (pixels), `size` (studs), `lift`, `maxDistance`, `cornerRadius` |
 | Colour | `accent`, `accentDeep`, `cardColor`, `cardTransparency`, `veilColor`, `veilStrength`, `titleColor`, `subtitleColor`, `badgeTextColor`, `sparkleColor` |
 | Images | `logo`, `logoTint`, `logoScale`, `backdrop`, `backdropTint`, `backdropTransparency`, `glowImage` (each can be `false`) |
 | Type | `titleFont`, `subtitleFont` (a `Font`), `titleTop`, `titleSize`, `subtitleSize` |
@@ -210,33 +210,39 @@ Other options: `subtitle` (a string or `function(player)`), `showSelf` (default 
 `SetTitle`, `SetEnabled`, `Add(player, badge?)`, `Remove(player)`, `CheckIn()`, `Destroy()`.
 
 **Images and GIFs.** `logo` and `backdrop` take a still image, a sprite sheet or a list of frames,
-and with a relay, any image or GIF link:
+and any image or GIF link (a Tenor, Giphy or Imgur page works too):
 
 ```lua
 style = {
-    backdrop = "https://media.tenor.com/abc/banner.gif",   -- converted by the relay
+    backdrop = "https://tenor.com/view/some-gif-123",      -- converted on the player's machine
     logo = { sheet = 1234567890, frames = 12, columns = 4, frameSize = Vector2.new(128, 128), fps = 12 },
     -- or: logo = { images = { 111, 222, 333 }, fps = 6 },
 }
 ```
 
-Roblox can't play GIFs, so the relay turns each one into a sprite sheet (every frame cut to the
-plate's shape and packed into one image of at most 1024×1024), and the plate steps through it.
+Roblox can't play GIFs, so the script decodes each one itself and packs its frames into a sprite
+sheet (at most 1024×1024), then steps through it. No server needed.
 
-**Players' own images.** Each player can put their own image or GIF on their plate, and everyone
-else running the script sees it:
+**Players' own images and GIFs.** Every player gets a **Nameplate** section on the settings page
+(the cog), with no setup needed:
 
-```lua
-local ok, why = Plates:SetMedia("https://media.tenor.com/xyz/me.gif")          -- the whole card
-local ok, why = Plates:SetMedia("https://i.imgur.com/abc.png", "logo")          -- the square spot
-Plates:ClearMedia()
-```
+1. Find a GIF on Tenor, Giphy or Imgur and copy the page link (or any direct image link).
+2. Open settings → Nameplate, paste it into **My image or GIF**, and press Enter.
+3. Pick **Card** or **Logo** for where it shows. **Remove my image** takes it off.
 
-Hook it to an input so players can paste a link. The example script does this. Links must come
-from Discord, Imgur, Tenor, Giphy, GitHub or Roblox's CDN (change the list with `MEDIA_HOSTS` on the
-relay). The first time a player sets an image, the relay gives their script a token (saved in the
-workspace), so nobody else can change it. Moderators remove one from Discord with
-`!platereset <robloxId>`. Pass `playerMedia = false` to show only your own artwork.
+It shows on your plate straight away and comes back every time you run the script. GIFs are
+converted on your own machine, so no server is needed for your own plate. You can also drop a file
+into `workspace/RayfieldColumns/Nameplate/` and type its name (`cat.gif`). PNG and JPG work as
+they are. WebP doesn't.
+
+With a relay (`endpoint`), everyone else running the script sees your image too. Without one,
+only you do. The relay only shares the link: each player's script converts it. The first time you
+share one, the relay gives your script a token (saved in the workspace) so nobody else can change
+yours. Moderators remove one from Discord with `!platereset <robloxId>`. Pass `playerMedia =
+false` to show only your own artwork, or `settings = false` to leave the settings page alone.
+
+From code: `Plates:SetMedia(link, "backdrop" | "logo")` returns ok and a note, and
+`Plates:ClearMedia()` clears it.
 
 **Who sees what.** Plates are drawn locally, so only people running the script see them. To show
 plates over *other* users, each player checks in with the relay every 20 seconds and gets back

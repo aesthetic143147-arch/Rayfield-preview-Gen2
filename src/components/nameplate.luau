@@ -40,6 +40,7 @@ local services = require(utility.services)
 local relayClient = require(utility.relayClient)
 local imageCache = require(utility.imageCache)
 local animatedImage = require(utility.animatedImage)
+local mediaLoader = require(utility.mediaLoader)
 local filesystem = require(utility.filesystem)
 local path = require(utility.path)
 
@@ -51,9 +52,11 @@ local white = Color3.new(1, 1, 1)
 local presets = {
     Omnity = {
         -- shape and placement (studs)
-        size = Vector2.new(4.4, 1.05),
-        lift = 2.4, -- above the head
-        maxDistance = 100,
+        sizeMode = "screen", -- "screen": the same size however far away; "world": sized in studs
+        screenSize = Vector2.new(210, 50), -- pixels, in "screen" mode (scaled with the window)
+        size = Vector2.new(4.4, 1.05), -- studs, in "world" mode
+        lift = 2.4, -- studs above the head
+        maxDistance = 1000, -- studs before it fades out
         cornerRadius = 0.26, -- of the card's height
 
         -- colour
@@ -204,12 +207,14 @@ function Nameplate.new(window, properties)
         checkInInterval = math.max(tonumber(properties.checkInInterval) or defaultCheckIn, 5),
         autoCheckIn = properties.autoCheckIn ~= false, -- false: call CheckIn yourself
         playerMedia = properties.playerMedia ~= false, -- false: ignore players' own images
+        settingsSection = properties.settings ~= false, -- false: no Nameplate section in settings
 
         enabled = true,
         plates = {}, -- player -> plate
         users = {}, -- userId -> { badge }
         images = {}, -- setting name -> visual (see utility/animatedImage) once loaded
         _sheets = {}, -- relay media id -> visual, so a GIF many players use downloads once
+        _loaded = {}, -- link|fit -> visual, so a GIF many players use converts once
         _dying = {},
         _alive = true,
     }, Nameplate)
@@ -246,6 +251,10 @@ function Nameplate.new(window, properties)
     if (self.endpoint or self.transport) and self.autoCheckIn then
         self:_startCheckIns()
     end
+    if self.settingsSection then
+        self:_buildSettings()
+    end
+    self:_restoreOwnMedia()
 
     return self
 end
@@ -309,12 +318,13 @@ function Nameplate:_resolveVisual(spec, fit)
             local uri = self:_download("remote", spec)
             return if uri then { uri = uri } else nil
         elseif spec:match("^https?://") then
-            return self:_relayVisual(spec, fit)
+            return self:_loadMedia(spec, fit) or self:_relayVisual(spec, fit)
         end
         return { uri = spec }
     elseif type(spec) == "table" then
         if spec.gif or spec.url then
-            return self:_relayVisual(tostring(spec.gif or spec.url), fit)
+            local link = tostring(spec.gif or spec.url)
+            return self:_loadMedia(link, fit) or self:_relayVisual(link, fit)
         elseif spec.sheet then
             local base = self:_resolveVisual(spec.sheet, fit)
             if not base or not base.uri then
@@ -346,7 +356,21 @@ function Nameplate:_resolveVisual(spec, fit)
     return nil
 end
 
--- A link converted by the relay into a sprite sheet.
+-- A link or workspace file, converted on this machine (see utility/mediaLoader). Remembered, so a
+-- GIF several players use is only converted once. Returns visual, or nil and why.
+function Nameplate:_loadMedia(link, fit)
+    local key = tostring(link) .. "|" .. tostring(fit)
+    if self._loaded[key] then
+        return self._loaded[key]
+    end
+    local visual, why = mediaLoader.load(link, fit)
+    if visual then
+        self._loaded[key] = visual
+    end
+    return visual, why
+end
+
+-- A link converted by the relay into a sprite sheet (for formats this machine can't decode).
 function Nameplate:_relayVisual(url, fit)
     if not self.endpoint and not self.transport then
         return nil
@@ -410,24 +434,31 @@ function Nameplate:_applyImages(plate)
     }
 end
 
--- A player's own image, from their check-in. Downloads once per image, then applies.
+-- A player's own image, from their check-in (a link, or an older relay's converted sheet).
+-- Converts once per image, then applies.
 function Nameplate:_syncMedia(plate)
     local info = self.users[plate.player.UserId]
     local meta = info and info.media
-    local id = if type(meta) == "table" then meta.id else nil
-    if id == plate.mediaId then
+    local key = if type(meta) == "table" then (meta.url or meta.id) else nil
+    if key == plate.mediaId then
         return
     end
-    plate.mediaId = id
-    if not id or not self.playerMedia then
+    plate.mediaId = key
+    if not key or not self.playerMedia then
         plate.media = nil
         self:_applyImages(plate)
         return
     end
     task.spawn(function()
-        local visual = self:_sheetVisual(meta)
-        if plate.mediaId ~= id then
-            return -- changed again while downloading
+        local visual = nil
+        if type(meta.url) == "string" then
+            visual = self:_loadMedia(meta.url, if meta.slot == "logo" then "square" else "banner")
+        end
+        if not visual and meta.id then
+            visual = self:_sheetVisual(meta)
+        end
+        if plate.mediaId ~= key then
+            return -- changed again while loading
         end
         plate.media = if visual then { visual = visual, slot = meta.slot } else nil
         self:_applyImages(plate)
@@ -512,8 +543,13 @@ end
 
 -- Layout, in the plate's own coordinates: everything is a fraction of its width (x) or height (y),
 -- so the plate keeps its proportions at any size.
+local function plateSize(style)
+    return if style.sizeMode == "world" then style.size else style.screenSize
+end
+
 local function layoutFor(style)
-    local aspect = style.size.X / style.size.Y
+    local size = plateSize(style)
+    local aspect = size.X / size.Y
     local logoLeft = 0.14 / aspect
     local logoCenter = logoLeft + style.logoScale / 2 / aspect
     return {
@@ -591,7 +627,14 @@ function Nameplate:_attach(player, character)
     local gui = w:Create("BillboardGui", {
         Name = "Nameplate",
         Adornee = head,
-        Size = UDim2.fromScale(style.size.X, style.size.Y), -- studs: it lives in the world
+        -- "screen": the same size on screen at any distance (and with the window's scale); "world":
+        -- studs, so it shrinks as you move away
+        Size = if style.sizeMode == "world"
+            then UDim2.fromScale(style.size.X, style.size.Y)
+            else UDim2.fromOffset(
+                math.round(style.screenSize.X * (self.window.scale or 1)),
+                math.round(style.screenSize.Y * (self.window.scale or 1))
+            ),
         StudsOffset = Vector3.new(0, style.lift, 0),
         MaxDistance = style.maxDistance,
         AlwaysOnTop = false, -- walls hide it, so it belongs to the world rather than the screen
@@ -1180,39 +1223,82 @@ function Nameplate:_saveToken(token)
     end)
 end
 
--- Put your own image or GIF on your plate, for everyone running the script to see. `link` is an
--- image or GIF link (Discord, Tenor, Giphy, Imgur, …); `slot` is "backdrop" (default, the whole
--- card) or "logo" (the square on the left). Returns ok and, if not, why.
+-- Your last choice, kept in the workspace so it comes back next time you run the script.
+local function choicePath()
+    return path.join(variables.fileSystemManager:getRootFolder(), "nameplate.json")
+end
+
+function Nameplate:_saveChoice(choice)
+    pcall(function()
+        filesystem.ensureFolder(variables.fileSystemManager:getRootFolder())
+        filesystem.writefile(choicePath(), variables.httpService:JSONEncode(choice or {}))
+    end)
+end
+
+function Nameplate:_restoreOwnMedia()
+    local ok, choice = pcall(function()
+        return if filesystem.isfile(choicePath())
+            then variables.httpService:JSONDecode(filesystem.readfile(choicePath()))
+            else nil
+    end)
+    if ok and type(choice) == "table" and type(choice.link) == "string" and choice.link ~= "" then
+        task.spawn(function()
+            self:SetMedia(choice.link, choice.slot)
+        end)
+    end
+end
+
+-- Put your own image or GIF on your plate. `link` is anything you'd paste: a Tenor, Giphy or Imgur
+-- page, a direct image or GIF link, or the name of a file in workspace/RayfieldColumns/Nameplate.
+-- `slot` is "backdrop" (default, the whole card) or "logo" (the square on the left).
+--
+-- It shows on your plate straight away and comes back next time. With a relay, everyone else
+-- running the script sees it too. Returns ok and a note (why it failed, or who can see it).
 function Nameplate:SetMedia(link: string, slot: string?): (boolean, string?)
+    link = tostring(link or ""):gsub("^%s+", ""):gsub("%s+$", "")
+    slot = if slot == "logo" then "logo" else "backdrop"
+    if link == "" then
+        return false, "Paste a link or a file name."
+    end
+    local visual, why = self:_loadMedia(link, if slot == "logo" then "square" else "banner")
+    if not visual then
+        return false, why or "Couldn't load that."
+    end
+    self:_saveChoice({ link = link, slot = slot })
+    self:_setOwnMedia({ url = link, slot = slot })
+
+    if not link:match("^https?://") then
+        return true, "Only you can see files from your workspace."
+    end
     if not self.endpoint and not self.transport then
-        return false, "Custom images need a relay (endpoint)."
+        return true, "Only you can see it: this hub has no relay to share it."
     end
     local body = self:_identity()
     body.token = self:_token()
-    body.media = { url = tostring(link), slot = if slot == "logo" then "logo" else "backdrop" }
+    body.media = { url = link, slot = slot }
     local ok, data = relayClient.request(self, "PUT", "/v1/profile", body)
     if not ok or type(data) ~= "table" then
-        return false,
-            if type(data) == "table" and type(data.error) == "string" then data.error else "Couldn't set that image."
+        local reason = if type(data) == "table" and type(data.error) == "string" then data.error else "no answer"
+        return true, "Set for you, but others can't see it yet (" .. reason .. ")."
     end
     self:_saveToken(data.token)
-    self:_setOwnMedia(data.media)
-    return true
+    return true, "Everyone running the script can see it."
 end
 
 -- Take your own image off your plate.
 function Nameplate:ClearMedia(): boolean
+    self:_saveChoice({})
+    self:_setOwnMedia(nil)
     if not self.endpoint and not self.transport then
-        return false
+        return true
     end
     local body = self:_identity()
     body.token = self:_token()
     local ok, data = relayClient.request(self, "DELETE", "/v1/profile", body)
     if ok and type(data) == "table" then
         self:_saveToken(data.token)
-        self:_setOwnMedia(nil)
     end
-    return ok
+    return true
 end
 
 function Nameplate:_setOwnMedia(media)
@@ -1225,6 +1311,53 @@ function Nameplate:_setOwnMedia(media)
     if self.plates[me] then
         self:_syncMedia(self.plates[me])
     end
+end
+
+-- A Nameplate section on the window's settings page (the cog): show or hide plates, and set your
+-- own image or GIF by pasting a link.
+function Nameplate:_buildSettings()
+    local settings = self.window.rfSettings
+    if not settings or not settings.CreateSection then
+        return
+    end
+    local slot = "backdrop"
+    settings:CreateSection({ name = "Nameplate" })
+    settings:CreateToggle({
+        name = "Show nameplates",
+        value = true,
+        callback = function(on)
+            self:SetEnabled(on)
+        end,
+    })
+    settings:CreateDropdown({
+        name = "Show my image on",
+        options = { "Card", "Logo" },
+        value = "Card",
+        callback = function(value)
+            local choice = if type(value) == "table" then value[1] else value
+            slot = if choice == "Logo" then "logo" else "backdrop"
+        end,
+    })
+    settings:CreateInput({
+        name = "My image or GIF",
+        placeholder = "Paste a Tenor, Giphy or Imgur link",
+        callback = function(text)
+            if text == "" then
+                return
+            end
+            task.spawn(function()
+                local ok, note = self:SetMedia(text, slot)
+                self.window:Toast({ title = if ok then "Nameplate updated" else "Couldn't use that", subtitle = note })
+            end)
+        end,
+    })
+    settings:CreateButton({
+        name = "Remove my image",
+        callback = function()
+            self:ClearMedia()
+            self.window:Toast({ title = "Nameplate image removed" })
+        end,
+    })
 end
 
 -- Give a player a plate yourself (for a backend other than the relay), with an optional badge.
