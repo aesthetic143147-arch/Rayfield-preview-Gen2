@@ -62,7 +62,7 @@ return function()
             expect(entry).to.be.ok()
             expect(entry.gui.ClassName).to.equal("BillboardGui")
             expect(entry.gui.Adornee).to.equal(head)
-            expect(entry.gui.AlwaysOnTop).to.equal(false)
+            expect(entry.gui.AlwaysOnTop).to.equal(true)
             expect(entry.parts.title.Text).to.equal("OMNITY")
             expect(entry.parts.subtitle.Text).to.equal("@SpecUser")
             expect(entry.parts.badge.Visible).to.equal(true)
@@ -239,10 +239,7 @@ return function()
 
         it("plays a list of frames, and a GIF link converts on this machine", function()
             local plates, entry = plateFor({
-                style = {
-                    logo = "https://media.tenor.com/spin.gif",
-                    backdrop = { images = { 1, 2, 3 }, fps = 4 },
-                },
+                style = { backdrop = "https://media.tenor.com/spin.gif" },
             })
             -- the test stands in for the converter
             local asked = {}
@@ -250,22 +247,31 @@ return function()
                 table.insert(asked, { link = link, fit = fit })
                 return {
                     uri = "rbxasset://fake/spin.png",
-                    sheet = { frames = 4, columns = 2, frameWidth = 128, frameHeight = 128, fps = 8 },
+                    sheet = { frames = 4, columns = 2, frameWidth = 256, frameHeight = 64, fps = 8 },
                 }
             end
             plates:SetStyle({})
-
             expect(asked[1].link).to.equal("https://media.tenor.com/spin.gif")
-            expect(asked[1].fit).to.equal("square")
-            expect(entry.parts.logo.Image).to.equal("rbxasset://fake/spin.png")
-            expect(entry.parts.logo.ImageRectSize).to.equal(Vector2.new(128, 128))
+            expect(asked[1].fit).to.equal("banner")
+            expect(entry.parts.backdrop.Image).to.equal("rbxasset://fake/spin.png")
+            expect(entry.parts.backdrop.ImageRectSize).to.equal(Vector2.new(256, 64))
 
+            plates:SetStyle({ backdrop = { images = { 1, 2, 3 }, fps = 4 } })
             local images = {}
             for i = 0, 3 do
                 plates:_step(entry.born + 2 + i * 0.25)
                 images[entry.parts.backdrop.Image] = true
             end
             expect(images["rbxassetid://1"] and images["rbxassetid://2"] and images["rbxassetid://3"]).to.equal(true)
+        end)
+
+        it("keeps the Omnity mark no matter what anyone asks for", function()
+            local plates = plateFor({ logo = 123, style = { logo = "https://example.com/other.gif" } })
+            expect(plates.style.logo).to.equal("omnity-logo.png")
+            plates:SetStyle({ logo = 999 })
+            expect(plates.style.logo).to.equal("omnity-logo.png")
+            plates:SetStyle("Mono")
+            expect(plates.style.logo).to.equal("omnity-logo.png")
         end)
 
         it("shows a player's own GIF on their plate, and lets you set yours", function()
@@ -314,13 +320,18 @@ return function()
             plates.playerMedia = true
 
             -- setting your own: converted here first, then the link is shared, token kept
-            local ok, note = plates:SetMedia("  https://tenor.com/view/me-gif-1  ", "logo")
+            local ok, note = plates:SetMedia("  https://tenor.com/view/me-gif-1  ")
             expect(ok).to.equal(true)
             expect(note:find("Everyone", 1, true)).to.be.ok()
             expect(converted[#converted]).to.equal("https://tenor.com/view/me-gif-1")
             local put = calls[#calls]
             expect(put.method).to.equal("PUT")
-            expect(put.body.media.slot).to.equal("logo")
+            expect(put.body.media.slot).to.equal("backdrop")
+            -- your own plate shows it at once, without waiting for anything
+            local mine = plates.plates[variables.localPlayer]
+            if mine and mine.parts then
+                expect(mine.parts.backdrop.Image).to.equal("rbxasset://fake/https://tenor.com/view/me-gif-1")
+            end
             expect(put.body.media.url).to.equal("https://tenor.com/view/me-gif-1")
             expect(plates:_token()).to.equal("secret")
             expect(plates.users[12345].media.url).to.equal("https://tenor.com/view/me-gif-1")
@@ -358,6 +369,7 @@ return function()
             local scale = w.scale or 1
             expect(entry.gui.Size).to.equal(UDim2.fromOffset(math.round(210 * scale), math.round(50 * scale)))
             expect(entry.gui.MaxDistance).to.equal(1000)
+            expect(entry.gui.AlwaysOnTop).to.equal(true)
 
             local names = {}
             for _, element in w.rfSettings.elements do
@@ -372,6 +384,34 @@ return function()
             expect(plates.plates[me] == nil or plates.plates[me].gui == nil or plates.plates[me].gui.Size.X.Offset == 0).to.equal(
                 true
             )
+        end)
+
+        it("grows up close, and only your own plate steps aside in first person", function()
+            local plates, entry = plateFor()
+            -- only the camera's position is borrowed; the camera itself stays, so nothing watching it
+            -- notices
+            local previous = variables.workspace.CurrentCamera
+            local camera = previous or Instance.new("Camera")
+            local original = camera.CFrame
+            camera.CFrame = { Position = Vector3.new(0, 0, 0) }
+            variables.workspace.CurrentCamera = camera
+            local head = entry.head
+
+            local function widthAt(distance)
+                head.Position = Vector3.new(0, 0, distance)
+                plates:_step(entry.born + 3)
+                return entry.gui.Size.X.Offset
+            end
+            local far = widthAt(80)
+            local close = widthAt(5)
+            local veryClose = widthAt(1)
+            expect(close > far * 1.5).to.equal(true)
+            -- someone else's plate stays visible however close you get
+            expect(entry.parts.title.TextTransparency < 0.01).to.equal(true)
+            expect(veryClose).to.equal(close)
+
+            camera.CFrame = original
+            variables.workspace.CurrentCamera = previous
         end)
 
         it("hides and shows every plate, and renames them", function()

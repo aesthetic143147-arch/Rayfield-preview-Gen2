@@ -885,8 +885,8 @@ Plates:SetStyle("Midnight") -- presets: Omnity, Midnight, Mono
 
 -- players' own image or GIF, shown to everyone (needs the relay)
 Plates:SetMedia("https://media.tenor.com/xyz/me.gif")</code></pre>
-    <p>Images can move: <code>logo</code> and <code>backdrop</code> take a GIF link (a Tenor, Giphy or Imgur page works too; the script turns it into a sprite sheet itself, since Roblox can't play GIFs), your own sprite sheet, or a list of frames.</p>
-    <p>Players set their own image or GIF in <strong>settings → Nameplate</strong>: paste a link, press Enter. It shows straight away, comes back next time, and with a relay everyone else sees it too. Plates stay the same size on screen at any distance.</p>
+    <p>The Omnity mark is fixed; nobody can replace it. The backdrop can move: <code>backdrop</code> takes a GIF link (a Tenor, Giphy or Imgur page works too; the script turns it into a sprite sheet itself, since Roblox can't play GIFs), your own sprite sheet, or a list of frames.</p>
+    <p>Players set their own image or GIF in <strong>settings → Nameplate</strong>: paste a link, press Enter. It shows straight away, comes back next time, and with a relay everyone else sees it too. Plates are drawn on top of everything, stay the same size on screen at any distance, and grow up close.</p>
     <p>Settings cover shape (<code>size</code>, <code>lift</code>, <code>cornerRadius</code>), colour (<code>accent</code>, <code>cardColor</code>, <code>titleColor</code>…), images (<code>logo</code>, <code>backdrop</code>, each an asset id, URI or <code>false</code>), fonts, and every motion (<code>logoSway</code>, <code>sparkles</code>, <code>sweep</code>, <code>bob</code>…). The README lists them all.</p>
     <p>Without <code>endpoint</code> you see your own plate only. With it, players check in with the relay and see everyone else in the same server who runs the script.</p>
   </section>

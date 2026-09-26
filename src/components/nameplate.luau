@@ -54,6 +54,9 @@ local presets = {
         -- shape and placement (studs)
         sizeMode = "screen", -- "screen": the same size however far away; "world": sized in studs
         screenSize = Vector2.new(210, 50), -- pixels, in "screen" mode (scaled with the window)
+        closeScale = 1.7, -- how much bigger it gets up close, in "screen" mode
+        closeDistance = 8, -- studs: at or nearer than this it's at closeScale
+        farDistance = 40, -- studs: at or beyond this it's at its normal size
         size = Vector2.new(4.4, 1.05), -- studs, in "world" mode
         lift = 2.4, -- studs above the head
         maxDistance = 1000, -- studs before it fades out
@@ -71,7 +74,7 @@ local presets = {
         badgeTextColor = Color3.fromRGB(235, 244, 255),
 
         -- images
-        logo = "omnity-logo.png",
+        logo = "omnity-logo.png", -- fixed: always the Omnity mark
         logoTint = white,
         logoScale = 0.66, -- of the card's height
         backdrop = "nameplate-galaxy.png",
@@ -170,6 +173,8 @@ local function resolveStyle(presetName, overrides)
             style[key] = value
         end
     end
+    -- the Omnity mark is permanent: no style, preset or player can replace it
+    style.logo = presets.Omnity.logo
     return style
 end
 
@@ -182,7 +187,7 @@ function Nameplate.new(window, properties)
 
     -- the older flat options still work, as overrides
     local overrides = table.clone(properties.style or properties.Style or {})
-    for _, key in { "accent", "logo", "backdrop", "maxDistance", "lift" } do
+    for _, key in { "accent", "backdrop", "maxDistance", "lift" } do
         local value = properties[key]
         if value == nil then
             value = properties[key:sub(1, 1):upper() .. key:sub(2)]
@@ -412,17 +417,11 @@ function Nameplate:_applyImages(plate)
     -- a player's own image takes its slot on their plate
     local custom = self.playerMedia and plate.media
     if custom and custom.visual then
-        if custom.slot == "logo" then
-            logo = custom.visual
-        else
-            backdrop = custom.visual
-        end
+        backdrop = custom.visual -- players' images go on the card; the mark stays the mark
     end
     animatedImage.apply(parts.logo, logo)
     parts.logo.Visible = logo ~= nil
     parts.monogram.Visible = logo == nil
-    -- a custom square picture gets rounded corners; the Omnity mark has its own shape
-    parts.logoCorner.CornerRadius = UDim.new(if custom and custom.slot == "logo" then 0.22 else 0, 0)
     animatedImage.apply(parts.backdrop, backdrop)
     parts.backdrop.Visible = backdrop ~= nil
     local glow = images.glowImage
@@ -452,7 +451,7 @@ function Nameplate:_syncMedia(plate)
     task.spawn(function()
         local visual = nil
         if type(meta.url) == "string" then
-            visual = self:_loadMedia(meta.url, if meta.slot == "logo" then "square" else "banner")
+            visual = self:_loadMedia(meta.url, "banner")
         end
         if not visual and meta.id then
             visual = self:_sheetVisual(meta)
@@ -637,7 +636,7 @@ function Nameplate:_attach(player, character)
             ),
         StudsOffset = Vector3.new(0, style.lift, 0),
         MaxDistance = style.maxDistance,
-        AlwaysOnTop = false, -- walls hide it, so it belongs to the world rather than the screen
+        AlwaysOnTop = true, -- drawn over everything, the player's own body included
         LightInfluence = 0,
         ResetOnSpawn = false,
         ClipsDescendants = false,
@@ -832,7 +831,6 @@ function Nameplate:_attach(player, character)
         ZIndex = 10,
         Parent = shell,
     })
-    local logoCorner = w:Create("UICorner", { CornerRadius = UDim.new(0, 0), Parent = logo })
     local monogram = w:Create("TextLabel", {
         AnchorPoint = Vector2.new(0.5, 0.5),
         Position = markPosition,
@@ -908,7 +906,6 @@ function Nameplate:_attach(player, character)
         badgeText = badgeText,
         halo = halo,
         logo = logo,
-        logoCorner = logoCorner,
         monogram = monogram,
         sparks = sparks,
     }
@@ -983,8 +980,23 @@ local function animate(self, plate, t, cap)
     if camera and plate.head and plate.head.Parent then
         local distance = (camera.CFrame.Position - plate.head.Position).Magnitude
         local far = clamp01((distance - style.maxDistance * 0.6) / (style.maxDistance * 0.4))
-        local near = clamp01((distance - nearFade) / 2)
-        alpha *= (1 - far) * near
+        alpha *= 1 - far
+        -- your own plate steps aside in first person; it's drawn on top, so it'd cover the view
+        if plate.player == variables.localPlayer then
+            alpha *= clamp01((distance - nearFade) / 2)
+        end
+        -- up close it grows, so it doesn't look tiny next to a player filling the screen
+        if style.sizeMode ~= "world" then
+            local span = math.max(style.farDistance - style.closeDistance, 1)
+            local closeness = 1 - clamp01((distance - style.closeDistance) / span)
+            local factor = 1 + (style.closeScale - 1) * closeness * closeness
+            local unit = self.window.scale or 1
+            local width = math.round(style.screenSize.X * unit * factor)
+            local height = math.round(style.screenSize.Y * unit * factor)
+            if plate.gui.Size.X.Offset ~= width or plate.gui.Size.Y.Offset ~= height then
+                plate.gui.Size = UDim2.fromOffset(width, height)
+            end
+        end
     end
     parts.scale.Scale = shrink
 
@@ -1243,29 +1255,29 @@ function Nameplate:_restoreOwnMedia()
     end)
     if ok and type(choice) == "table" and type(choice.link) == "string" and choice.link ~= "" then
         task.spawn(function()
-            self:SetMedia(choice.link, choice.slot)
+            self:SetMedia(choice.link)
         end)
     end
 end
 
 -- Put your own image or GIF on your plate. `link` is anything you'd paste: a Tenor, Giphy or Imgur
 -- page, a direct image or GIF link, or the name of a file in workspace/RayfieldColumns/Nameplate.
--- `slot` is "backdrop" (default, the whole card) or "logo" (the square on the left).
+-- It goes across the card; the Omnity mark always stays.
 --
 -- It shows on your plate straight away and comes back next time. With a relay, everyone else
 -- running the script sees it too. Returns ok and a note (why it failed, or who can see it).
-function Nameplate:SetMedia(link: string, slot: string?): (boolean, string?)
+function Nameplate:SetMedia(link: string): (boolean, string?)
     link = tostring(link or ""):gsub("^%s+", ""):gsub("%s+$", "")
-    slot = if slot == "logo" then "logo" else "backdrop"
+    local slot = "backdrop"
     if link == "" then
         return false, "Paste a link or a file name."
     end
-    local visual, why = self:_loadMedia(link, if slot == "logo" then "square" else "banner")
+    local visual, why = self:_loadMedia(link, "banner")
     if not visual then
         return false, why or "Couldn't load that."
     end
     self:_saveChoice({ link = link, slot = slot })
-    self:_setOwnMedia({ url = link, slot = slot })
+    self:_setOwnMedia({ url = link, slot = slot }, visual)
 
     if not link:match("^https?://") then
         return true, "Only you can see files from your workspace."
@@ -1301,16 +1313,22 @@ function Nameplate:ClearMedia(): boolean
     return true
 end
 
-function Nameplate:_setOwnMedia(media)
+-- Put your own image on your plate right now. The visual is already loaded, so it's applied
+-- directly rather than going back through the check-in path.
+function Nameplate:_setOwnMedia(media, visual)
     local me = variables.localPlayer
     if not me then
         return
     end
     self.users[me.UserId] = self.users[me.UserId] or { badge = self.badge }
     self.users[me.UserId].media = media
-    if self.plates[me] then
-        self:_syncMedia(self.plates[me])
+    local plate = self.plates[me]
+    if not plate then
+        return
     end
+    plate.mediaId = if media then media.url else nil
+    plate.media = if media and visual then { visual = visual, slot = "backdrop" } else nil
+    self:_applyImages(plate)
 end
 
 -- A Nameplate section on the window's settings page (the cog): show or hide plates, and set your
@@ -1320,22 +1338,12 @@ function Nameplate:_buildSettings()
     if not settings or not settings.CreateSection then
         return
     end
-    local slot = "backdrop"
     settings:CreateSection({ name = "Nameplate" })
     settings:CreateToggle({
         name = "Show nameplates",
         value = true,
         callback = function(on)
             self:SetEnabled(on)
-        end,
-    })
-    settings:CreateDropdown({
-        name = "Show my image on",
-        options = { "Card", "Logo" },
-        value = "Card",
-        callback = function(value)
-            local choice = if type(value) == "table" then value[1] else value
-            slot = if choice == "Logo" then "logo" else "backdrop"
         end,
     })
     settings:CreateInput({
@@ -1346,7 +1354,7 @@ function Nameplate:_buildSettings()
                 return
             end
             task.spawn(function()
-                local ok, note = self:SetMedia(text, slot)
+                local ok, note = self:SetMedia(text)
                 self.window:Toast({ title = if ok then "Nameplate updated" else "Couldn't use that", subtitle = note })
             end)
         end,

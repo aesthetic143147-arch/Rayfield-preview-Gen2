@@ -184,7 +184,6 @@ Window:CreateNameplate({
     title = "MY HUB",
     preset = "Midnight",
     style = {
-        logo = 1234567890,                 -- your own logo (asset id, URI, or a file in assets/)
         accent = Color3.fromRGB(255, 90, 160),
         sparkles = 4,
         logoSway = 10,
@@ -199,9 +198,9 @@ Plates:SetStyle("Mono")                    -- or switch preset (your overrides s
 
 | Group | Settings |
 | --- | --- |
-| Shape | `sizeMode` (`"screen"` or `"world"`), `screenSize` (pixels), `size` (studs), `lift`, `maxDistance`, `cornerRadius` |
+| Shape | `sizeMode` (`"screen"` or `"world"`), `screenSize` (pixels), `closeScale`, `closeDistance`, `farDistance`, `size` (studs), `lift`, `maxDistance`, `cornerRadius` |
 | Colour | `accent`, `accentDeep`, `cardColor`, `cardTransparency`, `veilColor`, `veilStrength`, `titleColor`, `subtitleColor`, `badgeTextColor`, `sparkleColor` |
-| Images | `logo`, `logoTint`, `logoScale`, `backdrop`, `backdropTint`, `backdropTransparency`, `glowImage` (each can be `false`) |
+| Images | `logoTint`, `logoScale`, `backdrop`, `backdropTint`, `backdropTransparency`, `glowImage` (each can be `false`) |
 | Type | `titleFont`, `subtitleFont` (a `Font`), `titleTop`, `titleSize`, `subtitleSize` |
 | Motion | `entrance`, `logoSway`, `logoSpin`, `halo`, `sparkles`, `titleShine`, `sweep`, `sweepEvery`, `border`, `borderThickness`, `borderTransparency`, `borderSpeed`, `glow`, `bob`, `bobHeight`, `bobSpeed` |
 
@@ -209,14 +208,18 @@ Other options: `subtitle` (a string or `function(player)`), `showSelf` (default 
 `hideDefaultName` (hides Roblox's name under a plate, default `true`). Methods: `SetStyle`, `SetMedia`, `ClearMedia`,
 `SetTitle`, `SetEnabled`, `Add(player, badge?)`, `Remove(player)`, `CheckIn()`, `Destroy()`.
 
-**Images and GIFs.** `logo` and `backdrop` take a still image, a sprite sheet or a list of frames,
+**The Omnity mark is fixed.** Nobody can replace the logo: not a style, not a preset, not a
+player.
+
+**Images and GIFs.** `backdrop` takes a still image, a sprite sheet or a list of frames,
 and any image or GIF link (a Tenor, Giphy or Imgur page works too):
 
 ```lua
 style = {
     backdrop = "https://tenor.com/view/some-gif-123",      -- converted on the player's machine
-    logo = { sheet = 1234567890, frames = 12, columns = 4, frameSize = Vector2.new(128, 128), fps = 12 },
-    -- or: logo = { images = { 111, 222, 333 }, fps = 6 },
+    -- or your own sprite sheet:
+    -- backdrop = { sheet = 1234567890, frames = 12, columns = 4, frameSize = Vector2.new(256, 64), fps = 12 },
+    -- or separate frames: backdrop = { images = { 111, 222, 333 }, fps = 6 },
 }
 ```
 
@@ -228,7 +231,7 @@ sheet (at most 1024×1024), then steps through it. No server needed.
 
 1. Find a GIF on Tenor, Giphy or Imgur and copy the page link (or any direct image link).
 2. Open settings → Nameplate, paste it into **My image or GIF**, and press Enter.
-3. Pick **Card** or **Logo** for where it shows. **Remove my image** takes it off.
+3. It goes across the card. **Remove my image** takes it off.
 
 It shows on your plate straight away and comes back every time you run the script. GIFs are
 converted on your own machine, so no server is needed for your own plate. You can also drop a file
@@ -241,7 +244,7 @@ share one, the relay gives your script a token (saved in the workspace) so nobod
 yours. Moderators remove one from Discord with `!platereset <robloxId>`. Pass `playerMedia =
 false` to show only your own artwork, or `settings = false` to leave the settings page alone.
 
-From code: `Plates:SetMedia(link, "backdrop" | "logo")` returns ok and a note, and
+From code: `Plates:SetMedia(link)` returns ok and a note, and
 `Plates:ClearMedia()` clears it.
 
 **Who sees what.** Plates are drawn locally, so only people running the script see them. To show

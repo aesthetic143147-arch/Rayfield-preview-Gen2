@@ -249,6 +249,9 @@ export type ChatProps = {
 export type NameplateStyle = {
     sizeMode: ("screen" | "world")?, -- screen: same size at any distance (default)
     screenSize: Vector2?, -- pixels in screen mode (default 210 x 50)
+    closeScale: number?, -- how much bigger up close (default 1.7)
+    closeDistance: number?,
+    farDistance: number?,
     size: Vector2?, -- studs in world mode
     lift: number?, -- studs above the head
     maxDistance: number?,
@@ -262,7 +265,6 @@ export type NameplateStyle = {
     titleColor: Color3?,
     subtitleColor: Color3?,
     badgeTextColor: Color3?,
-    logo: any?, -- image, GIF link, { sheet = … } or { images = … }; false for none
     logoTint: Color3?,
     logoScale: number?,
     backdrop: any?, -- image, GIF link, { sheet = … } or { images = … }; false for none
@@ -310,7 +312,6 @@ export type NameplateProps = {
     settings: boolean?, -- false: no Nameplate section on the settings page
     -- shorthands for the style keys of the same name
     accent: Color3?,
-    logo: (string | number | boolean)?,
     backdrop: (string | number | boolean)?,
     maxDistance: number?,
     lift: number?,
@@ -320,7 +321,7 @@ export type Nameplate = {
     SetEnabled: (self: Nameplate, enabled: boolean) -> (),
     SetTitle: (self: Nameplate, title: string) -> (),
     SetStyle: (self: Nameplate, style: NameplateStyle | string, preset: string?) -> (),
-    SetMedia: (self: Nameplate, link: string, slot: ("backdrop" | "logo")?) -> (boolean, string?),
+    SetMedia: (self: Nameplate, link: string) -> (boolean, string?),
     ClearMedia: (self: Nameplate) -> boolean,
     Add: (self: Nameplate, player: Player, badge: string?) -> (),
     Remove: (self: Nameplate, player: Player) -> (),
