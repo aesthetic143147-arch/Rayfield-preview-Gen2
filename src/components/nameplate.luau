@@ -7,15 +7,21 @@
 
 -- Floating nameplates over the heads of everyone running your script.
 --
--- Each plate is a BillboardGui on the player's head, built in layers: a soft halo and the hub's
--- mark rocking gently on the left, a few sparks orbiting it on a tilted ellipse, and a dark glass
--- card over a galaxy backdrop carrying the title, the player's @username and an optional badge.
+-- Each plate is a small, quiet BillboardGui on the player's head, in the spirit of Novoline's with
+-- Rayfield's finish: the hub's mark on the left in a faint halo with a few sparks orbiting it, and a
+-- dark glass card over a galaxy backdrop with the title, the player's @username and an optional
+-- badge, edged by a hairline.
 --
 -- It enters as a sequence rather than a fade: the mark swirls in out of nothing, the card unfolds
 -- from behind it with a soft wipe, then the title slides in, the name follows and the badge pops.
 -- At rest it breathes: a gentle bob, the halo pulsing, light running along the title, a sweep
 -- across the glass now and then, and the edge gradient turning. Everything runs from one
 -- per-frame loop, and every colour, image, size and motion is a style setting (see `presets`).
+--
+-- Images can move. The logo and backdrop settings take a still image, a GIF link (the relay turns
+-- it into a sprite sheet, since Roblox can't play GIFs), a sprite sheet of your own, or a list of
+-- frames. Players can also put their own image or GIF on their plate with SetMedia; the relay
+-- keeps it and shows it to everyone else.
 --
 -- Plates are drawn locally, so only people running the script see them. Knowing who else in the
 -- server runs it takes a shared list: with `endpoint` set, each player checks in with the relay
@@ -33,6 +39,9 @@ local variables = require(utility.variables)
 local services = require(utility.services)
 local relayClient = require(utility.relayClient)
 local imageCache = require(utility.imageCache)
+local animatedImage = require(utility.animatedImage)
+local filesystem = require(utility.filesystem)
+local path = require(utility.path)
 
 local white = Color3.new(1, 1, 1)
 
@@ -42,34 +51,37 @@ local white = Color3.new(1, 1, 1)
 local presets = {
     Omnity = {
         -- shape and placement (studs)
-        size = Vector2.new(5.6, 1.35),
-        lift = 2.5, -- above the head
+        size = Vector2.new(4.4, 1.05),
+        lift = 2.4, -- above the head
         maxDistance = 100,
-        cornerRadius = 0.32, -- of the card's height
+        cornerRadius = 0.26, -- of the card's height
 
         -- colour
         accent = Color3.fromRGB(125, 180, 255), -- badge, halo, sparks
         accentDeep = Color3.fromRGB(59, 130, 246), -- the edge gradient's ends
         cardColor = Color3.fromRGB(5, 7, 14),
-        cardTransparency = 0.08,
+        cardTransparency = 0.14,
         veilColor = Color3.fromRGB(3, 4, 9), -- darkens behind the text
-        veilStrength = 0.85, -- 0 none, 1 solid at the left edge
+        veilStrength = 0.8, -- 0 none, 1 solid at the left edge
         titleColor = Color3.fromRGB(250, 251, 255),
-        subtitleColor = Color3.fromRGB(160, 176, 204),
+        subtitleColor = Color3.fromRGB(150, 162, 186),
         badgeTextColor = Color3.fromRGB(235, 244, 255),
 
         -- images
         logo = "omnity-logo.png",
         logoTint = white,
-        logoScale = 0.84, -- of the card's height
+        logoScale = 0.66, -- of the card's height
         backdrop = "nameplate-galaxy.png",
         backdropTint = white,
-        backdropTransparency = 0.05,
+        backdropTransparency = 0.25,
         glowImage = "nameplate-glow.png",
 
-        -- type (nil: the library's brand font)
+        -- type (nil: the library's brand font, bold title and medium name)
         titleFont = nil,
         subtitleFont = nil,
+        titleTop = 0.2, -- where the title starts, of the card's height
+        titleSize = 0.3, -- title height, of the card's height
+        subtitleSize = 0.2, -- @username height
 
         -- motion
         entrance = "unfold", -- "unfold", "fade" or "none"
@@ -77,17 +89,18 @@ local presets = {
         logoSpin = 0, -- degrees a second of continuous turning (the mark is drawn in perspective,
         -- so a gentle sway reads better than a full spin)
         halo = true,
-        sparkles = 7, -- how many orbit the mark; 0 for none
+        sparkles = 4, -- how many orbit the mark; 0 for none
         sparkleColor = Color3.fromRGB(220, 235, 255),
         titleShine = true, -- light running along the title
         sweep = true, -- a band of light across the glass
         sweepEvery = 7, -- seconds
         border = true,
-        borderThickness = 1.6,
+        borderThickness = 1,
+        borderTransparency = 0.45, -- the hairline edge at rest
         borderSpeed = 40, -- degrees a second the edge gradient turns
-        glow = true, -- soft outer glow
+        glow = false, -- a soft outer glow around the edge
         bob = true,
-        bobHeight = 0.08,
+        bobHeight = 0.06,
         bobSpeed = 1.6,
     },
 }
@@ -97,7 +110,7 @@ presets.Midnight = table.clone(presets.Omnity)
 presets.Midnight.backdrop = "nameplate-mountains.png"
 presets.Midnight.accent = Color3.fromRGB(96, 165, 250)
 presets.Midnight.accentDeep = Color3.fromRGB(37, 99, 235)
-presets.Midnight.sparkles = 4
+presets.Midnight.sparkles = 3
 
 -- Mono: silver on black, quiet motion.
 presets.Mono = table.clone(presets.Omnity)
@@ -105,7 +118,7 @@ presets.Mono.backdrop = false
 presets.Mono.accent = Color3.fromRGB(220, 224, 232)
 presets.Mono.accentDeep = Color3.fromRGB(120, 126, 140)
 presets.Mono.sparkleColor = white
-presets.Mono.sparkles = 3
+presets.Mono.sparkles = 0
 presets.Mono.cardColor = Color3.fromRGB(10, 10, 12)
 
 Nameplate.presets = presets
@@ -157,17 +170,9 @@ local function resolveStyle(presetName, overrides)
     return style
 end
 
--- Where an image setting points: nil for none, { uri } ready to use, or { file } to fetch.
-local function imageSource(value)
-    if value == false or value == nil then
-        return nil
-    elseif type(value) == "number" or (type(value) == "string" and value:match("^%d+$")) then
-        return { uri = "rbxassetid://" .. tostring(value) }
-    elseif type(value) == "string" and value:match("^[%w%-_]+%.png$") then
-        return { file = value }
-    end
-    return { uri = tostring(value) }
-end
+-- An image setting's shapes, for the card slot it fills: a banner for the backdrop, a square for
+-- the logo. The relay cuts GIF frames to that shape.
+local fits = { logo = "square", backdrop = "banner", glowImage = "square" }
 
 function Nameplate.new(window, properties)
     properties = if typeof(properties) == "table" then properties else {}
@@ -198,11 +203,13 @@ function Nameplate.new(window, properties)
         hideDefaultName = properties.hideDefaultName ~= false and properties.HideDefaultName ~= false,
         checkInInterval = math.max(tonumber(properties.checkInInterval) or defaultCheckIn, 5),
         autoCheckIn = properties.autoCheckIn ~= false, -- false: call CheckIn yourself
+        playerMedia = properties.playerMedia ~= false, -- false: ignore players' own images
 
         enabled = true,
         plates = {}, -- player -> plate
         users = {}, -- userId -> { badge }
-        images = {}, -- setting name -> uri once loaded
+        images = {}, -- setting name -> visual (see utility/animatedImage) once loaded
+        _sheets = {}, -- relay media id -> visual, so a GIF many players use downloads once
         _dying = {},
         _alive = true,
     }, Nameplate)
@@ -245,28 +252,129 @@ end
 
 -- Artwork ---------------------------------------------------------------------------------------
 
--- Files from this project's assets/ load as custom assets. Where the executor can't load those,
--- the plate still works: a lettered mark instead of the logo, plain glass instead of a backdrop.
+-- Downloads go through here so a test (or an unusual executor) can swap them out.
+function Nameplate:_download(kind, source, fileName)
+    if kind == "remote" then
+        return imageCache.remote(source)
+    end
+    return imageCache.url(source, fileName)
+end
+
+-- A relay's converted sheet, as a visual. Cached by id: the same GIF on ten plates is one file.
+function Nameplate:_sheetVisual(meta)
+    if type(meta) ~= "table" or type(meta.id) ~= "string" or not meta.id:match("^%x+$") then
+        return nil
+    end
+    local cached = self._sheets[meta.id]
+    if cached then
+        return cached
+    end
+    if not self.endpoint then
+        return nil
+    end
+    local uri = self:_download("url", `{self.endpoint}/v1/media/{meta.id}.png`, `media_{meta.id}.png`)
+    if not uri then
+        return nil
+    end
+    local visual = {
+        uri = uri,
+        sheet = {
+            frames = math.max(tonumber(meta.frames) or 1, 1),
+            columns = math.max(tonumber(meta.columns) or 1, 1),
+            frameWidth = tonumber(meta.frameWidth) or 0,
+            frameHeight = tonumber(meta.frameHeight) or 0,
+            fps = tonumber(meta.fps) or 0,
+        },
+    }
+    self._sheets[meta.id] = visual
+    return visual
+end
+
+-- Turn an image setting into something drawable. Yields when it has to download.
+--   false / nil                      nothing
+--   123456 / "rbxassetid://…" / URI  a still image
+--   "file.png"                       a file in this project's assets/
+--   "https://….gif"                  any image or GIF link, converted by the relay
+--   { gif = "https://…" }            the same, spelled out
+--   { sheet = image, frames = 12, columns = 4, frameSize = Vector2.new(w, h), fps = 12 }
+--                                    your own sprite sheet
+--   { images = { image, image, … }, fps = 8 }   separate frames, shown in turn
+function Nameplate:_resolveVisual(spec, fit)
+    if spec == nil or spec == false then
+        return nil
+    elseif type(spec) == "number" or (type(spec) == "string" and spec:match("^%d+$")) then
+        return { uri = "rbxassetid://" .. tostring(spec) }
+    elseif type(spec) == "string" then
+        if spec:match("^[%w%-_]+%.png$") then
+            local uri = self:_download("remote", spec)
+            return if uri then { uri = uri } else nil
+        elseif spec:match("^https?://") then
+            return self:_relayVisual(spec, fit)
+        end
+        return { uri = spec }
+    elseif type(spec) == "table" then
+        if spec.gif or spec.url then
+            return self:_relayVisual(tostring(spec.gif or spec.url), fit)
+        elseif spec.sheet then
+            local base = self:_resolveVisual(spec.sheet, fit)
+            if not base or not base.uri then
+                return nil
+            end
+            local size = spec.frameSize or Vector2.new(spec.frameWidth or 0, spec.frameHeight or 0)
+            local frames = math.max(tonumber(spec.frames) or 1, 1)
+            return {
+                uri = base.uri,
+                sheet = {
+                    frames = frames,
+                    columns = math.max(tonumber(spec.columns) or frames, 1),
+                    frameWidth = size.X,
+                    frameHeight = size.Y,
+                    fps = tonumber(spec.fps) or 10,
+                },
+            }
+        elseif type(spec.images) == "table" then
+            local list = {}
+            for _, image in spec.images do
+                local visual = self:_resolveVisual(image, fit)
+                if visual and visual.uri then
+                    table.insert(list, visual.uri)
+                end
+            end
+            return if #list > 0 then { list = list, fps = tonumber(spec.fps) or 8 } else nil
+        end
+    end
+    return nil
+end
+
+-- A link converted by the relay into a sprite sheet.
+function Nameplate:_relayVisual(url, fit)
+    if not self.endpoint and not self.transport then
+        return nil
+    end
+    local ok, meta = relayClient.request(self, "POST", "/v1/media", { url = url, fit = fit })
+    if not ok then
+        return nil
+    end
+    return self:_sheetVisual(meta)
+end
+
+-- Where the executor can't load custom assets, the plate still works: a lettered mark instead of
+-- the logo, plain glass instead of a backdrop.
 function Nameplate:_loadImages()
     table.clear(self.images)
     local generation = {}
     self._imageGeneration = generation
     for _, name in { "logo", "backdrop", "glowImage" } do
-        local source = imageSource(self.style[name])
-        if source and source.uri then
-            self.images[name] = source.uri
-        elseif source and source.file then
-            task.spawn(function()
-                local uri = imageCache.remote(source.file)
-                -- a SetStyle in the meantime makes this answer stale
-                if uri and self._alive and self._imageGeneration == generation then
-                    self.images[name] = uri
-                    for _, plate in self.plates do
-                        self:_applyImages(plate)
-                    end
+        task.spawn(function()
+            local visual = self:_resolveVisual(self.style[name], fits[name])
+            -- a SetStyle in the meantime makes this answer stale
+            if visual and self._alive and self._imageGeneration == generation then
+                self.images[name] = visual
+                for _, plate in self.plates do
+                    self:_applyImages(plate)
                 end
-            end)
-        end
+            end
+        end)
     end
 end
 
@@ -276,13 +384,54 @@ function Nameplate:_applyImages(plate)
         return
     end
     local images = self.images
-    parts.logo.Image = images.logo or ""
-    parts.logo.Visible = images.logo ~= nil
-    parts.monogram.Visible = images.logo == nil
-    parts.backdrop.Image = images.backdrop or ""
-    parts.backdrop.Visible = images.backdrop ~= nil
-    parts.halo.Image = images.glowImage or ""
-    parts.halo.Visible = self.style.halo and images.glowImage ~= nil
+    local logo, backdrop = images.logo, images.backdrop
+    -- a player's own image takes its slot on their plate
+    local custom = self.playerMedia and plate.media
+    if custom and custom.visual then
+        if custom.slot == "logo" then
+            logo = custom.visual
+        else
+            backdrop = custom.visual
+        end
+    end
+    animatedImage.apply(parts.logo, logo)
+    parts.logo.Visible = logo ~= nil
+    parts.monogram.Visible = logo == nil
+    -- a custom square picture gets rounded corners; the Omnity mark has its own shape
+    parts.logoCorner.CornerRadius = UDim.new(if custom and custom.slot == "logo" then 0.22 else 0, 0)
+    animatedImage.apply(parts.backdrop, backdrop)
+    parts.backdrop.Visible = backdrop ~= nil
+    local glow = images.glowImage
+    parts.halo.Image = if glow then glow.uri or "" else ""
+    parts.halo.Visible = self.style.halo and glow ~= nil
+    plate.visuals = {
+        { label = parts.logo, visual = logo, state = {} },
+        { label = parts.backdrop, visual = backdrop, state = {} },
+    }
+end
+
+-- A player's own image, from their check-in. Downloads once per image, then applies.
+function Nameplate:_syncMedia(plate)
+    local info = self.users[plate.player.UserId]
+    local meta = info and info.media
+    local id = if type(meta) == "table" then meta.id else nil
+    if id == plate.mediaId then
+        return
+    end
+    plate.mediaId = id
+    if not id or not self.playerMedia then
+        plate.media = nil
+        self:_applyImages(plate)
+        return
+    end
+    task.spawn(function()
+        local visual = self:_sheetVisual(meta)
+        if plate.mediaId ~= id then
+            return -- changed again while downloading
+        end
+        plate.media = if visual then { visual = visual, slot = meta.slot } else nil
+        self:_applyImages(plate)
+    end)
 end
 
 -- Who gets a plate ------------------------------------------------------------------------------
@@ -329,6 +478,7 @@ function Nameplate:_reconcile(player)
     elseif entry.parts then
         self:_writeText(entry)
     end
+    self:_syncMedia(entry)
 end
 
 function Nameplate:_drop(player)
@@ -360,47 +510,52 @@ function Nameplate:_badgeFor(player)
     return if type(badge) == "string" and badge ~= "" then string.upper(badge) else nil
 end
 
--- Layout, in the card's own coordinates: everything is a fraction of its width (x) or height (y),
+-- Layout, in the plate's own coordinates: everything is a fraction of its width (x) or height (y),
 -- so the plate keeps its proportions at any size.
 local function layoutFor(style)
     local aspect = style.size.X / style.size.Y
-    local logoLeft = 0.08 / aspect
+    local logoLeft = 0.14 / aspect
     local logoCenter = logoLeft + style.logoScale / 2 / aspect
     return {
         aspect = aspect,
         logoCenter = logoCenter,
+        -- the card starts as a tile around the mark and unfolds to full width
+        closedWidth = math.min(logoCenter * 2, 1),
         textLeft = logoCenter + (style.logoScale / 2 + 0.2) / aspect,
-        margin = 0.16 / aspect,
+        margin = 0.2 / aspect,
     }
 end
 
 function Nameplate:_writeText(plate)
     local parts = plate.parts
     local style = self.style
+    local layout = plate.layout
     parts.title.Text = self.title
     parts.subtitle.Text = escape(self:_subtitleFor(plate.player))
 
     local badge = self:_badgeFor(plate.player)
     parts.badge.Visible = badge ~= nil
-    local layout = plate.layout
     local titleRight = 1 - layout.margin
     if badge then
         parts.badgeText.Text = badge
-        -- the pill hugs its text: about 0.6 of the text height per character, plus padding
-        local height = 0.3
-        local width = (#badge * 0.6 * height * 0.62 + height * 0.9) / layout.aspect
+        -- the pill hugs its text: about 0.62 of the text height per character, plus padding
+        local height = 0.22
+        local width = (#badge * 0.62 * height * 0.6 + height * 1.1) / layout.aspect
         parts.badge.Size = UDim2.fromScale(width, height)
-        titleRight -= width + 0.04 / layout.aspect
+        titleRight -= width + 0.06 / layout.aspect
     end
-    local titleWidth = math.max(titleRight - layout.textLeft, 0.1)
-    parts.title.Size = UDim2.fromScale(titleWidth, 0.4)
-    parts.subtitle.Size = UDim2.fromScale(1 - layout.margin - layout.textLeft, 0.25)
+    parts.title.Size = UDim2.fromScale(math.max(titleRight - layout.textLeft, 0.1), style.titleSize)
+    parts.subtitle.Size = UDim2.fromScale(1 - layout.margin - layout.textLeft, style.subtitleSize)
     parts.badgeStroke.Color = style.accent
     parts.badge.BackgroundColor3 = style.accent
 end
 
 -- (Re)build the plate on a character's head. Called on spawn, so a respawn gets a fresh plate that
 -- plays its entrance again.
+--
+-- No CanvasGroup: in a BillboardGui it doesn't clip, so every layer that fills the card carries its
+-- own rounded corners, the light sweep is a gradient (it can't leave the card), and fading sets
+-- each layer's transparency from its resting value.
 function Nameplate:_attach(player, character)
     local entry = self.plates[player]
     if not entry or not character then
@@ -425,10 +580,13 @@ function Nameplate:_attach(player, character)
     local w = self.window
     local style = self.style
     local layout = layoutFor(style)
-    local light = style.accent:Lerp(white, 0.55)
+    local light = style.accent:Lerp(white, 0.6)
     local corner = UDim.new(style.cornerRadius, 0)
-    local titleFont = style.titleFont or variables.brandFont(Enum.FontWeight.Heavy)
-    local subtitleFont = style.subtitleFont or variables.brandFont(Enum.FontWeight.SemiBold)
+    local titleFont = style.titleFont or variables.brandFont(Enum.FontWeight.Bold)
+    local subtitleFont = style.subtitleFont or variables.brandFont(Enum.FontWeight.Medium)
+    local rounded = function(parent)
+        w:Create("UICorner", { CornerRadius = corner, Parent = parent })
+    end
 
     local gui = w:Create("BillboardGui", {
         Name = "Nameplate",
@@ -445,103 +603,93 @@ function Nameplate:_attach(player, character)
     local shell = w:Create("Frame", { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Parent = gui })
     local scale = w:Create("UIScale", { Parent = shell })
 
-    -- soft outer glow: a wide, faint stroke under the crisp edge
+    -- soft outer glow (off by default: the minimal look keeps to a hairline edge)
     local glow = w:Create("Frame", { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Parent = shell })
-    w:Create("UICorner", { CornerRadius = corner, Parent = glow })
+    rounded(glow)
     local glowStroke =
-        w:Create("UIStroke", { Color = style.accentDeep, Thickness = 4, Transparency = 1, Parent = glow })
+        w:Create("UIStroke", { Color = style.accentDeep, Thickness = 3, Transparency = 1, Parent = glow })
 
-    -- the card: one CanvasGroup, so a single gradient can wipe it open and a single transparency
-    -- can fade it
-    local card = w:Create("CanvasGroup", {
+    -- the card grows from a tile around the mark to full width; `content` keeps the full width
+    -- inside it, so nothing stretches while it unfolds
+    local card = w:Create("Frame", {
         Size = UDim2.fromScale(1, 1),
         BackgroundColor3 = style.cardColor,
-        BackgroundTransparency = style.cardTransparency,
-        GroupTransparency = 1,
+        BackgroundTransparency = 1,
         BorderSizePixel = 0,
+        ClipsDescendants = true,
         Parent = shell,
     })
-    w:Create("UICorner", { CornerRadius = corner, Parent = card })
-    local wipe = w:Create("UIGradient", { Enabled = false, Parent = card })
+    rounded(card)
+    local content = w:Create("Frame", { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Parent = card })
 
     local backdrop = w:Create("ImageLabel", {
         Size = UDim2.fromScale(1, 1),
         BackgroundTransparency = 1,
         ScaleType = Enum.ScaleType.Crop,
         ImageColor3 = style.backdropTint,
-        ImageTransparency = style.backdropTransparency,
+        ImageTransparency = 1,
         Visible = false,
         ZIndex = 1,
-        Parent = card,
+        Parent = content,
     })
+    rounded(backdrop)
     local veil = w:Create("Frame", {
         Size = UDim2.fromScale(1, 1),
         BackgroundColor3 = style.veilColor,
+        BackgroundTransparency = 1,
         BorderSizePixel = 0,
         ZIndex = 2,
-        Parent = card,
+        Parent = content,
     })
+    rounded(veil)
     local strength = clamp01(style.veilStrength)
     w:Create("UIGradient", {
         Transparency = NumberSequence.new({
             NumberSequenceKeypoint.new(0, 1 - strength),
             NumberSequenceKeypoint.new(0.55, 1 - strength * 0.55),
-            NumberSequenceKeypoint.new(1, 1 - strength * 0.1),
+            NumberSequenceKeypoint.new(1, 1 - strength * 0.12),
         }),
         Parent = veil,
     })
 
-    local sweep = w:Create("Frame", {
-        AnchorPoint = Vector2.new(0.5, 0.5),
-        Size = UDim2.fromScale(0.2, 2.4),
-        Position = UDim2.fromScale(-0.4, 0.5),
-        Rotation = 18,
+    -- the light sweep: a bright band in a gradient across a rounded white layer, so it stays
+    -- inside the card's shape; moving the gradient's offset moves the band
+    local shine = w:Create("Frame", {
+        Size = UDim2.fromScale(1, 1),
         BackgroundColor3 = white,
+        BackgroundTransparency = 1,
         BorderSizePixel = 0,
-        Visible = style.sweep,
         ZIndex = 3,
-        Parent = card,
+        Visible = style.sweep,
+        Parent = content,
     })
-    w:Create("UIGradient", {
+    rounded(shine)
+    local sweep = w:Create("UIGradient", {
+        Rotation = 20,
+        Offset = Vector2.new(-1, 0),
         Transparency = NumberSequence.new({
             NumberSequenceKeypoint.new(0, 1),
-            NumberSequenceKeypoint.new(0.5, 0.87),
+            NumberSequenceKeypoint.new(0.42, 1),
+            NumberSequenceKeypoint.new(0.5, 0.9),
+            NumberSequenceKeypoint.new(0.58, 1),
             NumberSequenceKeypoint.new(1, 1),
         }),
-        Parent = sweep,
-    })
-
-    -- a hairline of light along the top edge, the way glass catches it
-    local rim = w:Create("Frame", {
-        AnchorPoint = Vector2.new(0.5, 0),
-        Position = UDim2.fromScale(0.5, 0.035),
-        Size = UDim2.new(0.8, 0, 0, 1),
-        BackgroundColor3 = light,
-        BorderSizePixel = 0,
-        ZIndex = 4,
-        Parent = card,
-    })
-    w:Create("UIGradient", {
-        Transparency = NumberSequence.new({
-            NumberSequenceKeypoint.new(0, 1),
-            NumberSequenceKeypoint.new(0.5, 0.5),
-            NumberSequenceKeypoint.new(1, 1),
-        }),
-        Parent = rim,
+        Parent = shine,
     })
 
     local title = w:Create("TextLabel", {
-        Position = UDim2.fromScale(layout.textLeft, 0.16),
+        Position = UDim2.fromScale(layout.textLeft, style.titleTop),
         BackgroundTransparency = 1,
         TextScaled = true,
         TextXAlignment = Enum.TextXAlignment.Left,
+        TextYAlignment = Enum.TextYAlignment.Bottom,
         TextColor3 = style.titleColor,
         TextTransparency = 1,
         FontFace = titleFont,
         ZIndex = 5,
-        Parent = card,
+        Parent = content,
     })
-    local shine = w:Create("UIGradient", {
+    local titleShine = w:Create("UIGradient", {
         Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, white),
             ColorSequenceKeypoint.new(0.5, light),
@@ -551,53 +699,54 @@ function Nameplate:_attach(player, character)
         Parent = title,
     })
     local subtitle = w:Create("TextLabel", {
-        Position = UDim2.fromScale(layout.textLeft, 0.58),
+        Position = UDim2.fromScale(layout.textLeft, style.titleTop + style.titleSize + 0.05),
         BackgroundTransparency = 1,
         RichText = true,
         TextScaled = true,
         TextXAlignment = Enum.TextXAlignment.Left,
+        TextYAlignment = Enum.TextYAlignment.Top,
         TextColor3 = style.subtitleColor,
         TextTransparency = 1,
         FontFace = subtitleFont,
         ZIndex = 5,
-        Parent = card,
+        Parent = content,
     })
 
-    -- the badge: a small pill in the top right, tinted with the accent
+    -- the badge: a small quiet pill, top right
     local badge = w:Create("Frame", {
         AnchorPoint = Vector2.new(1, 0),
-        Position = UDim2.fromScale(1 - layout.margin, 0.17),
+        Position = UDim2.fromScale(1 - layout.margin, style.titleTop + 0.02),
         BackgroundColor3 = style.accent,
-        BackgroundTransparency = 0.82,
+        BackgroundTransparency = 1,
         BorderSizePixel = 0,
         Visible = false,
         ZIndex = 6,
-        Parent = card,
+        Parent = content,
     })
     w:Create("UICorner", { CornerRadius = UDim.new(1, 0), Parent = badge })
     local badgeScale = w:Create("UIScale", { Scale = 0, Parent = badge })
-    local badgeStroke =
-        w:Create("UIStroke", { Color = style.accent, Thickness = 1, Transparency = 0.35, Parent = badge })
+    local badgeStroke = w:Create("UIStroke", { Color = style.accent, Thickness = 1, Transparency = 1, Parent = badge })
     local badgeText = w:Create("TextLabel", {
         AnchorPoint = Vector2.new(0.5, 0.5),
         Position = UDim2.fromScale(0.5, 0.52),
-        Size = UDim2.fromScale(0.78, 0.62),
+        Size = UDim2.fromScale(0.76, 0.58),
         BackgroundTransparency = 1,
         TextScaled = true,
         TextColor3 = style.badgeTextColor,
+        TextTransparency = 1,
         FontFace = titleFont,
         ZIndex = 7,
         Parent = badge,
     })
 
-    -- the crisp edge, its gradient turning slowly around the card
+    -- the hairline edge, its gradient turning slowly around the card
     local border = w:Create("Frame", {
         Size = UDim2.fromScale(1, 1),
         BackgroundTransparency = 1,
         Visible = style.border,
         Parent = shell,
     })
-    w:Create("UICorner", { CornerRadius = corner, Parent = border })
+    rounded(border)
     local borderStroke = w:Create("UIStroke", {
         Color = white,
         Thickness = style.borderThickness,
@@ -613,13 +762,13 @@ function Nameplate:_attach(player, character)
         Parent = borderStroke,
     })
 
-    -- the mark sits above the card so it can enter first and its sparks can leave the card's edge
+    -- the mark sits above the card so it can arrive first and its sparks can cross the edge
     local markSize = UDim2.fromScale(style.logoScale, style.logoScale)
     local markPosition = UDim2.fromScale(layout.logoCenter, 0.5)
     local halo = w:Create("ImageLabel", {
         AnchorPoint = Vector2.new(0.5, 0.5),
         Position = markPosition,
-        Size = UDim2.fromScale(style.logoScale * 1.7, style.logoScale * 1.7),
+        Size = UDim2.fromScale(style.logoScale * 1.6, style.logoScale * 1.6),
         SizeConstraint = Enum.SizeConstraint.RelativeYY,
         BackgroundTransparency = 1,
         ImageColor3 = style.accent,
@@ -640,6 +789,7 @@ function Nameplate:_attach(player, character)
         ZIndex = 10,
         Parent = shell,
     })
+    local logoCorner = w:Create("UICorner", { CornerRadius = UDim.new(0, 0), Parent = logo })
     local monogram = w:Create("TextLabel", {
         AnchorPoint = Vector2.new(0.5, 0.5),
         Position = markPosition,
@@ -660,7 +810,7 @@ function Nameplate:_attach(player, character)
     for index = 1, sparkCount do
         local spark = w:Create("Frame", {
             AnchorPoint = Vector2.new(0.5, 0.5),
-            Size = UDim2.fromScale(0.05, 0.05),
+            Size = UDim2.fromScale(0.04, 0.04),
             SizeConstraint = Enum.SizeConstraint.RelativeYY,
             BackgroundColor3 = style.sparkleColor,
             BackgroundTransparency = 1,
@@ -672,8 +822,8 @@ function Nameplate:_attach(player, character)
         table.insert(sparks, {
             frame = spark,
             offset = (index - 1) / sparkCount * math.pi * 2,
-            speed = 0.55 + (index % 3) * 0.12,
-            size = 0.035 + (index % 4) * 0.008,
+            speed = 0.5 + (index % 3) * 0.1,
+            size = 0.028 + (index % 3) * 0.006,
         })
     end
 
@@ -695,14 +845,19 @@ function Nameplate:_attach(player, character)
     entry.parts = {
         shell = shell,
         scale = scale,
-        card = card,
-        wipe = wipe,
+        glow = glow,
         glowStroke = glowStroke,
+        card = card,
+        content = content,
+        backdrop = backdrop,
+        veil = veil,
+        shine = shine,
+        sweep = sweep,
+        border = border,
         borderStroke = borderStroke,
         borderGradient = borderGradient,
-        sweep = sweep,
         title = title,
-        shine = shine,
+        titleShine = titleShine,
         subtitle = subtitle,
         badge = badge,
         badgeScale = badgeScale,
@@ -710,8 +865,8 @@ function Nameplate:_attach(player, character)
         badgeText = badgeText,
         halo = halo,
         logo = logo,
+        logoCorner = logoCorner,
         monogram = monogram,
-        backdrop = backdrop,
         sparks = sparks,
     }
     self:_writeText(entry)
@@ -738,20 +893,26 @@ end
 -- Where each part of the entrance is at, 0 to 1, `age` seconds in.
 local function entranceAt(kind, age)
     if kind == "none" then
-        return { mark = 1, card = 1, edge = 1, title = 1, subtitle = 1, badge = 1, sparks = 1 }
+        return { mark = 1, card = 1, edge = 1, title = 1, subtitle = 1, badge = 1, sparks = 1, fade = 1 }
     elseif kind == "fade" then
         local p = span(age, 0, 0.5)
-        return { mark = p, card = 1, edge = p, title = p, subtitle = p, badge = p, sparks = p, fadeCard = p }
+        return { mark = p, card = 1, edge = p, title = p, subtitle = p, badge = p, sparks = p, fade = p }
     end
     return {
         mark = span(age, 0, 0.5),
-        card = span(age, 0.18, 0.6),
-        edge = span(age, 0.5, 0.4),
+        card = span(age, 0.15, 0.6),
+        edge = span(age, 0.45, 0.4),
         title = span(age, 0.42, 0.45),
         subtitle = span(age, 0.52, 0.45),
         badge = span(age, 0.65, 0.4),
         sparks = span(age, 0.3, 0.6),
+        fade = span(age, 0.1, 0.35),
     }
+end
+
+-- A layer's transparency at `alpha` of the way from hidden (1) to its resting value.
+local function fadeTo(base, alpha)
+    return 1 - (1 - base) * alpha
 end
 
 local function animate(self, plate, t, cap)
@@ -800,8 +961,8 @@ local function animate(self, plate, t, cap)
     parts.logo.ImageTransparency = 1 - markAlpha
     parts.monogram.TextTransparency = 1 - markAlpha
     local breath = 0.5 + 0.5 * math.sin(phase * 2.1)
-    parts.halo.ImageTransparency = 1 - markAlpha * (0.38 + 0.2 * breath)
-    local haloSize = style.logoScale * (1.55 + 0.15 * breath) * (0.5 + 0.5 * outCubic(mark))
+    parts.halo.ImageTransparency = 1 - markAlpha * (0.18 + 0.12 * breath)
+    local haloSize = style.logoScale * (1.45 + 0.12 * breath) * (0.5 + 0.5 * outCubic(mark))
     parts.halo.Size = UDim2.fromScale(haloSize, haloSize)
 
     -- sparks orbit the mark on a tilted ellipse; the ones behind it dim and pass underneath
@@ -819,42 +980,53 @@ local function animate(self, plate, t, cap)
             UDim2.fromScale(layout.logoCenter + x * style.logoScale / layout.aspect, 0.5 + y * style.logoScale)
         spark.frame.Size = UDim2.fromScale(spark.size * depth, spark.size * depth)
         spark.frame.ZIndex = if front then 11 else 9
-        spark.frame.BackgroundTransparency = 1 - sparkAlpha * twinkle * (if front then 0.95 else 0.35)
+        spark.frame.BackgroundTransparency = 1 - sparkAlpha * twinkle * (if front then 0.8 else 0.3)
     end
 
-    -- the card: unfolds from behind the mark with a soft-edged wipe
+    -- the card: unfolds from a tile around the mark to full width
     local open = outQuint(e.card)
-    local cardAlpha = alpha * (if e.fadeCard then e.fadeCard else 1)
-    parts.card.GroupTransparency = 1 - cardAlpha
-    if open < 1 then
-        local edge = layout.logoCenter + (1.08 - layout.logoCenter) * open
-        local soft = 0.08
-        parts.wipe.Enabled = true
-        parts.wipe.Transparency = NumberSequence.new({
-            NumberSequenceKeypoint.new(0, 0),
-            NumberSequenceKeypoint.new(math.clamp(edge - soft, 0.001, 0.997), 0),
-            NumberSequenceKeypoint.new(math.clamp(edge, 0.002, 0.998), 1),
-            NumberSequenceKeypoint.new(1, 1),
-        })
-    elseif parts.wipe.Enabled then
-        parts.wipe.Enabled = false
-    end
+    local width = layout.closedWidth + (1 - layout.closedWidth) * open
+    local frameSize = UDim2.fromScale(width, 1)
+    parts.card.Size = frameSize
+    parts.border.Size = frameSize
+    parts.glow.Size = frameSize
+    parts.content.Size = UDim2.fromScale(1 / width, 1)
+
+    local cardAlpha = outCubic(e.fade) * alpha
+    parts.card.BackgroundTransparency = fadeTo(style.cardTransparency, cardAlpha)
+    parts.backdrop.ImageTransparency = fadeTo(style.backdropTransparency, cardAlpha * open)
+    parts.veil.BackgroundTransparency = fadeTo(0, cardAlpha)
+    parts.shine.BackgroundTransparency = fadeTo(0, cardAlpha)
 
     local edgeAlpha = outCubic(e.edge) * alpha
-    parts.borderStroke.Transparency = 1 - edgeAlpha * 0.85
-    parts.glowStroke.Transparency = if style.glow then 1 - edgeAlpha * 0.1 else 1
+    parts.borderStroke.Transparency = fadeTo(style.borderTransparency, math.max(edgeAlpha, cardAlpha * 0.6))
+    parts.glowStroke.Transparency = if style.glow then fadeTo(0.85, edgeAlpha) else 1
     parts.borderGradient.Rotation = (phase * style.borderSpeed) % 360
 
     -- the words: title slides in, the name follows, the badge pops
     local titleIn = outCubic(e.title)
-    parts.title.TextTransparency = 1 - titleIn
-    parts.title.Position = UDim2.fromScale(layout.textLeft + (1 - titleIn) * 0.04, 0.16)
+    parts.title.TextTransparency = 1 - titleIn * alpha
+    parts.title.Position = UDim2.fromScale(layout.textLeft + (1 - titleIn) * 0.03, style.titleTop)
     local subtitleIn = outCubic(e.subtitle)
-    parts.subtitle.TextTransparency = 1 - subtitleIn
-    parts.subtitle.Position = UDim2.fromScale(layout.textLeft + (1 - subtitleIn) * 0.03, 0.58)
+    parts.subtitle.TextTransparency = 1 - subtitleIn * alpha
+    parts.subtitle.Position =
+        UDim2.fromScale(layout.textLeft + (1 - subtitleIn) * 0.02, style.titleTop + style.titleSize + 0.05)
     parts.badgeScale.Scale = outBack(e.badge)
+    local badgeAlpha = clamp01(e.badge * 1.5) * alpha
+    parts.badge.BackgroundTransparency = fadeTo(0.86, badgeAlpha)
+    parts.badgeStroke.Transparency = fadeTo(0.55, badgeAlpha)
+    parts.badgeText.TextTransparency = 1 - badgeAlpha
     if style.titleShine then
-        parts.shine.Offset = Vector2.new(((phase * 0.35) % 2) - 1, 0)
+        parts.titleShine.Offset = Vector2.new(((phase * 0.3) % 2) - 1, 0)
+    end
+
+    -- animated logo and backdrop: advance their frames
+    if plate.visuals then
+        for _, entry in plate.visuals do
+            if entry.visual then
+                animatedImage.step(entry.label, entry.visual, phase, entry.state)
+            end
+        end
     end
 
     -- the float, and a sweep of light across the glass every so often
@@ -862,7 +1034,7 @@ local function animate(self, plate, t, cap)
     plate.gui.StudsOffset = Vector3.new(0, style.lift + bob, 0)
     if style.sweep then
         local u = (phase % style.sweepEvery) / sweepTime
-        parts.sweep.Position = UDim2.fromScale(if u < 1 then -0.3 + 1.6 * inOutSine(u) else -0.4, 0.5)
+        parts.sweep.Offset = Vector2.new(if u < 1 then -1 + 2 * inOutSine(u) else -1, 0)
     end
     return false
 end
@@ -911,7 +1083,10 @@ function Nameplate:CheckIn(): boolean
     for _, user in data.users do
         local id = tonumber(type(user) == "table" and user.id)
         if id then
-            users[id] = { badge = if type(user.badge) == "string" then user.badge else nil }
+            users[id] = {
+                badge = if type(user.badge) == "string" then user.badge else nil,
+                media = if type(user.media) == "table" then user.media else nil,
+            }
         end
     end
     local localPlayer = variables.localPlayer
@@ -975,6 +1150,80 @@ function Nameplate:SetStyle(style, preset: string?)
         if plate.character then
             self:_attach(player, plate.character)
         end
+    end
+end
+
+-- The token that proves your custom image is yours, kept in the executor's workspace.
+local function tokenPath()
+    return path.join(variables.fileSystemManager:getRootFolder(), "nameplate-token.txt")
+end
+
+function Nameplate:_token()
+    if self._savedToken then
+        return self._savedToken
+    end
+    local ok, token = pcall(function()
+        return if filesystem.isfile(tokenPath()) then filesystem.readfile(tokenPath()) else nil
+    end)
+    self._savedToken = if ok and type(token) == "string" and token ~= "" then token else nil
+    return self._savedToken
+end
+
+function Nameplate:_saveToken(token)
+    if type(token) ~= "string" or token == "" then
+        return
+    end
+    self._savedToken = token
+    pcall(function()
+        filesystem.ensureFolder(variables.fileSystemManager:getRootFolder())
+        filesystem.writefile(tokenPath(), token)
+    end)
+end
+
+-- Put your own image or GIF on your plate, for everyone running the script to see. `link` is an
+-- image or GIF link (Discord, Tenor, Giphy, Imgur, …); `slot` is "backdrop" (default, the whole
+-- card) or "logo" (the square on the left). Returns ok and, if not, why.
+function Nameplate:SetMedia(link: string, slot: string?): (boolean, string?)
+    if not self.endpoint and not self.transport then
+        return false, "Custom images need a relay (endpoint)."
+    end
+    local body = self:_identity()
+    body.token = self:_token()
+    body.media = { url = tostring(link), slot = if slot == "logo" then "logo" else "backdrop" }
+    local ok, data = relayClient.request(self, "PUT", "/v1/profile", body)
+    if not ok or type(data) ~= "table" then
+        return false,
+            if type(data) == "table" and type(data.error) == "string" then data.error else "Couldn't set that image."
+    end
+    self:_saveToken(data.token)
+    self:_setOwnMedia(data.media)
+    return true
+end
+
+-- Take your own image off your plate.
+function Nameplate:ClearMedia(): boolean
+    if not self.endpoint and not self.transport then
+        return false
+    end
+    local body = self:_identity()
+    body.token = self:_token()
+    local ok, data = relayClient.request(self, "DELETE", "/v1/profile", body)
+    if ok and type(data) == "table" then
+        self:_saveToken(data.token)
+        self:_setOwnMedia(nil)
+    end
+    return ok
+end
+
+function Nameplate:_setOwnMedia(media)
+    local me = variables.localPlayer
+    if not me then
+        return
+    end
+    self.users[me.UserId] = self.users[me.UserId] or { badge = self.badge }
+    self.users[me.UserId].media = media
+    if self.plates[me] then
+        self:_syncMedia(self.plates[me])
     end
 end
 

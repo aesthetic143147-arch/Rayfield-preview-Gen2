@@ -1,3 +1,5 @@
+import { createHash, randomBytes } from 'node:crypto';
+
 // The relay's logic, with no Discord or network in it, so it can be tested on its own.
 //
 // It keeps a window of recent messages per channel and a version number that moves on every
@@ -19,6 +21,7 @@ export function createCore({
     presenceTtl = 60_000, // a player drops off the "who's here" list this long after their last check-in
     presencePerMinute = 20, // check-ins per IP per minute
     badges = {}, // { robloxId: "Developer" } shown on that player's nameplate
+    uploadsPerMinute = 6, // custom image changes per IP per minute
     now = () => Date.now(),
 } = {}) {
     const rooms = new Map(); // channel name -> { id, version, messages }
@@ -34,6 +37,8 @@ export function createCore({
     const pollers = new Map(); // ip -> [times]
     const authors = new Map(); // message id -> { name, roblox } for messages sent through the relay
     const servers = new Map(); // Roblox JobId -> Map(robloxId -> last check-in time)
+    const profiles = new Map(); // robloxId -> { media, tokenHash } a player's own nameplate image
+    const uploads = new Map(); // ip -> [times]
     const checkins = new Map(); // ip -> [times]
 
     const touch = (room) => {
@@ -70,13 +75,47 @@ export function createCore({
             const users = [];
             for (const [other, at] of server) {
                 if (t - at > presenceTtl) server.delete(other);
-                else users.push({ id: other, badge: badges[other] });
+                else {
+                    const entry = { id: other };
+                    if (badges[other]) entry.badge = badges[other];
+                    if (profiles.get(other)?.media) entry.media = profiles.get(other).media;
+                    users.push(entry);
+                }
             }
             // forget whole servers nobody has checked in to for a while
             for (const [job, members] of servers) {
                 if (members.size === 0 || [...members.values()].every((at) => t - at > presenceTtl)) servers.delete(job);
             }
             return { status: 200, body: { users, ttl: Math.floor(presenceTtl / 1000) } };
+        },
+
+        // A player's own nameplate image. The first set hands back a token that proves ownership;
+        // changing or clearing it later needs that token, so nobody can swap someone else's.
+        profiles,
+        uploadAllowed: (ip) => !ip || allow(uploads, ip, uploadsPerMinute),
+        claimProfile(body) {
+            const id = Number.isSafeInteger(body?.user?.id) && body.user.id > 0 ? body.user.id : null;
+            if (!id) return { status: 400, error: 'Bad request.' };
+            const existing = profiles.get(id);
+            if (existing && existing.tokenHash !== hashToken(body.token)) {
+                return { status: 403, error: 'That nameplate belongs to someone else.' };
+            }
+            const token = existing ? body.token : randomBytes(24).toString('hex');
+            return {
+                ok: true,
+                id,
+                token,
+                save(media) {
+                    profiles.set(id, { media, tokenHash: hashToken(token) });
+                },
+                clear() {
+                    // the claim stays, so the token keeps working next time
+                    profiles.set(id, { media: undefined, tokenHash: hashToken(token) });
+                },
+            };
+        },
+        resetProfile(id) {
+            return profiles.delete(Number(id));
         },
 
         checkOut(body) {
@@ -223,6 +262,8 @@ export function createCore({
         return true;
     }
 }
+
+const hashToken = (token) => (typeof token === 'string' && token ? createHash('sha256').update(token).digest('hex') : null);
 
 export function cleanName(value) {
     if (typeof value !== 'string') return '';

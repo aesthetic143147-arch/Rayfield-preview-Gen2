@@ -159,10 +159,9 @@ chat names like any other public chat, and ban by Roblox ID if someone misbehave
 
 ## Nameplates
 
-`Window:CreateNameplate` floats a nameplate over the head of everyone running your script. By
-default it wears the Omnity look: the real Omnity mark rocking gently in a soft halo, sparks
-orbiting it on a tilted ring, and a dark glass card over a spiral galaxy carrying the title, the
-player's `@username` and an optional badge.
+`Window:CreateNameplate` floats a nameplate over the head of everyone running your script. It's small and quiet, in the spirit of Novoline's nameplates with Rayfield's finish: the real
+Omnity mark in a faint halo with a few sparks orbiting it, and a dark glass card over a spiral
+galaxy with the title, the player's `@username` and an optional badge, edged by a hairline.
 
 It enters in stages: the mark swirls in out of nothing, the card unfolds from behind it, the title
 slides in, the name follows and the badge pops. At rest it keeps moving: a gentle bob, the halo
@@ -203,12 +202,41 @@ Plates:SetStyle("Mono")                    -- or switch preset (your overrides s
 | Shape | `size` (studs), `lift`, `maxDistance`, `cornerRadius` |
 | Colour | `accent`, `accentDeep`, `cardColor`, `cardTransparency`, `veilColor`, `veilStrength`, `titleColor`, `subtitleColor`, `badgeTextColor`, `sparkleColor` |
 | Images | `logo`, `logoTint`, `logoScale`, `backdrop`, `backdropTint`, `backdropTransparency`, `glowImage` (each can be `false`) |
-| Type | `titleFont`, `subtitleFont` (a `Font`) |
-| Motion | `entrance`, `logoSway`, `logoSpin`, `halo`, `sparkles`, `titleShine`, `sweep`, `sweepEvery`, `border`, `borderThickness`, `borderSpeed`, `glow`, `bob`, `bobHeight`, `bobSpeed` |
+| Type | `titleFont`, `subtitleFont` (a `Font`), `titleTop`, `titleSize`, `subtitleSize` |
+| Motion | `entrance`, `logoSway`, `logoSpin`, `halo`, `sparkles`, `titleShine`, `sweep`, `sweepEvery`, `border`, `borderThickness`, `borderTransparency`, `borderSpeed`, `glow`, `bob`, `bobHeight`, `bobSpeed` |
 
 Other options: `subtitle` (a string or `function(player)`), `showSelf` (default `true`),
-`hideDefaultName` (hides Roblox's name under a plate, default `true`). Methods: `SetStyle`,
+`hideDefaultName` (hides Roblox's name under a plate, default `true`). Methods: `SetStyle`, `SetMedia`, `ClearMedia`,
 `SetTitle`, `SetEnabled`, `Add(player, badge?)`, `Remove(player)`, `CheckIn()`, `Destroy()`.
+
+**Images and GIFs.** `logo` and `backdrop` take a still image, a sprite sheet or a list of frames,
+and with a relay, any image or GIF link:
+
+```lua
+style = {
+    backdrop = "https://media.tenor.com/abc/banner.gif",   -- converted by the relay
+    logo = { sheet = 1234567890, frames = 12, columns = 4, frameSize = Vector2.new(128, 128), fps = 12 },
+    -- or: logo = { images = { 111, 222, 333 }, fps = 6 },
+}
+```
+
+Roblox can't play GIFs, so the relay turns each one into a sprite sheet (every frame cut to the
+plate's shape and packed into one image of at most 1024×1024), and the plate steps through it.
+
+**Players' own images.** Each player can put their own image or GIF on their plate, and everyone
+else running the script sees it:
+
+```lua
+local ok, why = Plates:SetMedia("https://media.tenor.com/xyz/me.gif")          -- the whole card
+local ok, why = Plates:SetMedia("https://i.imgur.com/abc.png", "logo")          -- the square spot
+Plates:ClearMedia()
+```
+
+Hook it to an input so players can paste a link. The example script does this. Links must come
+from Discord, Imgur, Tenor, Giphy, GitHub or Roblox's CDN (change the list with `MEDIA_HOSTS` on the
+relay). The first time a player sets an image, the relay gives their script a token (saved in the
+workspace), so nobody else can change it. Moderators remove one from Discord with
+`!platereset <robloxId>`. Pass `playerMedia = false` to show only your own artwork.
 
 **Who sees what.** Plates are drawn locally, so only people running the script see them. To show
 plates over *other* users, each player checks in with the relay every 20 seconds and gets back

@@ -9,7 +9,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
 import { Client, Events, GatewayIntentBits, Partials, PermissionFlagsBits } from 'discord.js';
+import * as fs from 'node:fs';
 import { createCore, readableContent } from './core.js';
+import { createMediaStore, DEFAULT_HOSTS } from './media.js';
 import { createHandler } from './http.js';
 
 dotenv.config({ quiet: true });
@@ -61,6 +63,19 @@ const save = (file, value) => {
     writeFileSync(path.join(dataDir, file), JSON.stringify(value));
 };
 for (const id of load('bans.json', [])) core.bans.add(String(id));
+for (const [id, profile] of Object.entries(load('profiles.json', {}))) core.profiles.set(Number(id), profile);
+const saveProfiles = () => save('profiles.json', Object.fromEntries(core.profiles));
+
+// Custom nameplate images and GIFs. MEDIA=off turns them off; MEDIA_HOSTS picks where they may
+// come from.
+const media =
+    env.MEDIA === 'off'
+        ? undefined
+        : createMediaStore({
+              dir: path.join(dataDir, 'media'),
+              fs,
+              hosts: env.MEDIA_HOSTS ? env.MEDIA_HOSTS.split(',').map((h) => h.trim()).filter(Boolean) : DEFAULT_HOSTS,
+          });
 for (const [id, author] of Object.entries(load('authors.json', {}))) core.authors.set(id, author);
 const saveAuthors = () => save('authors.json', Object.fromEntries([...core.authors].slice(-2000)));
 
@@ -161,10 +176,11 @@ client.on(Events.MessageUpdate, (_, after) => {
 client.on(Events.MessageDelete, (message) => core.remove(message.channelId, [message.id]));
 client.on(Events.MessageBulkDelete, (messages, channel) => core.remove(channel.id, [...messages.keys()]));
 
-// Moderators manage the chat from Discord: !chatban <robloxId>, !chatunban <robloxId>, !chatbans.
+// Moderators manage the chat from Discord: !chatban <robloxId>, !chatunban <robloxId>, !chatbans,
+// and !platereset <robloxId> to take down someone's custom nameplate image.
 async function staffCommand(message) {
     const [command, target] = (message.content ?? '').trim().split(/\s+/);
-    if (!['!chatban', '!chatunban', '!chatbans'].includes(command)) return false;
+    if (!['!chatban', '!chatunban', '!chatbans', '!platereset'].includes(command)) return false;
     if (!message.member?.permissionsIn(message.channel).has(PermissionFlagsBits.ManageMessages)) return true;
     if (command === '!chatbans') {
         await message.reply(core.bans.size ? `Banned Roblox IDs: ${[...core.bans].join(', ')}` : 'Nobody is banned.');
@@ -172,6 +188,12 @@ async function staffCommand(message) {
     }
     if (!/^\d+$/.test(target ?? '')) {
         await message.reply(`Usage: ${command} <Roblox user ID>`);
+        return true;
+    }
+    if (command === '!platereset') {
+        core.resetProfile(target);
+        saveProfiles();
+        await message.reply(`Removed Roblox user ${target}'s custom nameplate image.`);
         return true;
     }
     if (command === '!chatban') core.bans.add(target);
@@ -182,7 +204,12 @@ async function staffCommand(message) {
 }
 
 const port = Number(env.PORT) || 8787;
-createServer(createHandler({ core, send, key: env.CHAT_KEY || undefined })).listen(port, () => {
+const handler = createHandler({ core, send, key: env.CHAT_KEY || undefined, media });
+createServer(async (req, res) => {
+    await handler(req, res);
+    // a player's image changed: keep it across restarts
+    if (req.url?.startsWith('/v1/profile') && res.statusCode === 200) saveProfiles();
+}).listen(port, () => {
     console.log(`Relay listening on http://localhost:${port}`);
 });
 client.login(env.DISCORD_TOKEN);

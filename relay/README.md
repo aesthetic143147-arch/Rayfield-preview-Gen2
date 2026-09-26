@@ -17,6 +17,10 @@ players' scripts  ⇄  this relay (holds your bot token)  ⇄  your Discord chan
 - **Nameplates:** players running the script check in every 20 seconds with the Roblox server
   they're in, and get back everyone else there who's running it, so each of them can see the
   others' nameplates. Give people badges with `BADGES=`.
+- **Nameplate images:** players can put their own image or GIF on their plate. The relay downloads
+  it from an allowed host (8 MB at most), turns a GIF into a sprite sheet Roblox can play, and
+  shows it to everyone. Each player gets a token the first time, so nobody else can change theirs.
+  Moderators remove one with `!platereset <robloxId>`.
 - **Bans:** in the channel, anyone with Manage Messages can type `!chatban <robloxId>`,
   `!chatunban <robloxId>` or `!chatbans`. Bans are saved in `data/bans.json`.
 
@@ -74,6 +78,8 @@ Tab.Right:CreateChat({ name = "Community", endpoint = "https://your-relay-addres
 | `CHAT_KEY` | none | If set, scripts must send it (`key = "…"` in `CreateChat`). Keeps casual traffic off; not a secret |
 | `ALLOW_INVITES` | `true` | `false` rejects Discord invite links from players |
 | `MAX_LENGTH` | `300` | Longest message a player can send |
+| `MEDIA` | `on` | `off` turns custom nameplate images off |
+| `MEDIA_HOSTS` | Discord, Imgur, Tenor, Giphy, GitHub, Roblox CDN | Where images may come from, comma separated |
 | `BADGES` | none | Nameplate badges as `robloxId:Badge` pairs, e.g. `12345:Developer,67890:Staff` |
 
 If your server uses AutoMod to block invite links, exempt the chat channel from that rule, or
@@ -98,11 +104,19 @@ POST   /v1/presence   { "user": { "id", "name" }, "jobId": "<game.JobId>" }
   200 { "users": [ { "id", "badge"? } ], "ttl": 60 }    everyone running the script in that server
 DELETE /v1/presence   same body: leave the list straight away
 
+POST   /v1/media     { "url", "fit": "banner" | "square" }       convert a link
+  200 { "id", "frames", "columns", "frameWidth", "frameHeight", "fps", "fit" }
+GET    /v1/media/{id}.png                                          the sprite sheet
+PUT    /v1/profile   { "user", "token"?, "media": { "url", "slot": "backdrop" | "logo" } }
+  200 { "ok": true, "token", "media": { …, "slot" } }   the token is needed for later changes
+DELETE /v1/profile   { "user", "token" }
+Check-ins include each player's `media`, if they set one.
+
 The GET returns the whole recent window rather than only new messages, which is how edits and
 deletions reach players.
 
 ## Development
 
 ```bash
-npm test   # the message store, checks and rate limits, and the HTTP routes end to end
+npm test   # the message store, checks and rate limits, GIF conversion, and every route end to end
 ```

@@ -80,7 +80,7 @@ end)
 
 -- A floating OMNITY nameplate over your head (and, with a relay endpoint, over every other
 -- Omnity user in the server)
-Window:CreateNameplate({ title = "OMNITY", endpoint = nil })
+local Plates = Window:CreateNameplate({ title = "OMNITY", endpoint = nil })
 
 -- Community tab: a chat room backed by your Discord channel ---------------------------------
 -- Run the relay in relay/ (see relay/README.md) and put its address in `endpoint`. Until then
@@ -93,6 +93,17 @@ Community.Left:CreateChat({
     endpoint = nil, -- e.g. "https://your-relay.example.com"
     channel = "general",
     height = 300,
+})
+
+Community.Right:CreateSection({ name = "Your nameplate" })
+Community.Right:CreateInput({
+    name = "Nameplate GIF",
+    placeholder = "Paste an image or GIF link",
+    forgetState = true,
+    callback = function(link)
+        local ok, why = Plates:SetMedia(link)
+        Window:Toast({ title = if ok then "Nameplate updated" else "Couldn't set that", subtitle = why })
+    end,
 })
 
 Community.Right:CreateSection({ name = "About" })

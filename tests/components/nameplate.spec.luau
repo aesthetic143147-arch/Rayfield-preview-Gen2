@@ -80,7 +80,8 @@ return function()
 
             plates:_step(born)
             expect(parts.monogram.TextTransparency).to.equal(1)
-            expect(parts.wipe.Enabled).to.equal(true)
+            expect(math.abs(parts.card.Size.X.Scale - entry.layout.closedWidth) < 0.0001).to.equal(true)
+            expect(parts.card.BackgroundTransparency).to.equal(1)
             expect(parts.title.TextTransparency).to.equal(1)
             expect(parts.badgeScale.Scale).to.equal(0)
 
@@ -93,16 +94,18 @@ return function()
             expect(peak > logoScale).to.equal(true)
             expect(parts.title.TextTransparency > 0.9).to.equal(true)
 
-            -- partway: the card is wiping open, the title on its way
+            -- partway: the card is unfolding (its contents keep full width), the title on its way
             plates:_step(born + 0.55)
-            expect(parts.wipe.Enabled).to.equal(true)
+            local width = parts.card.Size.X.Scale
+            expect(width > entry.layout.closedWidth and width < 1).to.equal(true)
+            expect(math.abs(parts.content.Size.X.Scale * width - 1) < 0.001).to.equal(true)
             expect(parts.title.TextTransparency < 1).to.equal(true)
             expect(parts.title.Position.X.Scale > entry.layout.textLeft).to.equal(true)
 
-            -- done: everything in place, the wipe switched off
+            -- done: everything in place, every layer at its resting look
             plates:_step(born + 2)
-            expect(parts.wipe.Enabled).to.equal(false)
-            expect(parts.card.GroupTransparency < 0.01).to.equal(true)
+            expect(parts.card.Size.X.Scale).to.equal(1)
+            expect(math.abs(parts.card.BackgroundTransparency - plates.style.cardTransparency) < 0.001).to.equal(true)
             expect(parts.title.TextTransparency < 0.01).to.equal(true)
             expect(math.abs(parts.title.Position.X.Scale - entry.layout.textLeft) < 0.001).to.equal(true)
             expect(math.abs(parts.badgeScale.Scale - 1) < 0.001).to.equal(true)
@@ -118,11 +121,12 @@ return function()
                 table.insert(heights, entry.gui.StudsOffset.Y)
                 table.insert(rotations, entry.parts.monogram.Rotation)
             end
-            expect(math.max(table.unpack(heights)) > 2.5).to.equal(true)
-            expect(math.min(table.unpack(heights)) < 2.5).to.equal(true)
+            local lift = plates.style.lift
+            expect(math.max(table.unpack(heights)) > lift).to.equal(true)
+            expect(math.min(table.unpack(heights)) < lift).to.equal(true)
             expect(rotations[1] ~= rotations[#rotations]).to.equal(true)
 
-            expect(#entry.parts.sparks).to.equal(7)
+            expect(#entry.parts.sparks).to.equal(4)
             local spark = entry.parts.sparks[1].frame
             local before = spark.Position
             plates:_step(born + 6)
@@ -138,7 +142,7 @@ return function()
             expect(entry.parts.badge.BackgroundColor3).to.equal(Color3.fromRGB(255, 0, 0))
             expect(entry.gui.Size).to.equal(UDim2.fromScale(4, 1))
             plates:_step(entry.born + 3)
-            expect(entry.gui.StudsOffset.Y).to.equal(2.5)
+            expect(math.abs(entry.gui.StudsOffset.Y - plates.style.lift) < 0.001).to.equal(true)
 
             local oldGui = entry.gui
             plates:SetStyle("Mono")
@@ -150,7 +154,7 @@ return function()
             expect(#entry.parts.sparks).to.equal(0)
             plates:_step(entry.born)
             expect(entry.parts.title.TextTransparency).to.equal(0)
-            expect(entry.parts.wipe.Enabled).to.equal(false)
+            expect(entry.parts.card.Size.X.Scale).to.equal(1)
         end)
 
         it("fades out and cleans up when a player leaves, and restores their Roblox name", function()
@@ -198,14 +202,174 @@ return function()
             expect(plates._alive).to.equal(false)
         end)
 
+        it("plays a sprite sheet: the frames step through the grid at its speed", function()
+            local plates, entry = plateFor({
+                style = {
+                    backdrop = {
+                        sheet = "rbxassetid://123",
+                        frames = 6,
+                        columns = 3,
+                        frameSize = Vector2.new(320, 80),
+                        fps = 10,
+                    },
+                },
+            })
+            local backdrop = entry.parts.backdrop
+            expect(backdrop.Image).to.equal("rbxassetid://123")
+            expect(backdrop.ImageRectSize).to.equal(Vector2.new(320, 80))
+            expect(backdrop.Visible).to.equal(true)
+
+            local seen = {}
+            for i = 0, 11 do
+                plates:_step(entry.born + 2 + i * 0.1)
+                seen[tostring(backdrop.ImageRectOffset)] = true
+            end
+            local count = 0
+            for _ in seen do
+                count += 1
+            end
+            expect(count).to.equal(6) -- every cell of the 3 x 2 grid shows up
+        end)
+
+        it("plays a list of frames, and a GIF link goes through the relay", function()
+            local calls = {}
+            local plates, entry = plateFor({
+                endpoint = "https://relay.example.com",
+                autoCheckIn = false,
+                transport = function(method, path, body)
+                    table.insert(calls, { method = method, path = path, body = body })
+                    return true,
+                        {
+                            id = "abcdef0123456789",
+                            frames = 4,
+                            columns = 2,
+                            frameWidth = 160,
+                            frameHeight = 160,
+                            fps = 8,
+                        }
+                end,
+                style = {
+                    logo = "https://media.tenor.com/spin.gif",
+                    backdrop = { images = { 1, 2, 3 }, fps = 4 },
+                },
+            })
+            -- the test stands in for downloads
+            plates._download = function(_, _kind, source, fileName)
+                return "rbxasset://fake/" .. (fileName or source)
+            end
+            plates:SetStyle({})
+
+            expect(calls[1].path).to.equal("/v1/media")
+            expect(calls[1].body.url).to.equal("https://media.tenor.com/spin.gif")
+            expect(calls[1].body.fit).to.equal("square")
+            expect(entry.parts.logo.Image).to.equal("rbxasset://fake/media_abcdef0123456789.png")
+            expect(entry.parts.logo.ImageRectSize).to.equal(Vector2.new(160, 160))
+
+            local images = {}
+            for i = 0, 3 do
+                plates:_step(entry.born + 2 + i * 0.25)
+                images[entry.parts.backdrop.Image] = true
+            end
+            expect(images["rbxassetid://1"] and images["rbxassetid://2"] and images["rbxassetid://3"]).to.equal(true)
+        end)
+
+        it("shows a player's own GIF on their plate, and lets you set yours", function()
+            local w = makeWindow()
+            local calls = {}
+            local alice = fakePlayer(501, "Alice")
+            local plates = w:CreateNameplate({
+                endpoint = "https://relay.example.com",
+                autoCheckIn = false,
+                transport = function(method, path, body)
+                    table.insert(calls, { method = method, path = path, body = body })
+                    if path == "/v1/profile" then
+                        return true,
+                            {
+                                ok = true,
+                                token = "secret",
+                                media = {
+                                    id = "1111111111111111",
+                                    frames = 2,
+                                    columns = 2,
+                                    frameWidth = 160,
+                                    frameHeight = 160,
+                                    fps = 5,
+                                    slot = "logo",
+                                },
+                            }
+                    end
+                    return true,
+                        {
+                            users = {
+                                {
+                                    id = 501,
+                                    media = {
+                                        id = "2222222222222222",
+                                        frames = 3,
+                                        columns = 3,
+                                        frameWidth = 320,
+                                        frameHeight = 80,
+                                        fps = 6,
+                                        slot = "backdrop",
+                                    },
+                                },
+                            },
+                        }
+                end,
+            })
+            plates._download = function(_, _kind, source, fileName)
+                return "rbxasset://fake/" .. (fileName or source)
+            end
+            plates._listPlayers = function()
+                return { alice }
+            end
+
+            plates:CheckIn()
+            local entry = plates.plates[alice]
+            expect(entry.parts.backdrop.Image).to.equal("rbxasset://fake/media_2222222222222222.png")
+            expect(entry.parts.backdrop.ImageRectSize).to.equal(Vector2.new(320, 80))
+
+            -- a dev can turn players' images off
+            plates.playerMedia = false
+            plates:_applyImages(entry)
+            expect(entry.parts.backdrop.Image).never.to.equal("rbxasset://fake/media_2222222222222222.png")
+            plates.playerMedia = true
+
+            -- setting your own: sent with the slot, the token kept for next time
+            local ok = plates:SetMedia("https://media.tenor.com/me.gif", "logo")
+            expect(ok).to.equal(true)
+            local put = calls[#calls]
+            expect(put.method).to.equal("PUT")
+            expect(put.body.media.slot).to.equal("logo")
+            expect(put.body.media.url).to.equal("https://media.tenor.com/me.gif")
+            expect(plates:_token()).to.equal("secret")
+            expect(plates.users[12345].media.id).to.equal("1111111111111111")
+
+            expect(plates:ClearMedia()).to.equal(true)
+            expect(calls[#calls].method).to.equal("DELETE")
+            expect(calls[#calls].body.token).to.equal("secret")
+            expect(plates.users[12345].media).to.equal(nil)
+        end)
+
+        it("says why when custom images can't work", function()
+            local plates = plateFor()
+            local ok, reason = plates:SetMedia("https://media.tenor.com/x.gif")
+            expect(ok).to.equal(false)
+            expect(reason:find("relay", 1, true)).to.be.ok()
+            expect(plates:ClearMedia()).to.equal(false)
+        end)
+
         it("hides and shows every plate, and renames them", function()
             local plates, entry = plateFor()
             plates:_step(entry.born + 2)
-            expect(entry.parts.card.GroupTransparency < 0.01).to.equal(true)
+            expect(entry.parts.title.TextTransparency < 0.01).to.equal(true)
+            expect(entry.parts.card.BackgroundTransparency < 1).to.equal(true)
 
             plates:SetEnabled(false)
             plates:_step(entry.born + 2.1)
-            expect(entry.parts.card.GroupTransparency).to.equal(1)
+            expect(entry.parts.card.BackgroundTransparency).to.equal(1)
+            expect(entry.parts.title.TextTransparency).to.equal(1)
+            expect(entry.parts.borderStroke.Transparency).to.equal(1)
             plates:SetEnabled(true)
 
             plates:SetTitle("OMNITY HUB")

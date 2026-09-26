@@ -4,18 +4,70 @@
 
 const MAX_BODY = 4096;
 
-export function createHandler({ core, send, key }) {
+import { MediaError } from './media.js';
+
+export function createHandler({ core, send, key, media }) {
     return async function handle(req, res) {
         const reply = (status, body) => {
             res.writeHead(status, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
             res.end(JSON.stringify(body));
         };
+        const readJson = async () => {
+            const raw = await readBody(req);
+            if (raw === null) return { error: reply(413, { error: 'Request too large.' }) };
+            try {
+                return { body: JSON.parse(raw || '{}') };
+            } catch {
+                return { error: reply(400, { error: 'Bad request.' }) };
+            }
+        };
         try {
             const url = new URL(req.url, 'http://relay');
             if (url.pathname === '/health') return reply(200, { ok: true });
 
-            if (key && url.pathname.startsWith('/v1/') && req.headers['x-chat-key'] !== key) {
+            // sprite sheets are plain downloads (the script's image loader can't send headers)
+            const isSheet = /^\/v1\/media\/[a-f0-9]{16}\.png$/.test(url.pathname);
+            if (key && url.pathname.startsWith('/v1/') && !isSheet && req.headers['x-chat-key'] !== key) {
                 return reply(401, { error: 'Wrong chat key.' });
+            }
+
+            // custom nameplate images: the converted sprite sheets, and turning a link into one
+            const sheet = url.pathname.match(/^\/v1\/media\/([a-f0-9]{16})\.png$/);
+            if (sheet) {
+                const png = media?.read(sheet[1]);
+                if (!png) return reply(404, { error: 'Not found.' });
+                res.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=86400' });
+                return res.end(png);
+            }
+            if (url.pathname === '/v1/media' || url.pathname === '/v1/profile') {
+                if (!media) return reply(404, { error: 'Custom images are turned off on this relay.' });
+                const { body, error } = await readJson();
+                if (error) return error;
+                if (req.method !== 'DELETE' && !core.uploadAllowed(clientIp(req))) {
+                    return reply(429, { error: 'Too many changes. Wait a minute.', retryAfter: 30 });
+                }
+                try {
+                    if (url.pathname === '/v1/media' && req.method === 'POST') {
+                        return reply(200, await media.add(String(body.url ?? ''), body.fit));
+                    }
+                    if (url.pathname === '/v1/profile' && (req.method === 'PUT' || req.method === 'DELETE')) {
+                        const claim = core.claimProfile(body);
+                        if (!claim.ok) return reply(claim.status, { error: claim.error });
+                        if (req.method === 'DELETE' || !body.media?.url) {
+                            claim.clear();
+                            return reply(200, { ok: true, token: claim.token });
+                        }
+                        const slot = body.media.slot === 'logo' ? 'logo' : 'backdrop';
+                        const meta = await media.add(String(body.media.url), slot === 'logo' ? 'square' : 'banner');
+                        const saved = { ...meta, slot };
+                        claim.save(saved);
+                        return reply(200, { ok: true, token: claim.token, media: saved });
+                    }
+                    return reply(405, { error: 'Method not allowed.' });
+                } catch (failure) {
+                    if (failure instanceof MediaError) return reply(400, { error: failure.message });
+                    throw failure;
+                }
             }
 
             // nameplates: POST to check in (and get who else is here), DELETE to leave

@@ -260,15 +260,18 @@ export type NameplateStyle = {
     titleColor: Color3?,
     subtitleColor: Color3?,
     badgeTextColor: Color3?,
-    logo: (string | number | boolean)?,
+    logo: any?, -- image, GIF link, { sheet = … } or { images = … }; false for none
     logoTint: Color3?,
     logoScale: number?,
-    backdrop: (string | number | boolean)?,
+    backdrop: any?, -- image, GIF link, { sheet = … } or { images = … }; false for none
     backdropTint: Color3?,
     backdropTransparency: number?,
     glowImage: (string | number | boolean)?,
     titleFont: Font?,
     subtitleFont: Font?,
+    titleTop: number?,
+    titleSize: number?,
+    subtitleSize: number?,
     entrance: ("unfold" | "fade" | "none")?,
     logoSway: number?, -- degrees it rocks either way
     logoSpin: number?, -- degrees a second of continuous turning
@@ -280,6 +283,7 @@ export type NameplateStyle = {
     sweepEvery: number?,
     border: boolean?,
     borderThickness: number?,
+    borderTransparency: number?,
     borderSpeed: number?,
     glow: boolean?,
     bob: boolean?,
@@ -300,6 +304,7 @@ export type NameplateProps = {
     hideDefaultName: boolean?, -- hide Roblox's name under a plate (default true)
     checkInInterval: number?, -- seconds between relay check-ins (default 20)
     autoCheckIn: boolean?, -- false: never check in on its own; call CheckIn yourself
+    playerMedia: boolean?, -- false: ignore players' own images (default true)
     -- shorthands for the style keys of the same name
     accent: Color3?,
     logo: (string | number | boolean)?,
@@ -312,6 +317,8 @@ export type Nameplate = {
     SetEnabled: (self: Nameplate, enabled: boolean) -> (),
     SetTitle: (self: Nameplate, title: string) -> (),
     SetStyle: (self: Nameplate, style: NameplateStyle | string, preset: string?) -> (),
+    SetMedia: (self: Nameplate, link: string, slot: ("backdrop" | "logo")?) -> (boolean, string?),
+    ClearMedia: (self: Nameplate) -> boolean,
     Add: (self: Nameplate, player: Player, badge: string?) -> (),
     Remove: (self: Nameplate, player: Player) -> (),
     CheckIn: (self: Nameplate) -> boolean,

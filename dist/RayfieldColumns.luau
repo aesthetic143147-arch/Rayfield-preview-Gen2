@@ -11,7 +11,7 @@
 --
 -- Source: https://github.com/aesthetic143147-arch/Rayfield-preview-Gen2
 --
-local a local aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,b,c,d,e={function()local b,c,d=a(1)local e return(
+local a local aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au={function()local b,c,d=a(1)local e return(
 function(...)local f,g,h,i,j=d(c.utility.variables),d(c.utility.image),d(c.utility.locale),d(c.utility.constants),d(c.
 types)export type Theme=j.Theme export type Translator=j.Translator export type Translations=j.Translations export type
 ColumnSide=j.ColumnSide export type WindowConfiguration=j.WindowConfiguration export type WindowProps=j.WindowProps
@@ -986,452 +986,493 @@ boxStroke,{Transparency=1},o)p:_reveal(m.keyLabel,{TextTransparency=1},o)p:_reve
 function ae._refreshTheme(m)ag.tweenService:Create(m.box,TweenInfo.new(0.5,Enum.EasingStyle.Quint,Enum.EasingDirection.
 Out),{BackgroundTransparency=m.window.theme.FieldTransparency}):Play()end ai(ae)b(ae)return ae end)()end,[17]=function()
 local aa,ab,ac=a(17)local ad return(function(...)local ae={}ae.__index=ae ae.__type='Nameplate'local af=ab.Parent.Parent
-.utility local ag,ah,ai,b,c=ac(af.variables),ac(af.services),ac(af.relayClient),ac(af.imageCache),Color3.new(1,1,1)local
-d={Omnity={size=Vector2.new(5.6,1.35),lift=2.5,maxDistance=100,cornerRadius=0.32,accent=Color3.fromRGB(125,180,255),
-accentDeep=Color3.fromRGB(59,130,246),cardColor=Color3.fromRGB(5,7,14),cardTransparency=0.08,veilColor=Color3.fromRGB(3,
-4,9),veilStrength=0.85,titleColor=Color3.fromRGB(250,251,255),subtitleColor=Color3.fromRGB(160,176,204),badgeTextColor=
-Color3.fromRGB(235,244,255),logo='omnity-logo.png',logoTint=c,logoScale=0.84,backdrop='nameplate-galaxy.png',
-backdropTint=c,backdropTransparency=0.05,glowImage='nameplate-glow.png',titleFont=nil,subtitleFont=nil,entrance='unfold'
-,logoSway=6,logoSpin=0,halo=true,sparkles=7,sparkleColor=Color3.fromRGB(220,235,255),titleShine=true,sweep=true,
-sweepEvery=7,border=true,borderThickness=1.6,borderSpeed=40,glow=true,bob=true,bobHeight=0.08,bobSpeed=1.6}}d.Midnight=
-table.clone(d.Omnity)d.Midnight.backdrop='nameplate-mountains.png'd.Midnight.accent=Color3.fromRGB(96,165,250)d.Midnight
-.accentDeep=Color3.fromRGB(37,99,235)d.Midnight.sparkles=4 d.Mono=table.clone(d.Omnity)d.Mono.backdrop=false d.Mono.
-accent=Color3.fromRGB(220,224,232)d.Mono.accentDeep=Color3.fromRGB(120,126,140)d.Mono.sparkleColor=c d.Mono.sparkles=3 d
-.Mono.cardColor=Color3.fromRGB(10,10,12)ae.presets=d local e,f,g,h=0.35,1.1,3,20 local function i(j)return math.clamp(j,
-0,1)end local function j(k,l,m)return i((k-l)/m)end local function k(l)return 1-(1-l)^3 end local function l(m)return 1-
-(1-m)^5 end local function m(n)local o,p=1.6,2.6 return 1+p*(n-1)^3+o*(n-1)^2 end local function n(o)return-(math.cos(
-math.pi*o)-1)/2 end local function o(p:string):string return(p:gsub('&','&amp;'):gsub('<','&lt;'):gsub('>','&gt;'))end
-local function p(q,r)local s=d[q]or d.Omnity local t=table.clone(s)if type(r)=='table'then for u,v in r do t[u]=v end
-end return t end local function q(r)if r==false or r==nil then return nil elseif type(r)=='number'or(type(r)=='string'
-and r:match'^%d+$')then return{uri='rbxassetid://'..tostring(r)}elseif type(r)=='string'and r:match'^[%w%-_]+%.png$'then
-return{file=r}end return{uri=tostring(r)}end function ae.new(r,s)s=if typeof(s)=='table'then s else{}local t=table.
-clone(s.style or s.Style or{})for u,v in{'accent','logo','backdrop','maxDistance','lift'}do local w=s[v]if w==nil then w
-=s[v:sub(1,1):upper()..v:sub(2)]end if w~=nil and t[v]==nil then t[v]=w end end local u=setmetatable({window=r,title=s.
-title or s.Title or string.upper(tostring(r.name or'Rayfield')),subtitle=s.subtitle or s.Subtitle,badge=s.badge or s.
-Badge,preset=s.preset or s.Preset or'Omnity',overrides=t,endpoint=ai.base(s.endpoint or s.Endpoint),key=s.key or s.Key,
-transport=s.transport or s.Transport,showSelf=s.showSelf~=false and s.ShowSelf~=false,hideDefaultName=s.hideDefaultName
-~=false and s.HideDefaultName~=false,checkInInterval=math.max(tonumber(s.checkInInterval)or h,5),autoCheckIn=s.
-autoCheckIn~=false,enabled=true,plates={},users={},images={},_dying={},_alive=true},ae)u.style=p(u.preset,t)u.players=ah
-.getService'Players'u.folder=r:Create('Folder',{Name=ag.httpService:GenerateGUID(false),Parent=ag.guiContainer})u:
-_loadImages()local v=ag.localPlayer if v and u.showSelf then u.users[v.UserId]={badge=u.badge}end if u.players and u.
-players.PlayerAdded then r:Connect(u.players.PlayerAdded,function(w)u:_reconcile(w)end)r:Connect(u.players.
-PlayerRemoving,function(w)u:_drop(w)end)end u.stepConnection=r:Connect(ag.runService.RenderStepped,function()u:_step(os.
-clock())end)u:_reconcileAll()if(u.endpoint or u.transport)and u.autoCheckIn then u:_startCheckIns()end return u end
-function ae._loadImages(r)table.clear(r.images)local s={}r._imageGeneration=s for t,u in{'logo','backdrop','glowImage'}
-do local v=q(r.style[u])if v and v.uri then r.images[u]=v.uri elseif v and v.file then task.spawn(function()local w=b.
-remote(v.file)if w and r._alive and r._imageGeneration==s then r.images[u]=w for x,y in r.plates do r:_applyImages(y)end
-end end)end end end function ae._applyImages(r,s)local t=s.parts if not t then return end local u=r.images t.logo.Image=
-u.logo or''t.logo.Visible=u.logo~=nil t.monogram.Visible=u.logo==nil t.backdrop.Image=u.backdrop or''t.backdrop.Visible=
-u.backdrop~=nil t.halo.Image=u.glowImage or''t.halo.Visible=r.style.halo and u.glowImage~=nil end function ae.
-_listPlayers(r)if r.players and r.players.GetPlayers then return r.players:GetPlayers()end return{ag.localPlayer}end
-function ae._wants(r,s)return s~=nil and r.users[s.UserId]~=nil end function ae._reconcileAll(r)for s,t in r:
-_listPlayers()do r:_reconcile(t)end for s in r.plates do if not r:_wants(s)then r:_drop(s)end end end function ae.
-_reconcile(r,s)if not r:_wants(s)then r:_drop(s)return end local t=r.plates[s]if not t then t={player=s}r.plates[s]=t if
-s.CharacterAdded then t.characterConnection=r.window:Connect(s.CharacterAdded,function(u)r:_attach(s,u)end)end if s.
-Character then r:_attach(s,s.Character)end elseif t.parts then r:_writeText(t)end end function ae._drop(r,s)local t=r.
-plates[s]if not t then return end r.plates[s]=nil if t.characterConnection then r.window:Disconnect(t.
-characterConnection)end r:_vanish(t)end function ae._subtitleFor(r,s)if type(r.subtitle)=='function'then return
-tostring(r.subtitle(s))elseif type(r.subtitle)=='string'then return r.subtitle end return'@'..s.Name end function ae.
-_badgeFor(r,s)local t=r.users[s.UserId]local u=t and t.badge return if type(u)=='string'and u~=''then string.upper(u)
-else nil end local function r(s)local t=s.size.X/s.size.Y local u=0.08/t local v=u+s.logoScale/2/t return{aspect=t,
-logoCenter=v,textLeft=v+(s.logoScale/2+0.2)/t,margin=0.16/t}end function ae._writeText(s,t)local u,v=t.parts,s.style u.
-title.Text=s.title u.subtitle.Text=o(s:_subtitleFor(t.player))local w=s:_badgeFor(t.player)u.badge.Visible=w~=nil local
-x=t.layout local y=1-x.margin if w then u.badgeText.Text=w local z=0.3 local A=(#w*0.6*z*0.62+z*0.9)/x.aspect u.badge.
-Size=UDim2.fromScale(A,z)y-=A+0.04/x.aspect end local z=math.max(y-x.textLeft,0.1)u.title.Size=UDim2.fromScale(z,0.4)u.
-subtitle.Size=UDim2.fromScale(1-x.margin-x.textLeft,0.25)u.badgeStroke.Color=v.accent u.badge.BackgroundColor3=v.accent
-end function ae._attach(s,t,u)local v=s.plates[t]if not v or not u then return end v.character=u if v.gui then s:
-_vanish(table.clone(v))v.gui=nil v.parts=nil end local w=u:FindFirstChild'Head'if not w and u.WaitForChild then w=u:
-WaitForChild('Head',5)end if not w or s.plates[t]~=v then return end local x,y=s.window,s.style local z,A,B,C,D,E=r(y),y
-.accent:Lerp(c,0.55),UDim.new(y.cornerRadius,0),y.titleFont or ag.brandFont(Enum.FontWeight.Heavy),y.subtitleFont or ag.
-brandFont(Enum.FontWeight.SemiBold),x:Create('BillboardGui',{Name='Nameplate',Adornee=w,Size=UDim2.fromScale(y.size.X,y.
-size.Y),StudsOffset=Vector3.new(0,y.lift,0),MaxDistance=y.maxDistance,AlwaysOnTop=false,LightInfluence=0,ResetOnSpawn=
-false,ClipsDescendants=false,Parent=s.folder})local F=x:Create('Frame',{Size=UDim2.fromScale(1,1),BackgroundTransparency
-=1,Parent=E})local G,H=x:Create('UIScale',{Parent=F}),x:Create('Frame',{Size=UDim2.fromScale(1,1),BackgroundTransparency
-=1,Parent=F})x:Create('UICorner',{CornerRadius=B,Parent=H})local I,J=x:Create('UIStroke',{Color=y.accentDeep,Thickness=4
-,Transparency=1,Parent=H}),x:Create('CanvasGroup',{Size=UDim2.fromScale(1,1),BackgroundColor3=y.cardColor,
-BackgroundTransparency=y.cardTransparency,GroupTransparency=1,BorderSizePixel=0,Parent=F})x:Create('UICorner',{
-CornerRadius=B,Parent=J})local K,L,M,N=x:Create('UIGradient',{Enabled=false,Parent=J}),x:Create('ImageLabel',{Size=UDim2
-.fromScale(1,1),BackgroundTransparency=1,ScaleType=Enum.ScaleType.Crop,ImageColor3=y.backdropTint,ImageTransparency=y.
-backdropTransparency,Visible=false,ZIndex=1,Parent=J}),x:Create('Frame',{Size=UDim2.fromScale(1,1),BackgroundColor3=y.
-veilColor,BorderSizePixel=0,ZIndex=2,Parent=J}),i(y.veilStrength)x:Create('UIGradient',{Transparency=NumberSequence.new{
-NumberSequenceKeypoint.new(0,1-N),NumberSequenceKeypoint.new(0.55,1-N*0.55),NumberSequenceKeypoint.new(1,1-N*0.1)},
-Parent=M})local O=x:Create('Frame',{AnchorPoint=Vector2.new(0.5,0.5),Size=UDim2.fromScale(0.2,2.4),Position=UDim2.
-fromScale(-0.4,0.5),Rotation=18,BackgroundColor3=c,BorderSizePixel=0,Visible=y.sweep,ZIndex=3,Parent=J})x:Create(
-'UIGradient',{Transparency=NumberSequence.new{NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(0.5,0.87),
-NumberSequenceKeypoint.new(1,1)},Parent=O})local P=x:Create('Frame',{AnchorPoint=Vector2.new(0.5,0),Position=UDim2.
-fromScale(0.5,0.035),Size=UDim2.new(0.8,0,0,1),BackgroundColor3=A,BorderSizePixel=0,ZIndex=4,Parent=J})x:Create(
-'UIGradient',{Transparency=NumberSequence.new{NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(0.5,0.5),
-NumberSequenceKeypoint.new(1,1)},Parent=P})local Q=x:Create('TextLabel',{Position=UDim2.fromScale(z.textLeft,0.16),
-BackgroundTransparency=1,TextScaled=true,TextXAlignment=Enum.TextXAlignment.Left,TextColor3=y.titleColor,
-TextTransparency=1,FontFace=C,ZIndex=5,Parent=J})local R,S,T=x:Create('UIGradient',{Color=ColorSequence.new{
-ColorSequenceKeypoint.new(0,c),ColorSequenceKeypoint.new(0.5,A),ColorSequenceKeypoint.new(1,c)},Enabled=y.titleShine,
-Parent=Q}),x:Create('TextLabel',{Position=UDim2.fromScale(z.textLeft,0.58),BackgroundTransparency=1,RichText=true,
-TextScaled=true,TextXAlignment=Enum.TextXAlignment.Left,TextColor3=y.subtitleColor,TextTransparency=1,FontFace=D,ZIndex=
-5,Parent=J}),x:Create('Frame',{AnchorPoint=Vector2.new(1,0),Position=UDim2.fromScale(1-z.margin,0.17),BackgroundColor3=y
-.accent,BackgroundTransparency=0.82,BorderSizePixel=0,Visible=false,ZIndex=6,Parent=J})x:Create('UICorner',{CornerRadius
-=UDim.new(1,0),Parent=T})local U,V,W,X=x:Create('UIScale',{Scale=0,Parent=T}),x:Create('UIStroke',{Color=y.accent,
-Thickness=1,Transparency=0.35,Parent=T}),x:Create('TextLabel',{AnchorPoint=Vector2.new(0.5,0.5),Position=UDim2.
-fromScale(0.5,0.52),Size=UDim2.fromScale(0.78,0.62),BackgroundTransparency=1,TextScaled=true,TextColor3=y.badgeTextColor
-,FontFace=C,ZIndex=7,Parent=T}),x:Create('Frame',{Size=UDim2.fromScale(1,1),BackgroundTransparency=1,Visible=y.border,
-Parent=F})x:Create('UICorner',{CornerRadius=B,Parent=X})local Y=x:Create('UIStroke',{Color=c,Thickness=y.borderThickness
-,Transparency=1,Parent=X})local Z,_,aj=x:Create('UIGradient',{Color=ColorSequence.new{ColorSequenceKeypoint.new(0,y.
-accentDeep),ColorSequenceKeypoint.new(0.5,A),ColorSequenceKeypoint.new(1,y.accentDeep)},Parent=Y}),UDim2.fromScale(y.
-logoScale,y.logoScale),UDim2.fromScale(z.logoCenter,0.5)local ak,al,am,an,ao=x:Create('ImageLabel',{AnchorPoint=Vector2.
-new(0.5,0.5),Position=aj,Size=UDim2.fromScale(y.logoScale*1.7,y.logoScale*1.7),SizeConstraint=Enum.SizeConstraint.
-RelativeYY,BackgroundTransparency=1,ImageColor3=y.accent,ImageTransparency=1,Visible=false,ZIndex=8,Parent=F}),x:Create(
-'ImageLabel',{AnchorPoint=Vector2.new(0.5,0.5),Position=aj,Size=_,SizeConstraint=Enum.SizeConstraint.RelativeYY,
-BackgroundTransparency=1,ImageColor3=y.logoTint,ImageTransparency=1,Visible=false,ZIndex=10,Parent=F}),x:Create(
-'TextLabel',{AnchorPoint=Vector2.new(0.5,0.5),Position=aj,Size=_,SizeConstraint=Enum.SizeConstraint.RelativeYY,
-BackgroundTransparency=1,Text=string.sub(s.title,1,1),TextScaled=true,TextColor3=A,TextTransparency=1,FontFace=C,ZIndex=
-10,Parent=F}),{},math.max(math.floor(tonumber(y.sparkles)or 0),0)for ap=1,ao do local aq=x:Create('Frame',{AnchorPoint=
-Vector2.new(0.5,0.5),Size=UDim2.fromScale(0.05,0.05),SizeConstraint=Enum.SizeConstraint.RelativeYY,BackgroundColor3=y.
-sparkleColor,BackgroundTransparency=1,BorderSizePixel=0,ZIndex=11,Parent=F})x:Create('UICorner',{CornerRadius=UDim.new(1
-,0),Parent=aq})table.insert(an,{frame=aq,offset=(ap-1)/ao*math.pi*2,speed=0.55+(ap%3)*0.12,size=0.035+(ap%4)*0.008})end
-local ap,aq=(u:FindFirstChild'Humanoid')if ap and s.hideDefaultName then aq=ap.DisplayDistanceType or Enum.
-HumanoidDisplayDistanceType.Viewer ap.DisplayDistanceType=Enum.HumanoidDisplayDistanceType.None end v.gui=E v.head=w v.
-humanoid=ap v.nameType=aq v.layout=z v.born=os.clock()v.phase=(t.UserId%97)/97*10 v.parts={shell=F,scale=G,card=J,wipe=K
-,glowStroke=I,borderStroke=Y,borderGradient=Z,sweep=O,title=Q,shine=R,subtitle=S,badge=T,badgeScale=U,badgeStroke=V,
-badgeText=W,halo=ak,logo=al,monogram=am,backdrop=L,sparks=an}s:_writeText(v)s:_applyImages(v)s:_step(os.clock())end
-function ae._vanish(aj,ak)if not ak.gui then return end if ak.humanoid and ak.nameType and ak.humanoid.Parent then ak.
-humanoid.DisplayDistanceType=ak.nameType end ak.diedAt=os.clock()ak.humanoid=nil table.insert(aj._dying,ak)end
-local function aj(ak,al)if ak=='none'then return{mark=1,card=1,edge=1,title=1,subtitle=1,badge=1,sparks=1}elseif ak==
-'fade'then local am=j(al,0,0.5)return{mark=am,card=1,edge=am,title=am,subtitle=am,badge=am,sparks=am,fadeCard=am}end
-return{mark=j(al,0,0.5),card=j(al,0.18,0.6),edge=j(al,0.5,0.4),title=j(al,0.42,0.45),subtitle=j(al,0.52,0.45),badge=j(al
-,0.65,0.4),sparks=j(al,0.3,0.6)}end local function ak(al,am,an,ao)local ap=am.parts if not ap then return false end
-local aq,s,t=al.style,am.layout,an-am.born local u,v,w=aj(aq.entrance,t),ao,1 if am.diedAt then local x=i((an-am.diedAt)
-/e)if x>=1 then return true end v*=1-k(x)w=1-0.08*x end local x=ag.workspace.CurrentCamera if x and am.head and am.head.
-Parent then local y=(x.CFrame.Position-am.head.Position).Magnitude local z,A=i((y-aq.maxDistance*0.6)/(aq.maxDistance*
-0.4)),i((y-g)/2)v*=(1-z)*A end ap.scale.Scale=w local y,z=an+am.phase,u.mark local A,B,C=k(z)*v,aq.logoScale*(0.35+0.65*
-m(z)),(1-k(z))*-90+math.sin(y*0.8)*(aq.logoSway or 0)+y*(aq.logoSpin or 0)for D,E in{ap.logo,ap.monogram}do E.Size=UDim2
-.fromScale(B,B)E.Rotation=C%360 end ap.logo.ImageTransparency=1-A ap.monogram.TextTransparency=1-A local D=0.5+0.5*math.
-sin(y*2.1)ap.halo.ImageTransparency=1-A*(0.38+0.2*D)local E=aq.logoScale*(1.55+0.15*D)*(0.5+0.5*k(z))ap.halo.Size=UDim2.
-fromScale(E,E)local F,G=k(u.sparks)*v,math.rad(-25)for H,I in ap.sparks do local J=y*I.speed+I.offset local K,L=math.
-cos(J)*0.62,math.sin(J)*0.2 local M,N,O=K*math.cos(G)-L*math.sin(G),K*math.sin(G)+L*math.cos(G),math.sin(J)>0 local P,Q=
-if O then 1 else 0.7,0.75+0.25*math.sin(y*5+I.offset*3)I.frame.Position=UDim2.fromScale(s.logoCenter+M*aq.logoScale/s.
-aspect,0.5+N*aq.logoScale)I.frame.Size=UDim2.fromScale(I.size*P,I.size*P)I.frame.ZIndex=if O then 11 else 9 I.frame.
-BackgroundTransparency=1-F*Q*(if O then 0.95 else 0.35)end local H,I=l(u.card),v*(if u.fadeCard then u.fadeCard else 1)
-ap.card.GroupTransparency=1-I if H<1 then local J,K=s.logoCenter+(1.08-s.logoCenter)*H,0.08 ap.wipe.Enabled=true ap.wipe
-.Transparency=NumberSequence.new{NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(math.clamp(J-K,0.001,0.997),
-0),NumberSequenceKeypoint.new(math.clamp(J,0.002,0.998),1),NumberSequenceKeypoint.new(1,1)}elseif ap.wipe.Enabled then
-ap.wipe.Enabled=false end local J=k(u.edge)*v ap.borderStroke.Transparency=1-J*0.85 ap.glowStroke.Transparency=if aq.
-glow then 1-J*0.1 else 1 ap.borderGradient.Rotation=(y*aq.borderSpeed)%360 local K=k(u.title)ap.title.TextTransparency=1
--K ap.title.Position=UDim2.fromScale(s.textLeft+(1-K)*0.04,0.16)local L=k(u.subtitle)ap.subtitle.TextTransparency=1-L ap
-.subtitle.Position=UDim2.fromScale(s.textLeft+(1-L)*0.03,0.58)ap.badgeScale.Scale=m(u.badge)if aq.titleShine then ap.
-shine.Offset=Vector2.new(((y*0.35)%2)-1,0)end local M=if aq.bob then math.sin(y*aq.bobSpeed)*aq.bobHeight else 0 am.gui.
-StudsOffset=Vector3.new(0,aq.lift+M,0)if aq.sweep then local N=(y%aq.sweepEvery)/f ap.sweep.Position=UDim2.fromScale(if
-N<1 then-0.3+1.6*n(N)else-0.4,0.5)end return false end function ae._step(al,am)local an=if al.enabled then 1 else 0 for
-ao,ap in al.plates do if ap.gui then ak(al,ap,am,an)end end local ao=al._dying for ap=#ao,1,-1 do local aq=ao[ap]if ak(
-al,aq,am,an)then table.remove(ao,ap)al.window:DestroySubtree(aq.gui)end end end function ae._identity(al)local am=ag.
-localPlayer return{user={id=if am then am.UserId else 0,name=if am then am.Name else'Player'},jobId=tostring(game.JobId
-~=nil and game.JobId~=''and game.JobId or'studio')}end function ae.CheckIn(al):boolean if not al._alive then return
-false end local am,an=ai.request(al,'POST','/v1/presence',al:_identity())if not am or type(an)~='table'or type(an.users)
-~='table'then return false end local ao={}for ap,aq in an.users do local s=tonumber(type(aq)=='table'and aq.id)if s then
-ao[s]={badge=if type(aq.badge)=='string'then aq.badge else nil}end end local ap=ag.localPlayer if ap then if al.showSelf
-then ao[ap.UserId]=ao[ap.UserId]or{}ao[ap.UserId].badge=ao[ap.UserId].badge or al.badge else ao[ap.UserId]=nil end end
-al.users=ao al:_reconcileAll()return true end function ae._startCheckIns(al)task.spawn(function()while al._alive and not
-al.window.unloaded do al:CheckIn()task.wait(al.checkInInterval)end ai.request(al,'DELETE','/v1/presence',al:_identity())
-end)end function ae.SetEnabled(al,am:boolean)al.enabled=am~=false end function ae.SetTitle(al,am:string)al.title=
-tostring(am)for an,ao in al.plates do if ao.parts then al:_writeText(ao)end end end function ae.SetStyle(al,am,an:string
-?)if type(am)=='string'then an,am=am,nil end if an then al.preset=an end if type(am)=='table'then for ao,ap in am do al.
-overrides[ao]=ap end end al.style=p(al.preset,al.overrides)al:_loadImages()for ao,ap in al.plates do if ap.character
-then al:_attach(ao,ap.character)end end end function ae.Add(al,am,an:string?)if typeof(am)~='Instance'and type(am)~=
-'table'then return end al.users[am.UserId]={badge=an}al:_reconcile(am)end function ae.Remove(al,am)if am then al.users[
-am.UserId]=nil al:_drop(am)end end function ae.Destroy(al)if not al._alive then return end al._alive=false for am in al.
-plates do al:_drop(am)end task.delay(e+0.05,function()if al.stepConnection then al.window:Disconnect(al.stepConnection)
-end if al.folder then al.window:DestroySubtree(al.folder)end end)end return ae end)()end,[18]=function()local aa,ab,ac=
+.utility local ag,ah,ai,b,c,d,e,f=ac(af.variables),ac(af.services),ac(af.relayClient),ac(af.imageCache),ac(af.
+animatedImage),ac(af.filesystem),ac(af.path),Color3.new(1,1,1)local g={Omnity={size=Vector2.new(4.4,1.05),lift=2.4,
+maxDistance=100,cornerRadius=0.26,accent=Color3.fromRGB(125,180,255),accentDeep=Color3.fromRGB(59,130,246),cardColor=
+Color3.fromRGB(5,7,14),cardTransparency=0.14,veilColor=Color3.fromRGB(3,4,9),veilStrength=0.8,titleColor=Color3.fromRGB(
+250,251,255),subtitleColor=Color3.fromRGB(150,162,186),badgeTextColor=Color3.fromRGB(235,244,255),logo='omnity-logo.png'
+,logoTint=f,logoScale=0.66,backdrop='nameplate-galaxy.png',backdropTint=f,backdropTransparency=0.25,glowImage=
+'nameplate-glow.png',titleFont=nil,subtitleFont=nil,titleTop=0.2,titleSize=0.3,subtitleSize=0.2,entrance='unfold',
+logoSway=6,logoSpin=0,halo=true,sparkles=4,sparkleColor=Color3.fromRGB(220,235,255),titleShine=true,sweep=true,
+sweepEvery=7,border=true,borderThickness=1,borderTransparency=0.45,borderSpeed=40,glow=false,bob=true,bobHeight=0.06,
+bobSpeed=1.6}}g.Midnight=table.clone(g.Omnity)g.Midnight.backdrop='nameplate-mountains.png'g.Midnight.accent=Color3.
+fromRGB(96,165,250)g.Midnight.accentDeep=Color3.fromRGB(37,99,235)g.Midnight.sparkles=3 g.Mono=table.clone(g.Omnity)g.
+Mono.backdrop=false g.Mono.accent=Color3.fromRGB(220,224,232)g.Mono.accentDeep=Color3.fromRGB(120,126,140)g.Mono.
+sparkleColor=f g.Mono.sparkles=0 g.Mono.cardColor=Color3.fromRGB(10,10,12)ae.presets=g local h,i,j,k=0.35,1.1,3,20
+local function l(m)return math.clamp(m,0,1)end local function m(n,o,p)return l((n-o)/p)end local function n(o)return 1-(
+1-o)^3 end local function o(p)return 1-(1-p)^5 end local function p(q)local r,s=1.6,2.6 return 1+s*(q-1)^3+r*(q-1)^2 end
+local function q(r)return-(math.cos(math.pi*r)-1)/2 end local function r(s:string):string return(s:gsub('&','&amp;'):
+gsub('<','&lt;'):gsub('>','&gt;'))end local function s(t,u)local v=g[t]or g.Omnity local w=table.clone(v)if type(u)==
+'table'then for x,y in u do w[x]=y end end return w end local t={logo='square',backdrop='banner',glowImage='square'}
+function ae.new(u,v)v=if typeof(v)=='table'then v else{}local w=table.clone(v.style or v.Style or{})for x,y in{'accent',
+'logo','backdrop','maxDistance','lift'}do local z=v[y]if z==nil then z=v[y:sub(1,1):upper()..y:sub(2)]end if z~=nil and
+w[y]==nil then w[y]=z end end local x=setmetatable({window=u,title=v.title or v.Title or string.upper(tostring(u.name or
+'Rayfield')),subtitle=v.subtitle or v.Subtitle,badge=v.badge or v.Badge,preset=v.preset or v.Preset or'Omnity',overrides
+=w,endpoint=ai.base(v.endpoint or v.Endpoint),key=v.key or v.Key,transport=v.transport or v.Transport,showSelf=v.
+showSelf~=false and v.ShowSelf~=false,hideDefaultName=v.hideDefaultName~=false and v.HideDefaultName~=false,
+checkInInterval=math.max(tonumber(v.checkInInterval)or k,5),autoCheckIn=v.autoCheckIn~=false,playerMedia=v.playerMedia~=
+false,enabled=true,plates={},users={},images={},_sheets={},_dying={},_alive=true},ae)x.style=s(x.preset,w)x.players=ah.
+getService'Players'x.folder=u:Create('Folder',{Name=ag.httpService:GenerateGUID(false),Parent=ag.guiContainer})x:
+_loadImages()local y=ag.localPlayer if y and x.showSelf then x.users[y.UserId]={badge=x.badge}end if x.players and x.
+players.PlayerAdded then u:Connect(x.players.PlayerAdded,function(z)x:_reconcile(z)end)u:Connect(x.players.
+PlayerRemoving,function(z)x:_drop(z)end)end x.stepConnection=u:Connect(ag.runService.RenderStepped,function()x:_step(os.
+clock())end)x:_reconcileAll()if(x.endpoint or x.transport)and x.autoCheckIn then x:_startCheckIns()end return x end
+function ae._download(u,v,w,x)if v=='remote'then return b.remote(w)end return b.url(w,x)end function ae._sheetVisual(u,v
+)if type(v)~='table'or type(v.id)~='string'or not v.id:match'^%x+$'then return nil end local w=u._sheets[v.id]if w then
+return w end if not u.endpoint then return nil end local x=u:_download('url',`{u.endpoint}/v1/media/{v.id}.png`,`media_{
+v.id}.png`)if not x then return nil end local y={uri=x,sheet={frames=math.max(tonumber(v.frames)or 1,1),columns=math.
+max(tonumber(v.columns)or 1,1),frameWidth=tonumber(v.frameWidth)or 0,frameHeight=tonumber(v.frameHeight)or 0,fps=
+tonumber(v.fps)or 0}}u._sheets[v.id]=y return y end function ae._resolveVisual(u,v,w)if v==nil or v==false then return
+nil elseif type(v)=='number'or(type(v)=='string'and v:match'^%d+$')then return{uri='rbxassetid://'..tostring(v)}elseif
+type(v)=='string'then if v:match'^[%w%-_]+%.png$'then local x=u:_download('remote',v)return if x then{uri=x}else nil
+elseif v:match'^https?://'then return u:_relayVisual(v,w)end return{uri=v}elseif type(v)=='table'then if v.gif or v.url
+then return u:_relayVisual(tostring(v.gif or v.url),w)elseif v.sheet then local x=u:_resolveVisual(v.sheet,w)if not x or
+not x.uri then return nil end local y,z=v.frameSize or Vector2.new(v.frameWidth or 0,v.frameHeight or 0),math.max(
+tonumber(v.frames)or 1,1)return{uri=x.uri,sheet={frames=z,columns=math.max(tonumber(v.columns)or z,1),frameWidth=y.X,
+frameHeight=y.Y,fps=tonumber(v.fps)or 10}}elseif type(v.images)=='table'then local x={}for y,z in v.images do local A=u:
+_resolveVisual(z,w)if A and A.uri then table.insert(x,A.uri)end end return if#x>0 then{list=x,fps=tonumber(v.fps)or 8}
+else nil end end return nil end function ae._relayVisual(u,v,w)if not u.endpoint and not u.transport then return nil end
+local x,y=ai.request(u,'POST','/v1/media',{url=v,fit=w})if not x then return nil end return u:_sheetVisual(y)end
+function ae._loadImages(u)table.clear(u.images)local v={}u._imageGeneration=v for w,x in{'logo','backdrop','glowImage'}
+do task.spawn(function()local y=u:_resolveVisual(u.style[x],t[x])if y and u._alive and u._imageGeneration==v then u.
+images[x]=y for z,A in u.plates do u:_applyImages(A)end end end)end end function ae._applyImages(u,v)local w=v.parts if
+not w then return end local x=u.images local y,z,A=x.logo,x.backdrop,u.playerMedia and v.media if A and A.visual then if
+A.slot=='logo'then y=A.visual else z=A.visual end end c.apply(w.logo,y)w.logo.Visible=y~=nil w.monogram.Visible=y==nil w
+.logoCorner.CornerRadius=UDim.new(if A and A.slot=='logo'then 0.22 else 0,0)c.apply(w.backdrop,z)w.backdrop.Visible=z~=
+nil local B=x.glowImage w.halo.Image=if B then B.uri or''else''w.halo.Visible=u.style.halo and B~=nil v.visuals={{label=
+w.logo,visual=y,state={}},{label=w.backdrop,visual=z,state={}}}end function ae._syncMedia(u,v)local w=u.users[v.player.
+UserId]local x=w and w.media local y=if type(x)=='table'then x.id else nil if y==v.mediaId then return end v.mediaId=y
+if not y or not u.playerMedia then v.media=nil u:_applyImages(v)return end task.spawn(function()local z=u:_sheetVisual(x
+)if v.mediaId~=y then return end v.media=if z then{visual=z,slot=x.slot}else nil u:_applyImages(v)end)end function ae.
+_listPlayers(u)if u.players and u.players.GetPlayers then return u.players:GetPlayers()end return{ag.localPlayer}end
+function ae._wants(u,v)return v~=nil and u.users[v.UserId]~=nil end function ae._reconcileAll(u)for v,w in u:
+_listPlayers()do u:_reconcile(w)end for v in u.plates do if not u:_wants(v)then u:_drop(v)end end end function ae.
+_reconcile(u,v)if not u:_wants(v)then u:_drop(v)return end local w=u.plates[v]if not w then w={player=v}u.plates[v]=w if
+v.CharacterAdded then w.characterConnection=u.window:Connect(v.CharacterAdded,function(x)u:_attach(v,x)end)end if v.
+Character then u:_attach(v,v.Character)end elseif w.parts then u:_writeText(w)end u:_syncMedia(w)end function ae._drop(u
+,v)local w=u.plates[v]if not w then return end u.plates[v]=nil if w.characterConnection then u.window:Disconnect(w.
+characterConnection)end u:_vanish(w)end function ae._subtitleFor(u,v)if type(u.subtitle)=='function'then return
+tostring(u.subtitle(v))elseif type(u.subtitle)=='string'then return u.subtitle end return'@'..v.Name end function ae.
+_badgeFor(u,v)local w=u.users[v.UserId]local x=w and w.badge return if type(x)=='string'and x~=''then string.upper(x)
+else nil end local function u(v)local w=v.size.X/v.size.Y local x=0.14/w local y=x+v.logoScale/2/w return{aspect=w,
+logoCenter=y,closedWidth=math.min(y*2,1),textLeft=y+(v.logoScale/2+0.2)/w,margin=0.2/w}end function ae._writeText(v,w)
+local x,y,z=w.parts,v.style,w.layout x.title.Text=v.title x.subtitle.Text=r(v:_subtitleFor(w.player))local A=v:
+_badgeFor(w.player)x.badge.Visible=A~=nil local B=1-z.margin if A then x.badgeText.Text=A local C=0.22 local D=(#A*0.62*
+C*0.6+C*1.1)/z.aspect x.badge.Size=UDim2.fromScale(D,C)B-=D+0.06/z.aspect end x.title.Size=UDim2.fromScale(math.max(B-z.
+textLeft,0.1),y.titleSize)x.subtitle.Size=UDim2.fromScale(1-z.margin-z.textLeft,y.subtitleSize)x.badgeStroke.Color=y.
+accent x.badge.BackgroundColor3=y.accent end function ae._attach(v,w,x)local y=v.plates[w]if not y or not x then return
+end y.character=x if y.gui then v:_vanish(table.clone(y))y.gui=nil y.parts=nil end local z=x:FindFirstChild'Head'if not
+z and x.WaitForChild then z=x:WaitForChild('Head',5)end if not z or v.plates[w]~=y then return end local A,B=v.window,v.
+style local C,D,E,F,G=u(B),B.accent:Lerp(f,0.6),UDim.new(B.cornerRadius,0),B.titleFont or ag.brandFont(Enum.FontWeight.
+Bold),B.subtitleFont or ag.brandFont(Enum.FontWeight.Medium)local H,I=function(H)A:Create('UICorner',{CornerRadius=E,
+Parent=H})end,A:Create('BillboardGui',{Name='Nameplate',Adornee=z,Size=UDim2.fromScale(B.size.X,B.size.Y),StudsOffset=
+Vector3.new(0,B.lift,0),MaxDistance=B.maxDistance,AlwaysOnTop=false,LightInfluence=0,ResetOnSpawn=false,ClipsDescendants
+=false,Parent=v.folder})local J=A:Create('Frame',{Size=UDim2.fromScale(1,1),BackgroundTransparency=1,Parent=I})local K,L
+=A:Create('UIScale',{Parent=J}),A:Create('Frame',{Size=UDim2.fromScale(1,1),BackgroundTransparency=1,Parent=J})H(L)local
+M,N=A:Create('UIStroke',{Color=B.accentDeep,Thickness=3,Transparency=1,Parent=L}),A:Create('Frame',{Size=UDim2.
+fromScale(1,1),BackgroundColor3=B.cardColor,BackgroundTransparency=1,BorderSizePixel=0,ClipsDescendants=true,Parent=J})
+H(N)local O=A:Create('Frame',{Size=UDim2.fromScale(1,1),BackgroundTransparency=1,Parent=N})local P=A:Create('ImageLabel'
+,{Size=UDim2.fromScale(1,1),BackgroundTransparency=1,ScaleType=Enum.ScaleType.Crop,ImageColor3=B.backdropTint,
+ImageTransparency=1,Visible=false,ZIndex=1,Parent=O})H(P)local Q=A:Create('Frame',{Size=UDim2.fromScale(1,1),
+BackgroundColor3=B.veilColor,BackgroundTransparency=1,BorderSizePixel=0,ZIndex=2,Parent=O})H(Q)local R=l(B.veilStrength)
+A:Create('UIGradient',{Transparency=NumberSequence.new{NumberSequenceKeypoint.new(0,1-R),NumberSequenceKeypoint.new(0.55
+,1-R*0.55),NumberSequenceKeypoint.new(1,1-R*0.12)},Parent=Q})local S=A:Create('Frame',{Size=UDim2.fromScale(1,1),
+BackgroundColor3=f,BackgroundTransparency=1,BorderSizePixel=0,ZIndex=3,Visible=B.sweep,Parent=O})H(S)local T,U=A:Create(
+'UIGradient',{Rotation=20,Offset=Vector2.new(-1,0),Transparency=NumberSequence.new{NumberSequenceKeypoint.new(0,1),
+NumberSequenceKeypoint.new(0.42,1),NumberSequenceKeypoint.new(0.5,0.9),NumberSequenceKeypoint.new(0.58,1),
+NumberSequenceKeypoint.new(1,1)},Parent=S}),A:Create('TextLabel',{Position=UDim2.fromScale(C.textLeft,B.titleTop),
+BackgroundTransparency=1,TextScaled=true,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.
+Bottom,TextColor3=B.titleColor,TextTransparency=1,FontFace=F,ZIndex=5,Parent=O})local V,W,X=A:Create('UIGradient',{Color
+=ColorSequence.new{ColorSequenceKeypoint.new(0,f),ColorSequenceKeypoint.new(0.5,D),ColorSequenceKeypoint.new(1,f)},
+Enabled=B.titleShine,Parent=U}),A:Create('TextLabel',{Position=UDim2.fromScale(C.textLeft,B.titleTop+B.titleSize+0.05),
+BackgroundTransparency=1,RichText=true,TextScaled=true,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.
+TextYAlignment.Top,TextColor3=B.subtitleColor,TextTransparency=1,FontFace=G,ZIndex=5,Parent=O}),A:Create('Frame',{
+AnchorPoint=Vector2.new(1,0),Position=UDim2.fromScale(1-C.margin,B.titleTop+0.02),BackgroundColor3=B.accent,
+BackgroundTransparency=1,BorderSizePixel=0,Visible=false,ZIndex=6,Parent=O})A:Create('UICorner',{CornerRadius=UDim.new(1
+,0),Parent=X})local Y,Z,_,aj=A:Create('UIScale',{Scale=0,Parent=X}),A:Create('UIStroke',{Color=B.accent,Thickness=1,
+Transparency=1,Parent=X}),A:Create('TextLabel',{AnchorPoint=Vector2.new(0.5,0.5),Position=UDim2.fromScale(0.5,0.52),Size
+=UDim2.fromScale(0.76,0.58),BackgroundTransparency=1,TextScaled=true,TextColor3=B.badgeTextColor,TextTransparency=1,
+FontFace=F,ZIndex=7,Parent=X}),A:Create('Frame',{Size=UDim2.fromScale(1,1),BackgroundTransparency=1,Visible=B.border,
+Parent=J})H(aj)local ak=A:Create('UIStroke',{Color=f,Thickness=B.borderThickness,Transparency=1,Parent=aj})local al,am,
+an=A:Create('UIGradient',{Color=ColorSequence.new{ColorSequenceKeypoint.new(0,B.accentDeep),ColorSequenceKeypoint.new(
+0.5,D),ColorSequenceKeypoint.new(1,B.accentDeep)},Parent=ak}),UDim2.fromScale(B.logoScale,B.logoScale),UDim2.fromScale(C
+.logoCenter,0.5)local ao,ap=A:Create('ImageLabel',{AnchorPoint=Vector2.new(0.5,0.5),Position=an,Size=UDim2.fromScale(B.
+logoScale*1.6,B.logoScale*1.6),SizeConstraint=Enum.SizeConstraint.RelativeYY,BackgroundTransparency=1,ImageColor3=B.
+accent,ImageTransparency=1,Visible=false,ZIndex=8,Parent=J}),A:Create('ImageLabel',{AnchorPoint=Vector2.new(0.5,0.5),
+Position=an,Size=am,SizeConstraint=Enum.SizeConstraint.RelativeYY,BackgroundTransparency=1,ImageColor3=B.logoTint,
+ImageTransparency=1,Visible=false,ZIndex=10,Parent=J})local aq,ar,as,at=A:Create('UICorner',{CornerRadius=UDim.new(0,0),
+Parent=ap}),A:Create('TextLabel',{AnchorPoint=Vector2.new(0.5,0.5),Position=an,Size=am,SizeConstraint=Enum.
+SizeConstraint.RelativeYY,BackgroundTransparency=1,Text=string.sub(v.title,1,1),TextScaled=true,TextColor3=D,
+TextTransparency=1,FontFace=F,ZIndex=10,Parent=J}),{},math.max(math.floor(tonumber(B.sparkles)or 0),0)for au=1,at do
+local av=A:Create('Frame',{AnchorPoint=Vector2.new(0.5,0.5),Size=UDim2.fromScale(0.04,0.04),SizeConstraint=Enum.
+SizeConstraint.RelativeYY,BackgroundColor3=B.sparkleColor,BackgroundTransparency=1,BorderSizePixel=0,ZIndex=11,Parent=J}
+)A:Create('UICorner',{CornerRadius=UDim.new(1,0),Parent=av})table.insert(as,{frame=av,offset=(au-1)/at*math.pi*2,speed=
+0.5+(au%3)*0.1,size=0.028+(au%3)*0.006})end local au,av=(x:FindFirstChild'Humanoid')if au and v.hideDefaultName then av=
+au.DisplayDistanceType or Enum.HumanoidDisplayDistanceType.Viewer au.DisplayDistanceType=Enum.
+HumanoidDisplayDistanceType.None end y.gui=I y.head=z y.humanoid=au y.nameType=av y.layout=C y.born=os.clock()y.phase=(w
+.UserId%97)/97*10 y.parts={shell=J,scale=K,glow=L,glowStroke=M,card=N,content=O,backdrop=P,veil=Q,shine=S,sweep=T,border
+=aj,borderStroke=ak,borderGradient=al,title=U,titleShine=V,subtitle=W,badge=X,badgeScale=Y,badgeStroke=Z,badgeText=_,
+halo=ao,logo=ap,logoCorner=aq,monogram=ar,sparks=as}v:_writeText(y)v:_applyImages(y)v:_step(os.clock())end function ae.
+_vanish(aj,ak)if not ak.gui then return end if ak.humanoid and ak.nameType and ak.humanoid.Parent then ak.humanoid.
+DisplayDistanceType=ak.nameType end ak.diedAt=os.clock()ak.humanoid=nil table.insert(aj._dying,ak)end local function aj(
+ak,al)if ak=='none'then return{mark=1,card=1,edge=1,title=1,subtitle=1,badge=1,sparks=1,fade=1}elseif ak=='fade'then
+local am=m(al,0,0.5)return{mark=am,card=1,edge=am,title=am,subtitle=am,badge=am,sparks=am,fade=am}end return{mark=m(al,0
+,0.5),card=m(al,0.15,0.6),edge=m(al,0.45,0.4),title=m(al,0.42,0.45),subtitle=m(al,0.52,0.45),badge=m(al,0.65,0.4),sparks
+=m(al,0.3,0.6),fade=m(al,0.1,0.35)}end local function ak(al,am)return 1-(1-al)*am end local function al(am,an,ao,ap)
+local aq=an.parts if not aq then return false end local ar,as,at=am.style,an.layout,ao-an.born local au,av,v=aj(ar.
+entrance,at),ap,1 if an.diedAt then local w=l((ao-an.diedAt)/h)if w>=1 then return true end av*=1-n(w)v=1-0.08*w end
+local w=ag.workspace.CurrentCamera if w and an.head and an.head.Parent then local x=(w.CFrame.Position-an.head.Position)
+.Magnitude local y,z=l((x-ar.maxDistance*0.6)/(ar.maxDistance*0.4)),l((x-j)/2)av*=(1-y)*z end aq.scale.Scale=v local x,y
+=ao+an.phase,au.mark local z,A,B=n(y)*av,ar.logoScale*(0.35+0.65*p(y)),(1-n(y))*-90+math.sin(x*0.8)*(ar.logoSway or 0)+x
+*(ar.logoSpin or 0)for C,D in{aq.logo,aq.monogram}do D.Size=UDim2.fromScale(A,A)D.Rotation=B%360 end aq.logo.
+ImageTransparency=1-z aq.monogram.TextTransparency=1-z local C=0.5+0.5*math.sin(x*2.1)aq.halo.ImageTransparency=1-z*(
+0.18+0.12*C)local D=ar.logoScale*(1.45+0.12*C)*(0.5+0.5*n(y))aq.halo.Size=UDim2.fromScale(D,D)local E,F=n(au.sparks)*av,
+math.rad(-25)for G,H in aq.sparks do local I=x*H.speed+H.offset local J,K=math.cos(I)*0.62,math.sin(I)*0.2 local L,M,N=J
+*math.cos(F)-K*math.sin(F),J*math.sin(F)+K*math.cos(F),math.sin(I)>0 local O,P=if N then 1 else 0.7,0.75+0.25*math.sin(x
+*5+H.offset*3)H.frame.Position=UDim2.fromScale(as.logoCenter+L*ar.logoScale/as.aspect,0.5+M*ar.logoScale)H.frame.Size=
+UDim2.fromScale(H.size*O,H.size*O)H.frame.ZIndex=if N then 11 else 9 H.frame.BackgroundTransparency=1-E*P*(if N then 0.8
+else 0.3)end local G=o(au.card)local H=as.closedWidth+(1-as.closedWidth)*G local I=UDim2.fromScale(H,1)aq.card.Size=I aq
+.border.Size=I aq.glow.Size=I aq.content.Size=UDim2.fromScale(1/H,1)local J=n(au.fade)*av aq.card.BackgroundTransparency
+=ak(ar.cardTransparency,J)aq.backdrop.ImageTransparency=ak(ar.backdropTransparency,J*G)aq.veil.BackgroundTransparency=
+ak(0,J)aq.shine.BackgroundTransparency=ak(0,J)local K=n(au.edge)*av aq.borderStroke.Transparency=ak(ar.
+borderTransparency,math.max(K,J*0.6))aq.glowStroke.Transparency=if ar.glow then ak(0.85,K)else 1 aq.borderGradient.
+Rotation=(x*ar.borderSpeed)%360 local L=n(au.title)aq.title.TextTransparency=1-L*av aq.title.Position=UDim2.fromScale(as
+.textLeft+(1-L)*0.03,ar.titleTop)local M=n(au.subtitle)aq.subtitle.TextTransparency=1-M*av aq.subtitle.Position=UDim2.
+fromScale(as.textLeft+(1-M)*0.02,ar.titleTop+ar.titleSize+0.05)aq.badgeScale.Scale=p(au.badge)local N=l(au.badge*1.5)*av
+aq.badge.BackgroundTransparency=ak(0.86,N)aq.badgeStroke.Transparency=ak(0.55,N)aq.badgeText.TextTransparency=1-N if ar.
+titleShine then aq.titleShine.Offset=Vector2.new(((x*0.3)%2)-1,0)end if an.visuals then for O,P in an.visuals do if P.
+visual then c.step(P.label,P.visual,x,P.state)end end end local O=if ar.bob then math.sin(x*ar.bobSpeed)*ar.bobHeight
+else 0 an.gui.StudsOffset=Vector3.new(0,ar.lift+O,0)if ar.sweep then local P=(x%ar.sweepEvery)/i aq.sweep.Offset=Vector2
+.new(if P<1 then-1+2*q(P)else-1,0)end return false end function ae._step(am,an)local ao=if am.enabled then 1 else 0 for
+ap,aq in am.plates do if aq.gui then al(am,aq,an,ao)end end local ap=am._dying for aq=#ap,1,-1 do local ar=ap[aq]if al(
+am,ar,an,ao)then table.remove(ap,aq)am.window:DestroySubtree(ar.gui)end end end function ae._identity(am)local an=ag.
+localPlayer return{user={id=if an then an.UserId else 0,name=if an then an.Name else'Player'},jobId=tostring(game.JobId
+~=nil and game.JobId~=''and game.JobId or'studio')}end function ae.CheckIn(am):boolean if not am._alive then return
+false end local an,ao=ai.request(am,'POST','/v1/presence',am:_identity())if not an or type(ao)~='table'or type(ao.users)
+~='table'then return false end local ap={}for aq,ar in ao.users do local as=tonumber(type(ar)=='table'and ar.id)if as
+then ap[as]={badge=if type(ar.badge)=='string'then ar.badge else nil,media=if type(ar.media)=='table'then ar.media else
+nil}end end local aq=ag.localPlayer if aq then if am.showSelf then ap[aq.UserId]=ap[aq.UserId]or{}ap[aq.UserId].badge=ap
+[aq.UserId].badge or am.badge else ap[aq.UserId]=nil end end am.users=ap am:_reconcileAll()return true end function ae.
+_startCheckIns(am)task.spawn(function()while am._alive and not am.window.unloaded do am:CheckIn()task.wait(am.
+checkInInterval)end ai.request(am,'DELETE','/v1/presence',am:_identity())end)end function ae.SetEnabled(am,an:boolean)am
+.enabled=an~=false end function ae.SetTitle(am,an:string)am.title=tostring(an)for ao,ap in am.plates do if ap.parts then
+am:_writeText(ap)end end end function ae.SetStyle(am,an,ao:string?)if type(an)=='string'then ao,an=an,nil end if ao then
+am.preset=ao end if type(an)=='table'then for ap,aq in an do am.overrides[ap]=aq end end am.style=s(am.preset,am.
+overrides)am:_loadImages()for ap,aq in am.plates do if aq.character then am:_attach(ap,aq.character)end end end
+local function am()return e.join(ag.fileSystemManager:getRootFolder(),'nameplate-token.txt')end function ae._token(an)if
+an._savedToken then return an._savedToken end local ao,ap=pcall(function()return if d.isfile(am())then d.readfile(am())
+else nil end)an._savedToken=if ao and type(ap)=='string'and ap~=''then ap else nil return an._savedToken end function ae
+._saveToken(an,ao)if type(ao)~='string'or ao==''then return end an._savedToken=ao pcall(function()d.ensureFolder(ag.
+fileSystemManager:getRootFolder())d.writefile(am(),ao)end)end function ae.SetMedia(an,ao:string,ap:string?):(boolean,
+string?)if not an.endpoint and not an.transport then return false,'Custom images need a relay (endpoint).'end local aq=
+an:_identity()aq.token=an:_token()aq.media={url=tostring(ao),slot=if ap=='logo'then'logo'else'backdrop'}local ar,as=ai.
+request(an,'PUT','/v1/profile',aq)if not ar or type(as)~='table'then return false,if type(as)=='table'and type(as.error)
+=='string'then as.error else"Couldn't set that image."end an:_saveToken(as.token)an:_setOwnMedia(as.media)return true
+end function ae.ClearMedia(an):boolean if not an.endpoint and not an.transport then return false end local ao=an:
+_identity()ao.token=an:_token()local ap,aq=ai.request(an,'DELETE','/v1/profile',ao)if ap and type(aq)=='table'then an:
+_saveToken(aq.token)an:_setOwnMedia(nil)end return ap end function ae._setOwnMedia(an,ao)local ap=ag.localPlayer if not
+ap then return end an.users[ap.UserId]=an.users[ap.UserId]or{badge=an.badge}an.users[ap.UserId].media=ao if an.plates[ap
+]then an:_syncMedia(an.plates[ap])end end function ae.Add(an,ao,ap:string?)if typeof(ao)~='Instance'and type(ao)~=
+'table'then return end an.users[ao.UserId]={badge=ap}an:_reconcile(ao)end function ae.Remove(an,ao)if ao then an.users[
+ao.UserId]=nil an:_drop(ao)end end function ae.Destroy(an)if not an._alive then return end an._alive=false for ao in an.
+plates do an:_drop(ao)end task.delay(h+0.05,function()if an.stepConnection then an.window:Disconnect(an.stepConnection)
+end if an.folder then an.window:DestroySubtree(an.folder)end end)end return ae end)()end,[18]=function()local aa,ab,ac=
 a(18)local ad return(function(...)local ae={}ae.__index=ae ae.__type='Notification'local af=ab.Parent.Parent.utility
-local ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,b,c=ac(af.variables),ac(af.functions),ac(af.constants),ac(af.HapticEngine),
+local ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as=ac(af.variables),ac(af.functions),ac(af.constants),ac(af.HapticEngine),
 TweenInfo.new(0.6,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.4,Enum.EasingStyle.Exponential,
 Enum.EasingDirection.Out),TweenInfo.new(0.3,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.6,
 Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.9,Enum.EasingStyle.Exponential,Enum.
-EasingDirection.Out),UDim2.new(0.5,360,0.5,0),UDim2.new(0.5,0,0.5,0),6,8 local function d(e)return math.clamp(#e*0.06+3,
-3,9)end function ae.new(e,f)f=if typeof(f)=='table'then f else{}local g=setmetatable({window=assert(e,
-'Missing argument #1 (Window expected)'),title=f.title or f.Title or'Notification',content=f.content or f.Content or'',
-icon=f.icon or f.Icon,_hovered=false,_dismissed=false},ae)g.duration=f.duration or f.Duration or d(g.content)local h=g.
-icon~=nil and g.icon~=0 and g.icon~=''g.main=g.window:Create('Frame',{Name='Notification',BackgroundTransparency=1,Size=
-UDim2.new(1,0,0,0),BorderSizePixel=0,ZIndex=ai.zIndex.notification,Parent=g.window.notifications})g.window:Create(
-'UIPadding',{PaddingTop=UDim.new(0,c),Parent=g.main})g.body=g.window:Create('Frame',{BackgroundColor3=Color3.fromRGB(255
-,255,255),Size=UDim2.new(1,0,1,0),Position=ap,AnchorPoint=Vector2.new(0.5,0.5),Active=true,BorderSizePixel=0,ZIndex=ai.
-zIndex.notification,BackgroundTransparency=1,Parent=g.main})g.window:Create('UIGradient',{Rotation=270,Offset=Vector2.
-new(0,-0.1),Parent=g.body},{Color={'WindowColor',ah.toColorSequence}})g.window:Create('UICorner',{Parent=g.body},{
-CornerRadius='CornerRoundness'})g.stroke=g.window:Create('UIStroke',{Transparency=1,Parent=g.body},{Color=
-'SurfaceStroke'})g.shadow=g.window:CreateGlow(g.body,'ShadowColor',20,1)g.window:Create('UIPadding',{PaddingLeft=UDim.
-new(0,20),PaddingRight=UDim.new(0,20),Parent=g.body})g.window:Create('UIListLayout',{FillDirection=Enum.FillDirection.
-Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum.HorizontalAlignment.Left,SortOrder=
-Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,14),Parent=g.body})if h then g.iconLabel=g.window:Create('ImageLabel',{
-Image=g.icon,Size=UDim2.fromOffset(24,24),BackgroundTransparency=1,BorderSizePixel=0,LayoutOrder=1,ZIndex=ai.zIndex.
-notification,ImageTransparency=1,Parent=g.body},{ImageColor3='ContentColor'})end g.container=g.window:Create('Frame',{
-Size=UDim2.fromOffset(h and 222 or 260,0),AutomaticSize=Enum.AutomaticSize.Y,BackgroundTransparency=1,BorderSizePixel=0,
-LayoutOrder=2,ZIndex=ai.zIndex.notification,Parent=g.body})g.window:Create('UIListLayout',{FillDirection=Enum.
-FillDirection.Vertical,SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,4),Parent=g.container})g.titleLabel=g.
-window:Create('TextLabel',{Text=g.title,Size=UDim2.new(1,0,0,0),AutomaticSize=Enum.AutomaticSize.Y,
-BackgroundTransparency=1,TextSize=16,TextWrapped=true,TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=1,ZIndex=ai.
-zIndex.notification,TextTransparency=1,Parent=g.container},{TextColor3='ContentColor',FontFace='TitleFont'})if g.content
-~=''then g.descriptionLabel=g.window:Create('TextLabel',{Text=g.content,Size=UDim2.new(1,0,0,0),AutomaticSize=Enum.
-AutomaticSize.Y,BackgroundTransparency=1,TextSize=15,TextWrapped=true,TextXAlignment=Enum.TextXAlignment.Left,
-TextYAlignment=Enum.TextYAlignment.Top,LayoutOrder=2,ZIndex=ai.zIndex.notification,TextTransparency=1,Parent=g.container
-},{TextColor3='ContentColor',FontFace='Font'})end g.window._notificationCount=(g.window._notificationCount or 0)+1 g.
-main.LayoutOrder=g.window._notificationCount local i=g.window._liveNotifications if not i then i={}g.window.
-_liveNotifications=i end table.insert(i,g)while#i>b do local j=table.remove(i,1)if j and j~=g then task.spawn(j._dismiss
-,j)end end g._connections={g.window:Connect(g.body.MouseEnter,function()g._hovered=true end),g.window:Connect(g.body.
-MouseLeave,function()g._hovered=false end),g.window:Connect(g.body.InputBegan,function(j)if j.UserInputType==Enum.
-UserInputType.MouseButton1 or j.UserInputType==Enum.UserInputType.Touch then g:_dismiss()end end)}task.spawn(function()g
-:_show()end)return g end function ae._measure(e)local f=e.iconLabel and 222 or 260 local g=ah.textHeight(e.window.theme.
-TitleFont,16,e.title,f)if e.descriptionLabel then g=g+4+ah.textHeight(e.window.theme.Font,15,e.content,f)end return math
-.max(g,e.iconLabel and 24 or 0)+28 end function ae._show(e)local f=e:_measure()+c if e._dismissed or not e.main.Parent
-then return end aj.notify()ag.tweenService:Create(e.main,ak,{Size=UDim2.new(1,0,0,f)}):Play()ag.tweenService:Create(e.
-body,an,{Position=aq}):Play()ag.tweenService:Create(e.body,al,{BackgroundTransparency=0}):Play()ag.tweenService:Create(e
-.titleLabel,am,{TextTransparency=0}):Play()ag.tweenService:Create(e.stroke,al,{Transparency=0.95}):Play()ag.tweenService
-:Create(e.shadow,am,{Transparency=0.6}):Play()task.wait(0.05)if e._dismissed or not e.main.Parent then return end if e.
-iconLabel then ag.tweenService:Create(e.iconLabel,am,{ImageTransparency=0}):Play()end task.wait(0.05)if e._dismissed or
-not e.main.Parent then return end if e.descriptionLabel then ag.tweenService:Create(e.descriptionLabel,am,{
-TextTransparency=0.35}):Play()end local g=0 while g<e.duration and not e._dismissed and e.main.Parent do local h=task.
-wait()if not e._hovered then g+=h end end e:_dismiss()end function ae._dismiss(e)if e._dismissed then return end e.
-_dismissed=true local f=e.window._liveNotifications local g=f and table.find(f,e)if f and g then table.remove(f,g)end if
-not e.main.Parent then return end ag.tweenService:Create(e.body,al,{BackgroundTransparency=1}):Play()ag.tweenService:
-Create(e.stroke,al,{Transparency=1}):Play()ag.tweenService:Create(e.shadow,am,{Transparency=1}):Play()ag.tweenService:
-Create(e.titleLabel,am,{TextTransparency=1}):Play()if e.descriptionLabel then ag.tweenService:Create(e.descriptionLabel,
-am,{TextTransparency=1}):Play()end if e.iconLabel then ag.tweenService:Create(e.iconLabel,am,{ImageTransparency=1}):
-Play()end ag.tweenService:Create(e.body,ao,{Size=UDim2.new(1,-90,1,0)}):Play()local h=ag.tweenService:Create(e.main,ao,{
-Size=UDim2.new(1,0,0,0)})h:Play()h.Completed:Wait()if not e.main.Parent then return end for i,j in e._connections do e.
-window:Disconnect(j)end e.window:DestroySubtree(e.main)end return ae end)()end,[19]=function()local aa,ab,ac=a(19)local
-ad return(function(...)local ae={}ae.__index=ae ae.__type='Popup'local af=ab.Parent.Parent.utility local ag,ah,ai,aj,ak,
-al,am,an,ao,ap,aq,b,c,d,e=ac(af.variables),ac(af.functions),ac(af.constants),ac(af.locale),ac(af.log),ac(af.HapticEngine
-),TweenInfo.new(0.5,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.4,Enum.EasingStyle.
-Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.3,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo
-.new(0.35,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),400,22,24,22,16 local f,g,h,i,j,k,l,m=aq-b*2,18,14,15,
-16,12,300,4 local n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C=f-m*2,16,13,20,10,15,14,8,10,40,8,UDim.new(1,0),16,0.5,{}
-local function D()for E=#B,1,-1 do local F=B[E]if F._closed or not F.screenGui.Parent then table.remove(B,E)end end end
-local function E(F)D()return B[#B]==F end function ae.new(F,G)G=if typeof(G)=='table'then G else{}local H=setmetatable({
-window=assert(F,'Missing argument #1 (Window expected)'),title=G.title or G.Title or'Popup',subtitle=G.subtitle or G.
-Subtitle,content=G.content or G.Content,icon=G.icon or G.Icon,boxes=G.boxes or G.Boxes,options=G.options or G.Options,
-dismissable=if G.dismissable~=nil then G.dismissable elseif G.Dismissable~=nil then G.Dismissable else true,_reveal={},
-_connections={},_closed=false},ae)if not H.options or#H.options==0 then H.options={{text='Okay'}}end H:_build()D()table.
-insert(B,H)task.spawn(function()H:_show()end)return H end function ae._fade(F,G,H,I)table.insert(F._reveal,{instance=G,
-prop=H,to=I})return G end function ae._build(F)local G,H=F.window,F.icon~=nil and F.icon~=0 and F.icon~=''F.screenGui=G:
-Create('ScreenGui',{Name=ag.httpService:GenerateGUID(false),IgnoreGuiInset=true,ResetOnSpawn=false,Enabled=true,
-DisplayOrder=ai.displayOrder.popup,ZIndexBehavior=Enum.ZIndexBehavior.Global,Parent=ag.guiContainer})F.backdrop=G:
-Create('Frame',{Name='Backdrop',BackgroundColor3=Color3.fromRGB(0,0,0),BorderSizePixel=0,Size=UDim2.fromScale(1,1),
-Active=true,BackgroundTransparency=1,Parent=F.screenGui})F:_fade(F.backdrop,'BackgroundTransparency',A)F.card=G:Create(
-'Frame',{Name='Card',BackgroundColor3=Color3.fromRGB(255,255,255),AnchorPoint=Vector2.new(0.5,0.5),Position=UDim2.new(
-0.5,0,0.5,14),Size=UDim2.fromOffset(aq,0),AutomaticSize=Enum.AutomaticSize.Y,Active=true,BorderSizePixel=0,
-BackgroundTransparency=1,Parent=F.screenGui})F:_fade(F.card,'BackgroundTransparency',0)G:_scaleSurface(F.card)G:Create(
-'UIGradient',{Rotation=270,Offset=Vector2.new(0,-0.1),Parent=F.card},{Color={'WindowColor',ah.toColorSequence}})G:
-Create('UICorner',{Parent=F.card},{CornerRadius='CornerRoundness'})F.cardStroke=G:Create('UIStroke',{Transparency=1,
-Parent=F.card},{Color='SurfaceStroke'})F:_fade(F.cardStroke,'Transparency',0.95)F.cardShadow=G:CreateGlow(F.card,
-'ShadowColor',26,1)F:_fade(F.cardShadow,'Transparency',0.55)G:Create('UIPadding',{PaddingLeft=UDim.new(0,b),PaddingRight
-=UDim.new(0,b),PaddingTop=UDim.new(0,c),PaddingBottom=UDim.new(0,d),Parent=F.card})G:Create('UIListLayout',{
-FillDirection=Enum.FillDirection.Vertical,HorizontalAlignment=Enum.HorizontalAlignment.Center,SortOrder=Enum.SortOrder.
-LayoutOrder,Padding=UDim.new(0,e),Parent=F.card})local I=F:_measureHeader(H)F:_buildHeader(H,I)local J=F:_buildContent()
-F:_buildFooter()local K=2+(J>0 and 1 or 0)local L=c+I+J+w+d+e*(K-1)F.card.Size=UDim2.fromOffset(aq,L)F.card.
-AutomaticSize=Enum.AutomaticSize.None if F.dismissable then table.insert(F._connections,G:Connect(F.backdrop.InputBegan,
-function(M)if M.UserInputType==Enum.UserInputType.MouseButton1 or M.UserInputType==Enum.UserInputType.Touch then F:
-Close()end end))table.insert(F._connections,G:Connect(ag.userInputService.InputBegan,function(M,N)if not N and M.KeyCode
-==Enum.KeyCode.Escape and E(F)then if M==C then return end C=M F:Close()end end))end end function ae._buildHeader(F,G,H)
-local I=F.window local J=I:Create('Frame',{Name='Header',BackgroundTransparency=1,Size=UDim2.new(1,0,0,H),LayoutOrder=1,
-Parent=F.card})I:Create('UIListLayout',{FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.
-VerticalAlignment.Center,HorizontalAlignment=Enum.HorizontalAlignment.Left,SortOrder=Enum.SortOrder.LayoutOrder,Padding=
-UDim.new(0,k),Parent=J})if G then F:_fade(I:Create('ImageLabel',{Image=F.icon,Size=UDim2.fromOffset(j,j),
-BackgroundTransparency=1,BorderSizePixel=0,LayoutOrder=1,ImageTransparency=1,Parent=J},{ImageColor3='TitlingColor'}),
-'ImageTransparency',0)end local K=I:Create('Frame',{Name='Text',BackgroundTransparency=1,Size=UDim2.new(1,G and-(j+k)or
-0,0,F._columnH),LayoutOrder=2,Parent=J})I:Create('UIListLayout',{FillDirection=Enum.FillDirection.Vertical,SortOrder=
-Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,3),Parent=K})F:_fade(I:Create('TextLabel',{Text=aj.t(F.title),Size=UDim2.
-new(1,0,0,F._titleH),BackgroundTransparency=1,TextSize=g,TextXAlignment=Enum.TextXAlignment.Left,TextWrapped=true,
-LayoutOrder=1,TextTransparency=1,Parent=K},{TextColor3='TitlingColor',FontFace='Font'}),'TextTransparency',0)if F.
-subtitle and F.subtitle~=''then F:_fade(I:Create('TextLabel',{Text=aj.t(F.subtitle),Size=UDim2.new(1,0,0,F._subH),
-BackgroundTransparency=1,TextSize=h,TextXAlignment=Enum.TextXAlignment.Left,TextWrapped=true,LayoutOrder=2,
-TextTransparency=1,Parent=K},{TextColor3='TitlingColor',FontFace='Font'}),'TextTransparency',0.55)end end function ae.
-_buildContent(F)if(not F.content or F.content=='')and(not F.boxes or#F.boxes==0)then return 0 end local G,H=F.window,if
-F.boxes and#F.boxes>0 then F:_measureBoxes()else F:_measureText()local I=math.min(H,l)+m*2 local J=G:Create(
-'ScrollingFrame',{Name='Content',BackgroundTransparency=1,BorderSizePixel=0,Size=UDim2.new(1,0,0,I),CanvasSize=UDim2.
+EasingDirection.Out),UDim2.new(0.5,360,0.5,0),UDim2.new(0.5,0,0.5,0),6,8 local function at(au)return math.clamp(#au*0.06
++3,3,9)end function ae.new(au,av)av=if typeof(av)=='table'then av else{}local b=setmetatable({window=assert(au,
+'Missing argument #1 (Window expected)'),title=av.title or av.Title or'Notification',content=av.content or av.Content or
+'',icon=av.icon or av.Icon,_hovered=false,_dismissed=false},ae)b.duration=av.duration or av.Duration or at(b.content)
+local c=b.icon~=nil and b.icon~=0 and b.icon~=''b.main=b.window:Create('Frame',{Name='Notification',
+BackgroundTransparency=1,Size=UDim2.new(1,0,0,0),BorderSizePixel=0,ZIndex=ai.zIndex.notification,Parent=b.window.
+notifications})b.window:Create('UIPadding',{PaddingTop=UDim.new(0,as),Parent=b.main})b.body=b.window:Create('Frame',{
+BackgroundColor3=Color3.fromRGB(255,255,255),Size=UDim2.new(1,0,1,0),Position=ap,AnchorPoint=Vector2.new(0.5,0.5),Active
+=true,BorderSizePixel=0,ZIndex=ai.zIndex.notification,BackgroundTransparency=1,Parent=b.main})b.window:Create(
+'UIGradient',{Rotation=270,Offset=Vector2.new(0,-0.1),Parent=b.body},{Color={'WindowColor',ah.toColorSequence}})b.window
+:Create('UICorner',{Parent=b.body},{CornerRadius='CornerRoundness'})b.stroke=b.window:Create('UIStroke',{Transparency=1,
+Parent=b.body},{Color='SurfaceStroke'})b.shadow=b.window:CreateGlow(b.body,'ShadowColor',20,1)b.window:Create(
+'UIPadding',{PaddingLeft=UDim.new(0,20),PaddingRight=UDim.new(0,20),Parent=b.body})b.window:Create('UIListLayout',{
+FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum.
+HorizontalAlignment.Left,SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,14),Parent=b.body})if c then b.
+iconLabel=b.window:Create('ImageLabel',{Image=b.icon,Size=UDim2.fromOffset(24,24),BackgroundTransparency=1,
+BorderSizePixel=0,LayoutOrder=1,ZIndex=ai.zIndex.notification,ImageTransparency=1,Parent=b.body},{ImageColor3=
+'ContentColor'})end b.container=b.window:Create('Frame',{Size=UDim2.fromOffset(c and 222 or 260,0),AutomaticSize=Enum.
+AutomaticSize.Y,BackgroundTransparency=1,BorderSizePixel=0,LayoutOrder=2,ZIndex=ai.zIndex.notification,Parent=b.body})b.
+window:Create('UIListLayout',{FillDirection=Enum.FillDirection.Vertical,SortOrder=Enum.SortOrder.LayoutOrder,Padding=
+UDim.new(0,4),Parent=b.container})b.titleLabel=b.window:Create('TextLabel',{Text=b.title,Size=UDim2.new(1,0,0,0),
+AutomaticSize=Enum.AutomaticSize.Y,BackgroundTransparency=1,TextSize=16,TextWrapped=true,TextXAlignment=Enum.
+TextXAlignment.Left,LayoutOrder=1,ZIndex=ai.zIndex.notification,TextTransparency=1,Parent=b.container},{TextColor3=
+'ContentColor',FontFace='TitleFont'})if b.content~=''then b.descriptionLabel=b.window:Create('TextLabel',{Text=b.content
+,Size=UDim2.new(1,0,0,0),AutomaticSize=Enum.AutomaticSize.Y,BackgroundTransparency=1,TextSize=15,TextWrapped=true,
+TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.Top,LayoutOrder=2,ZIndex=ai.zIndex.
+notification,TextTransparency=1,Parent=b.container},{TextColor3='ContentColor',FontFace='Font'})end b.window.
+_notificationCount=(b.window._notificationCount or 0)+1 b.main.LayoutOrder=b.window._notificationCount local d=b.window.
+_liveNotifications if not d then d={}b.window._liveNotifications=d end table.insert(d,b)while#d>ar do local e=table.
+remove(d,1)if e and e~=b then task.spawn(e._dismiss,e)end end b._connections={b.window:Connect(b.body.MouseEnter,
+function()b._hovered=true end),b.window:Connect(b.body.MouseLeave,function()b._hovered=false end),b.window:Connect(b.
+body.InputBegan,function(e)if e.UserInputType==Enum.UserInputType.MouseButton1 or e.UserInputType==Enum.UserInputType.
+Touch then b:_dismiss()end end)}task.spawn(function()b:_show()end)return b end function ae._measure(au)local av=au.
+iconLabel and 222 or 260 local b=ah.textHeight(au.window.theme.TitleFont,16,au.title,av)if au.descriptionLabel then b=b+
+4+ah.textHeight(au.window.theme.Font,15,au.content,av)end return math.max(b,au.iconLabel and 24 or 0)+28 end function ae
+._show(au)local av=au:_measure()+as if au._dismissed or not au.main.Parent then return end aj.notify()ag.tweenService:
+Create(au.main,ak,{Size=UDim2.new(1,0,0,av)}):Play()ag.tweenService:Create(au.body,an,{Position=aq}):Play()ag.
+tweenService:Create(au.body,al,{BackgroundTransparency=0}):Play()ag.tweenService:Create(au.titleLabel,am,{
+TextTransparency=0}):Play()ag.tweenService:Create(au.stroke,al,{Transparency=0.95}):Play()ag.tweenService:Create(au.
+shadow,am,{Transparency=0.6}):Play()task.wait(0.05)if au._dismissed or not au.main.Parent then return end if au.
+iconLabel then ag.tweenService:Create(au.iconLabel,am,{ImageTransparency=0}):Play()end task.wait(0.05)if au._dismissed
+or not au.main.Parent then return end if au.descriptionLabel then ag.tweenService:Create(au.descriptionLabel,am,{
+TextTransparency=0.35}):Play()end local b=0 while b<au.duration and not au._dismissed and au.main.Parent do local c=task
+.wait()if not au._hovered then b+=c end end au:_dismiss()end function ae._dismiss(au)if au._dismissed then return end au
+._dismissed=true local av=au.window._liveNotifications local b=av and table.find(av,au)if av and b then table.remove(av,
+b)end if not au.main.Parent then return end ag.tweenService:Create(au.body,al,{BackgroundTransparency=1}):Play()ag.
+tweenService:Create(au.stroke,al,{Transparency=1}):Play()ag.tweenService:Create(au.shadow,am,{Transparency=1}):Play()ag.
+tweenService:Create(au.titleLabel,am,{TextTransparency=1}):Play()if au.descriptionLabel then ag.tweenService:Create(au.
+descriptionLabel,am,{TextTransparency=1}):Play()end if au.iconLabel then ag.tweenService:Create(au.iconLabel,am,{
+ImageTransparency=1}):Play()end ag.tweenService:Create(au.body,ao,{Size=UDim2.new(1,-90,1,0)}):Play()local c=ag.
+tweenService:Create(au.main,ao,{Size=UDim2.new(1,0,0,0)})c:Play()c.Completed:Wait()if not au.main.Parent then return end
+for d,e in au._connections do au.window:Disconnect(e)end au.window:DestroySubtree(au.main)end return ae end)()end,[19]=
+function()local aa,ab,ac=a(19)local ad return(function(...)local ae={}ae.__index=ae ae.__type='Popup'local af=ab.Parent.
+Parent.utility local ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au=ac(af.variables),ac(af.functions),ac(af.constants),ac(
+af.locale),ac(af.log),ac(af.HapticEngine),TweenInfo.new(0.5,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),
+TweenInfo.new(0.4,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.3,Enum.EasingStyle.Exponential,
+Enum.EasingDirection.Out),TweenInfo.new(0.35,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),400,22,24,22,16
+local av,b,c,d,e,f,g,h=aq-ar*2,18,14,15,16,12,300,4 local i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x=av-h*2,16,13,20,10,15,14,8,10,
+40,8,UDim.new(1,0),16,0.5,{}local function y()for z=#w,1,-1 do local A=w[z]if A._closed or not A.screenGui.Parent then
+table.remove(w,z)end end end local function z(A)y()return w[#w]==A end function ae.new(A,B)B=if typeof(B)=='table'then B
+else{}local C=setmetatable({window=assert(A,'Missing argument #1 (Window expected)'),title=B.title or B.Title or'Popup',
+subtitle=B.subtitle or B.Subtitle,content=B.content or B.Content,icon=B.icon or B.Icon,boxes=B.boxes or B.Boxes,options=
+B.options or B.Options,dismissable=if B.dismissable~=nil then B.dismissable elseif B.Dismissable~=nil then B.Dismissable
+else true,_reveal={},_connections={},_closed=false},ae)if not C.options or#C.options==0 then C.options={{text='Okay'}}
+end C:_build()y()table.insert(w,C)task.spawn(function()C:_show()end)return C end function ae._fade(A,B,C,D)table.insert(
+A._reveal,{instance=B,prop=C,to=D})return B end function ae._build(A)local B,C=A.window,A.icon~=nil and A.icon~=0 and A.
+icon~=''A.screenGui=B:Create('ScreenGui',{Name=ag.httpService:GenerateGUID(false),IgnoreGuiInset=true,ResetOnSpawn=false
+,Enabled=true,DisplayOrder=ai.displayOrder.popup,ZIndexBehavior=Enum.ZIndexBehavior.Global,Parent=ag.guiContainer})A.
+backdrop=B:Create('Frame',{Name='Backdrop',BackgroundColor3=Color3.fromRGB(0,0,0),BorderSizePixel=0,Size=UDim2.
+fromScale(1,1),Active=true,BackgroundTransparency=1,Parent=A.screenGui})A:_fade(A.backdrop,'BackgroundTransparency',v)A.
+card=B:Create('Frame',{Name='Card',BackgroundColor3=Color3.fromRGB(255,255,255),AnchorPoint=Vector2.new(0.5,0.5),
+Position=UDim2.new(0.5,0,0.5,14),Size=UDim2.fromOffset(aq,0),AutomaticSize=Enum.AutomaticSize.Y,Active=true,
+BorderSizePixel=0,BackgroundTransparency=1,Parent=A.screenGui})A:_fade(A.card,'BackgroundTransparency',0)B:
+_scaleSurface(A.card)B:Create('UIGradient',{Rotation=270,Offset=Vector2.new(0,-0.1),Parent=A.card},{Color={'WindowColor'
+,ah.toColorSequence}})B:Create('UICorner',{Parent=A.card},{CornerRadius='CornerRoundness'})A.cardStroke=B:Create(
+'UIStroke',{Transparency=1,Parent=A.card},{Color='SurfaceStroke'})A:_fade(A.cardStroke,'Transparency',0.95)A.cardShadow=
+B:CreateGlow(A.card,'ShadowColor',26,1)A:_fade(A.cardShadow,'Transparency',0.55)B:Create('UIPadding',{PaddingLeft=UDim.
+new(0,ar),PaddingRight=UDim.new(0,ar),PaddingTop=UDim.new(0,as),PaddingBottom=UDim.new(0,at),Parent=A.card})B:Create(
+'UIListLayout',{FillDirection=Enum.FillDirection.Vertical,HorizontalAlignment=Enum.HorizontalAlignment.Center,SortOrder=
+Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,au),Parent=A.card})local D=A:_measureHeader(C)A:_buildHeader(C,D)local E=A
+:_buildContent()A:_buildFooter()local F=2+(E>0 and 1 or 0)local G=as+D+E+r+at+au*(F-1)A.card.Size=UDim2.fromOffset(aq,G)
+A.card.AutomaticSize=Enum.AutomaticSize.None if A.dismissable then table.insert(A._connections,B:Connect(A.backdrop.
+InputBegan,function(H)if H.UserInputType==Enum.UserInputType.MouseButton1 or H.UserInputType==Enum.UserInputType.Touch
+then A:Close()end end))table.insert(A._connections,B:Connect(ag.userInputService.InputBegan,function(H,I)if not I and H.
+KeyCode==Enum.KeyCode.Escape and z(A)then if H==x then return end x=H A:Close()end end))end end function ae._buildHeader
+(A,B,C)local D=A.window local E=D:Create('Frame',{Name='Header',BackgroundTransparency=1,Size=UDim2.new(1,0,0,C),
+LayoutOrder=1,Parent=A.card})D:Create('UIListLayout',{FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum
+.VerticalAlignment.Center,HorizontalAlignment=Enum.HorizontalAlignment.Left,SortOrder=Enum.SortOrder.LayoutOrder,Padding
+=UDim.new(0,f),Parent=E})if B then A:_fade(D:Create('ImageLabel',{Image=A.icon,Size=UDim2.fromOffset(e,e),
+BackgroundTransparency=1,BorderSizePixel=0,LayoutOrder=1,ImageTransparency=1,Parent=E},{ImageColor3='TitlingColor'}),
+'ImageTransparency',0)end local F=D:Create('Frame',{Name='Text',BackgroundTransparency=1,Size=UDim2.new(1,B and-(e+f)or
+0,0,A._columnH),LayoutOrder=2,Parent=E})D:Create('UIListLayout',{FillDirection=Enum.FillDirection.Vertical,SortOrder=
+Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,3),Parent=F})A:_fade(D:Create('TextLabel',{Text=aj.t(A.title),Size=UDim2.
+new(1,0,0,A._titleH),BackgroundTransparency=1,TextSize=b,TextXAlignment=Enum.TextXAlignment.Left,TextWrapped=true,
+LayoutOrder=1,TextTransparency=1,Parent=F},{TextColor3='TitlingColor',FontFace='Font'}),'TextTransparency',0)if A.
+subtitle and A.subtitle~=''then A:_fade(D:Create('TextLabel',{Text=aj.t(A.subtitle),Size=UDim2.new(1,0,0,A._subH),
+BackgroundTransparency=1,TextSize=c,TextXAlignment=Enum.TextXAlignment.Left,TextWrapped=true,LayoutOrder=2,
+TextTransparency=1,Parent=F},{TextColor3='TitlingColor',FontFace='Font'}),'TextTransparency',0.55)end end function ae.
+_buildContent(A)if(not A.content or A.content=='')and(not A.boxes or#A.boxes==0)then return 0 end local B,C=A.window,if
+A.boxes and#A.boxes>0 then A:_measureBoxes()else A:_measureText()local D=math.min(C,g)+h*2 local E=B:Create(
+'ScrollingFrame',{Name='Content',BackgroundTransparency=1,BorderSizePixel=0,Size=UDim2.new(1,0,0,D),CanvasSize=UDim2.
 new(0,0,0,0),AutomaticCanvasSize=Enum.AutomaticSize.Y,ScrollBarThickness=4,ScrollBarImageColor3=Color3.fromRGB(255,255,
-255),ScrollingDirection=Enum.ScrollingDirection.Y,LayoutOrder=2,ScrollBarImageTransparency=1,Parent=F.card})F:_fade(J,
-'ScrollBarImageTransparency',0.8)G:Create('UIPadding',{PaddingLeft=UDim.new(0,m),PaddingRight=UDim.new(0,m),PaddingTop=
-UDim.new(0,m),PaddingBottom=UDim.new(0,m),Parent=J})if F.boxes and#F.boxes>0 then G:Create('UIListLayout',{FillDirection
+255),ScrollingDirection=Enum.ScrollingDirection.Y,LayoutOrder=2,ScrollBarImageTransparency=1,Parent=A.card})A:_fade(E,
+'ScrollBarImageTransparency',0.8)B:Create('UIPadding',{PaddingLeft=UDim.new(0,h),PaddingRight=UDim.new(0,h),PaddingTop=
+UDim.new(0,h),PaddingBottom=UDim.new(0,h),Parent=E})if A.boxes and#A.boxes>0 then B:Create('UIListLayout',{FillDirection
 =Enum.FillDirection.Vertical,HorizontalAlignment=Enum.HorizontalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,
-Padding=UDim.new(0,u),Parent=J})for K,L in F.boxes do F:_buildBox(J,L,K)end else F:_fade(G:Create('TextLabel',{Text=aj.
-t(F.content),Size=UDim2.new(1,0,0,H),BackgroundTransparency=1,TextSize=i,TextXAlignment=Enum.TextXAlignment.Left,
-TextYAlignment=Enum.TextYAlignment.Top,TextWrapped=true,TextTransparency=1,Parent=J},{TextColor3='ContentColor',FontFace
-='Font'}),'TextTransparency',0.5)end return I end function ae._buildBox(F,G,H,I)local J=F.window H=if typeof(H)=='table'
-then H else{title=tostring(H)}local K,L,M,N,O=H.icon~=nil and H.icon~=0 and H.icon~='',F:_measureBox(H)local P=J:Create(
-'Frame',{Name='Box',BackgroundColor3=Color3.fromRGB(255,255,255),BorderSizePixel=0,Size=UDim2.new(1,-v,0,L),LayoutOrder=
-I,BackgroundTransparency=1,Parent=G})F:_fade(P,'BackgroundTransparency',0)local Q=J:StyleElementPanel(P)F:_fade(Q,
-'Transparency',J.theme.ElementStrokeTransparency)J:Create('UIPadding',{PaddingLeft=UDim.new(0,o),PaddingRight=UDim.new(0
-,o),PaddingTop=UDim.new(0,p),PaddingBottom=UDim.new(0,p),Parent=P})J:Create('UIListLayout',{FillDirection=Enum.
+Padding=UDim.new(0,p),Parent=E})for F,G in A.boxes do A:_buildBox(E,G,F)end else A:_fade(B:Create('TextLabel',{Text=aj.
+t(A.content),Size=UDim2.new(1,0,0,C),BackgroundTransparency=1,TextSize=d,TextXAlignment=Enum.TextXAlignment.Left,
+TextYAlignment=Enum.TextYAlignment.Top,TextWrapped=true,TextTransparency=1,Parent=E},{TextColor3='ContentColor',FontFace
+='Font'}),'TextTransparency',0.5)end return D end function ae._buildBox(A,B,C,D)local E=A.window C=if typeof(C)=='table'
+then C else{title=tostring(C)}local F,G,H,I,J=C.icon~=nil and C.icon~=0 and C.icon~='',A:_measureBox(C)local K=E:Create(
+'Frame',{Name='Box',BackgroundColor3=Color3.fromRGB(255,255,255),BorderSizePixel=0,Size=UDim2.new(1,-q,0,G),LayoutOrder=
+D,BackgroundTransparency=1,Parent=B})A:_fade(K,'BackgroundTransparency',0)local L=E:StyleElementPanel(K)A:_fade(L,
+'Transparency',E.theme.ElementStrokeTransparency)E:Create('UIPadding',{PaddingLeft=UDim.new(0,j),PaddingRight=UDim.new(0
+,j),PaddingTop=UDim.new(0,k),PaddingBottom=UDim.new(0,k),Parent=K})E:Create('UIListLayout',{FillDirection=Enum.
 FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum.HorizontalAlignment.
-Left,SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,r),Parent=P})if K then F:_fade(J:Create('ImageLabel',{Image
-=H.icon,Size=UDim2.fromOffset(q,q),BackgroundTransparency=1,BorderSizePixel=0,LayoutOrder=1,ImageTransparency=1,Parent=P
-},{ImageColor3='ContentColor'}),'ImageTransparency',0)end local R=J:Create('Frame',{BackgroundTransparency=1,Size=UDim2.
-new(1,K and-(q+r)or 0,0,O),LayoutOrder=2,Parent=P})J:Create('UIListLayout',{FillDirection=Enum.FillDirection.Vertical,
-SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,3),Parent=R})F:_fade(J:Create('TextLabel',{Text=aj.t(H.title or
-H.Title or''),Size=UDim2.new(1,0,0,M),BackgroundTransparency=1,TextSize=s,TextXAlignment=Enum.TextXAlignment.Left,
-TextWrapped=true,LayoutOrder=1,TextTransparency=1,Parent=R},{TextColor3='ContentColor',FontFace='TitleFont'}),
-'TextTransparency',0)local S=H.description or H.Description if S and S~=''then F:_fade(J:Create('TextLabel',{Text=aj.t(S
-),Size=UDim2.new(1,0,0,N),BackgroundTransparency=1,TextSize=t,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=
-Enum.TextYAlignment.Top,TextWrapped=true,LayoutOrder=2,TextTransparency=1,Parent=R},{TextColor3='ContentColor',FontFace=
-'Font'}),'TextTransparency',0.65)end end function ae._buildFooter(F)local G=F.window local H=G:Create('Frame',{Name=
-'Footer',BackgroundTransparency=1,Size=UDim2.new(1,0,0,w),LayoutOrder=3,Parent=F.card})G:Create('UIListLayout',{
+Left,SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,m),Parent=K})if F then A:_fade(E:Create('ImageLabel',{Image
+=C.icon,Size=UDim2.fromOffset(l,l),BackgroundTransparency=1,BorderSizePixel=0,LayoutOrder=1,ImageTransparency=1,Parent=K
+},{ImageColor3='ContentColor'}),'ImageTransparency',0)end local M=E:Create('Frame',{BackgroundTransparency=1,Size=UDim2.
+new(1,F and-(l+m)or 0,0,J),LayoutOrder=2,Parent=K})E:Create('UIListLayout',{FillDirection=Enum.FillDirection.Vertical,
+SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,3),Parent=M})A:_fade(E:Create('TextLabel',{Text=aj.t(C.title or
+C.Title or''),Size=UDim2.new(1,0,0,H),BackgroundTransparency=1,TextSize=n,TextXAlignment=Enum.TextXAlignment.Left,
+TextWrapped=true,LayoutOrder=1,TextTransparency=1,Parent=M},{TextColor3='ContentColor',FontFace='TitleFont'}),
+'TextTransparency',0)local N=C.description or C.Description if N and N~=''then A:_fade(E:Create('TextLabel',{Text=aj.t(N
+),Size=UDim2.new(1,0,0,I),BackgroundTransparency=1,TextSize=o,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=
+Enum.TextYAlignment.Top,TextWrapped=true,LayoutOrder=2,TextTransparency=1,Parent=M},{TextColor3='ContentColor',FontFace=
+'Font'}),'TextTransparency',0.65)end end function ae._buildFooter(A)local B=A.window local C=B:Create('Frame',{Name=
+'Footer',BackgroundTransparency=1,Size=UDim2.new(1,0,0,r),LayoutOrder=3,Parent=A.card})B:Create('UIListLayout',{
 FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum.
 HorizontalAlignment.Center,HorizontalFlex=Enum.UIFlexAlignment.Fill,SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.
-new(0,x),Parent=H})for I,J in F.options do F:_buildButton(H,J,I)end end function ae._buildButton(F,G,H,I)local J=F.
-window H=if typeof(H)=='table'then H else{text=tostring(H)}local K,L,M,N,O,P,Q=H.style or H.Style or'neutral',H.text or
-H.Text or H.name or H.Name or'Okay',H.callback or H.Callback if K=='primary'then N,O,P,Q=J.theme.AccentColor,J.theme.
-AccentStroke,J.theme.AccentStroke,0.1 elseif K=='danger'then N,O,P,Q=J.theme.ErrorColor,J.theme.ErrorStrokeColor,J.theme
-.ErrorStrokeColor,0 else N,O,P,Q=J.theme.NeutralButton,J.theme.NeutralButtonHover,J.theme.NeutralButtonStroke,0.85 end
-local R=J:Create('Frame',{Name='Button',BackgroundColor3=N,BorderSizePixel=0,Size=UDim2.new(0,0,0,w),LayoutOrder=I,
-BackgroundTransparency=1,Parent=G})F:_fade(R,'BackgroundTransparency',0)J:Create('UIFlexItem',{FlexMode=Enum.UIFlexMode.
-Fill,Parent=R})J:Create('UICorner',{CornerRadius=y,Parent=R})local S=J:Create('UIStroke',{Color=P,Transparency=1,Parent=
-R})F:_fade(S,'Transparency',Q)F:_fade(J:Create('TextLabel',{Text=aj.t(L),Size=UDim2.fromScale(1,1),
-BackgroundTransparency=1,TextSize=z,TextXAlignment=Enum.TextXAlignment.Center,TextTruncate=Enum.TextTruncate.AtEnd,
-TextColor3=ah.contrastText(N),TextTransparency=1,Parent=R},{FontFace='Font'}),'TextTransparency',0)local T,U=J:Create(
-'TextButton',{Text='',BackgroundTransparency=1,Size=UDim2.fromScale(1,1),BorderSizePixel=0,ZIndex=2,Parent=R}),TweenInfo
-.new(0.25,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)table.insert(F._connections,J:Connect(T.MouseEnter,function()
-if F._closed then return end ag.tweenService:Create(R,U,{BackgroundColor3=O}):Play()end))table.insert(F._connections,J:
-Connect(T.MouseLeave,function()ag.tweenService:Create(R,U,{BackgroundColor3=N}):Play()end))table.insert(F._connections,J
-:Connect(T.MouseButton1Click,function()if F._closed then return end al.click()ag.tweenService:Create(S,U,{Transparency=1
-}):Play()if M then task.spawn(function()local V,W=pcall(M)if not V then ak.warn("Rayfield: popup button '"..L..
-"' callback errored:")ak.print(W)end end)end F:Close()end))end function ae._measureHeader(F,G)local H=f-(if G then j+k
-else 0)F._titleH=ah.textHeight(F.window.theme.Font,g,aj.resolve(F.title),H)F._subH=if F.subtitle and F.subtitle~=''then
-ah.textHeight(F.window.theme.Font,h,aj.resolve(F.subtitle),H)else 0 F._columnH=F._titleH+(if F._subH>0 then 3+F._subH
-else 0)return math.max(F._columnH,if G then j else 0)end function ae._measureText(F)return ah.textHeight(F.window.theme.
-Font,i,aj.resolve(F.content),n)end function ae._measureBox(F,G)G=if typeof(G)=='table'then G else{title=tostring(G)}
-local H=G.icon~=nil and G.icon~=0 and G.icon~=''local I=n-v-o*2-(if H then q+r else 0)local J,K,L=ah.textHeight(F.window
-.theme.TitleFont,s,aj.resolve(G.title or G.Title or''),I),0,G.description or G.Description if L and L~=''then K=ah.
-textHeight(F.window.theme.Font,t,aj.resolve(L),I)end local M=J+(if K>0 then 3+K else 0)local N=math.max(M,if H then q
-else 0)+p*2 return N,J,K,M end function ae._measureBoxes(F)local G=0 for H,I in F.boxes do G+=(F:_measureBox(I))if H<#F.
-boxes then G+=u end end return G end function ae._show(F)if not F.screenGui.Parent then return end al.notify()ag.
-tweenService:Create(F.card,am,{Position=UDim2.new(0.5,0,0.5,0)}):Play()for G,H in F._reveal do local I=if H.instance==F.
-backdrop then ap else an ag.tweenService:Create(H.instance,I,{[H.prop]=H.to}):Play()end end function ae.Close(F)if F.
-_closed then return end F._closed=true local G=table.find(B,F)if G then table.remove(B,G)end for H,I in F._connections
-do F.window:Disconnect(I)end F._connections={}if not F.screenGui.Parent then return end ag.tweenService:Create(F.card,ao
-,{Position=UDim2.new(0.5,0,0.5,10)}):Play()for H,I in F._reveal do ag.tweenService:Create(I.instance,ao,{[I.prop]=1}):
-Play()end task.delay(ao.Time,function()F.window:DestroySubtree(F.screenGui)end)end return ae end)()end,[20]=function()
+new(0,s),Parent=C})for D,E in A.options do A:_buildButton(C,E,D)end end function ae._buildButton(A,B,C,D)local E=A.
+window C=if typeof(C)=='table'then C else{text=tostring(C)}local F,G,H,I,J,K,L=C.style or C.Style or'neutral',C.text or
+C.Text or C.name or C.Name or'Okay',C.callback or C.Callback if F=='primary'then I,J,K,L=E.theme.AccentColor,E.theme.
+AccentStroke,E.theme.AccentStroke,0.1 elseif F=='danger'then I,J,K,L=E.theme.ErrorColor,E.theme.ErrorStrokeColor,E.theme
+.ErrorStrokeColor,0 else I,J,K,L=E.theme.NeutralButton,E.theme.NeutralButtonHover,E.theme.NeutralButtonStroke,0.85 end
+local M=E:Create('Frame',{Name='Button',BackgroundColor3=I,BorderSizePixel=0,Size=UDim2.new(0,0,0,r),LayoutOrder=D,
+BackgroundTransparency=1,Parent=B})A:_fade(M,'BackgroundTransparency',0)E:Create('UIFlexItem',{FlexMode=Enum.UIFlexMode.
+Fill,Parent=M})E:Create('UICorner',{CornerRadius=t,Parent=M})local N=E:Create('UIStroke',{Color=K,Transparency=1,Parent=
+M})A:_fade(N,'Transparency',L)A:_fade(E:Create('TextLabel',{Text=aj.t(G),Size=UDim2.fromScale(1,1),
+BackgroundTransparency=1,TextSize=u,TextXAlignment=Enum.TextXAlignment.Center,TextTruncate=Enum.TextTruncate.AtEnd,
+TextColor3=ah.contrastText(I),TextTransparency=1,Parent=M},{FontFace='Font'}),'TextTransparency',0)local O,P=E:Create(
+'TextButton',{Text='',BackgroundTransparency=1,Size=UDim2.fromScale(1,1),BorderSizePixel=0,ZIndex=2,Parent=M}),TweenInfo
+.new(0.25,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)table.insert(A._connections,E:Connect(O.MouseEnter,function()
+if A._closed then return end ag.tweenService:Create(M,P,{BackgroundColor3=J}):Play()end))table.insert(A._connections,E:
+Connect(O.MouseLeave,function()ag.tweenService:Create(M,P,{BackgroundColor3=I}):Play()end))table.insert(A._connections,E
+:Connect(O.MouseButton1Click,function()if A._closed then return end al.click()ag.tweenService:Create(N,P,{Transparency=1
+}):Play()if H then task.spawn(function()local Q,R=pcall(H)if not Q then ak.warn("Rayfield: popup button '"..G..
+"' callback errored:")ak.print(R)end end)end A:Close()end))end function ae._measureHeader(A,B)local C=av-(if B then e+f
+else 0)A._titleH=ah.textHeight(A.window.theme.Font,b,aj.resolve(A.title),C)A._subH=if A.subtitle and A.subtitle~=''then
+ah.textHeight(A.window.theme.Font,c,aj.resolve(A.subtitle),C)else 0 A._columnH=A._titleH+(if A._subH>0 then 3+A._subH
+else 0)return math.max(A._columnH,if B then e else 0)end function ae._measureText(A)return ah.textHeight(A.window.theme.
+Font,d,aj.resolve(A.content),i)end function ae._measureBox(A,B)B=if typeof(B)=='table'then B else{title=tostring(B)}
+local C=B.icon~=nil and B.icon~=0 and B.icon~=''local D=i-q-j*2-(if C then l+m else 0)local E,F,G=ah.textHeight(A.window
+.theme.TitleFont,n,aj.resolve(B.title or B.Title or''),D),0,B.description or B.Description if G and G~=''then F=ah.
+textHeight(A.window.theme.Font,o,aj.resolve(G),D)end local H=E+(if F>0 then 3+F else 0)local I=math.max(H,if C then l
+else 0)+k*2 return I,E,F,H end function ae._measureBoxes(A)local B=0 for C,D in A.boxes do B+=(A:_measureBox(D))if C<#A.
+boxes then B+=p end end return B end function ae._show(A)if not A.screenGui.Parent then return end al.notify()ag.
+tweenService:Create(A.card,am,{Position=UDim2.new(0.5,0,0.5,0)}):Play()for B,C in A._reveal do local D=if C.instance==A.
+backdrop then ap else an ag.tweenService:Create(C.instance,D,{[C.prop]=C.to}):Play()end end function ae.Close(A)if A.
+_closed then return end A._closed=true local B=table.find(w,A)if B then table.remove(w,B)end for C,D in A._connections
+do A.window:Disconnect(D)end A._connections={}if not A.screenGui.Parent then return end ag.tweenService:Create(A.card,ao
+,{Position=UDim2.new(0.5,0,0.5,10)}):Play()for C,D in A._reveal do ag.tweenService:Create(D.instance,ao,{[D.prop]=1}):
+Play()end task.delay(ao.Time,function()A.window:DestroySubtree(A.screenGui)end)end return ae end)()end,[20]=function()
 local aa,ab,ac=a(20)local ad return(function(...)local ae={}ae.__index=ae ae.__type='Progress'local af=ab.Parent.Parent.
-utility local ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,b,c,d,e=ac(af.variables),ac(af.functions),ac(af.moveable),ac(af.locale),
-60,8,20,6,6,16,14,0.4,TweenInfo.new(0.45,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),NumberSequence.new{
-NumberSequenceKeypoint.new(0,0.85),NumberSequenceKeypoint.new(1,0)},0.9 local f=TweenInfo.new(e,Enum.EasingStyle.Quint,
-Enum.EasingDirection.InOut,-1,true)local function g(h:unknown):number?local i=tonumber(h)if i==nil or i~=i or math.abs(i
-)==math.huge then return nil end return i end function ae.new(h,i)i=if typeof(i)=='table'then i else{}local j=g(i.steps
-or i.Steps)j=if j and j>=2 then math.floor(j)else nil local k=i.range or i.Range local l,m=g(k and k[1])or 0,g(k and k[2
-])or j or 1 if l>m then l,m=m,l end local n=setmetatable({tab=assert(h,'Missing argument #1 (Tab expected)'),window=h.
-window,name=i.name or i.Name or'Progress',icon=i.icon or i.Icon,description=i.description or i.Description,min=l,max=m,
-steps=j,value=0,text=i.text or i.Text,format=i.format or i.Format,showValue=if i.showValue==nil then true else i.
-showValue==true,indeterminate=i.indeterminate or i.Indeterminate or false},ae)n.value=n:_clamp(g(i.value or i.Value)or l
-)n:_build()if n.description then n.descriptor=ac(ab.Parent.descriptor).new(n.tab,{description=n.description})end return
-n end function ae._clamp(h,i:number):number return math.clamp(g(i)or h.min,h.min,h.max)end function ae._ratio(h):number
-local i=h.max-h.min if i<=0 then return 1 end return(h.value-h.min)/i end function ae._filledSteps(h):number local i=h.
-steps::number return math.clamp(math.round(h:_ratio()*i),0,i)end function ae._readout(h):string if h.text then return aj
-.resolve(h.text)end if h.format then local i,j=pcall(h.format,h.value,h.min,h.max)if i and type(j)=='string'then return
-j end end if h.steps then return string.format('%d/%d',h:_filledSteps(),h.steps)end return string.format('%d%%',math.
-round(h:_ratio()*100))end function ae._build(h)h.main=h.window:Create('Frame',{Size=UDim2.new(1,-20,0,ak),
-BorderSizePixel=0,Name=h.name,BackgroundColor3=Color3.fromRGB(255,255,255),BackgroundTransparency=1,Parent=h.tab.tabPage
-},{BackgroundTransparency='ElementTransparency'})h.stroke=h.window:StyleElementBody(h.main)h.container=h.window:Create(
+utility local ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au=ac(af.variables),ac(af.functions),ac(af.moveable),ac(af.
+locale),60,8,20,6,6,16,14,0.4,TweenInfo.new(0.45,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),NumberSequence.new{
+NumberSequenceKeypoint.new(0,0.85),NumberSequenceKeypoint.new(1,0)},0.9 local av=TweenInfo.new(au,Enum.EasingStyle.Quint
+,Enum.EasingDirection.InOut,-1,true)local function b(c:unknown):number?local d=tonumber(c)if d==nil or d~=d or math.abs(
+d)==math.huge then return nil end return d end function ae.new(c,d)d=if typeof(d)=='table'then d else{}local e=b(d.steps
+or d.Steps)e=if e and e>=2 then math.floor(e)else nil local f=d.range or d.Range local g,h=b(f and f[1])or 0,b(f and f[2
+])or e or 1 if g>h then g,h=h,g end local i=setmetatable({tab=assert(c,'Missing argument #1 (Tab expected)'),window=c.
+window,name=d.name or d.Name or'Progress',icon=d.icon or d.Icon,description=d.description or d.Description,min=g,max=h,
+steps=e,value=0,text=d.text or d.Text,format=d.format or d.Format,showValue=if d.showValue==nil then true else d.
+showValue==true,indeterminate=d.indeterminate or d.Indeterminate or false},ae)i.value=i:_clamp(b(d.value or d.Value)or g
+)i:_build()if i.description then i.descriptor=ac(ab.Parent.descriptor).new(i.tab,{description=i.description})end return
+i end function ae._clamp(c,d:number):number return math.clamp(b(d)or c.min,c.min,c.max)end function ae._ratio(c):number
+local d=c.max-c.min if d<=0 then return 1 end return(c.value-c.min)/d end function ae._filledSteps(c):number local d=c.
+steps::number return math.clamp(math.round(c:_ratio()*d),0,d)end function ae._readout(c):string if c.text then return aj
+.resolve(c.text)end if c.format then local d,e=pcall(c.format,c.value,c.min,c.max)if d and type(e)=='string'then return
+e end end if c.steps then return string.format('%d/%d',c:_filledSteps(),c.steps)end return string.format('%d%%',math.
+round(c:_ratio()*100))end function ae._build(c)c.main=c.window:Create('Frame',{Size=UDim2.new(1,-20,0,ak),
+BorderSizePixel=0,Name=c.name,BackgroundColor3=Color3.fromRGB(255,255,255),BackgroundTransparency=1,Parent=c.tab.tabPage
+},{BackgroundTransparency='ElementTransparency'})c.stroke=c.window:StyleElementBody(c.main)c.container=c.window:Create(
 'Frame',{Size=UDim2.new(0,170,0,ap),Position=UDim2.new(0,am,0,20),AnchorPoint=Vector2.new(0,0.5),BackgroundTransparency=
-1,BorderSizePixel=0,Parent=h.main})h.window:Create('UIListLayout',{Padding=UDim.new(0,6),FillDirection=Enum.
+1,BorderSizePixel=0,Parent=c.main})c.window:Create('UIListLayout',{Padding=UDim.new(0,6),FillDirection=Enum.
 FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum.HorizontalAlignment.
-Left,SortOrder=Enum.SortOrder.LayoutOrder,Parent=h.container})if h.icon then h.iconLabel=h.window:Create('ImageLabel',{
-Image=h.icon,Size=UDim2.fromOffset(16,16),BorderSizePixel=0,BackgroundTransparency=1,ImageTransparency=1,Parent=h.
-container},{ImageColor3='ContentColor'})end h.title=h.window:Create('TextLabel',{Text=aj.t(h.name),Size=UDim2.
+Left,SortOrder=Enum.SortOrder.LayoutOrder,Parent=c.container})if c.icon then c.iconLabel=c.window:Create('ImageLabel',{
+Image=c.icon,Size=UDim2.fromOffset(16,16),BorderSizePixel=0,BackgroundTransparency=1,ImageTransparency=1,Parent=c.
+container},{ImageColor3='ContentColor'})end c.title=c.window:Create('TextLabel',{Text=aj.t(c.name),Size=UDim2.
 fromOffset(250,ap),BorderSizePixel=0,BackgroundTransparency=1,TextSize=ap,AutomaticSize=Enum.AutomaticSize.X,
-TextXAlignment=Enum.TextXAlignment.Left,TextWrapped=true,LayoutOrder=1,TextTransparency=1,Parent=h.container},{
-TextColor3='ContentColor',FontFace='Font'})h.readout=h.window:Create('TextLabel',{Text=h:_readout(),AnchorPoint=Vector2.
+TextXAlignment=Enum.TextXAlignment.Left,TextWrapped=true,LayoutOrder=1,TextTransparency=1,Parent=c.container},{
+TextColor3='ContentColor',FontFace='Font'})c.readout=c.window:Create('TextLabel',{Text=c:_readout(),AnchorPoint=Vector2.
 new(1,0.5),Position=UDim2.new(1,-am,0,20),Size=UDim2.fromOffset(50,aq),AutomaticSize=Enum.AutomaticSize.X,
-BorderSizePixel=0,BackgroundTransparency=1,TextSize=aq,TextXAlignment=Enum.TextXAlignment.Right,Visible=h.showValue,
-TextTransparency=1,Parent=h.main},{TextColor3='ContentColor',FontFace='Font'})if h.steps then h:_buildSteps()return end
-h.track=h.window:Create('Frame',{AnchorPoint=Vector2.new(0.5,1),Position=UDim2.new(0.5,0,1,-16),Size=UDim2.new(1,-am*2,0
-,al),BorderSizePixel=0,BackgroundTransparency=1,Parent=h.main},{BackgroundColor3='SliderBackground'})h.window:Create(
-'UICorner',{CornerRadius=UDim.new(1,0),Parent=h.track})h.fill=h.window:Create('Frame',{AnchorPoint=Vector2.new(0,0.5),
-Position=UDim2.fromScale(0,0.5),Size=UDim2.fromScale(if h.indeterminate then 0 else h:_ratio(),1),BackgroundColor3=
-Color3.fromRGB(255,255,255),BorderSizePixel=0,ZIndex=2,BackgroundTransparency=1,Parent=h.track})h.window:Create(
-'UICorner',{CornerRadius=UDim.new(1,0),Parent=h.fill})h.window:Create('UIGradient',{Offset=Vector2.new(0,0.5),Rotation=2
-,Transparency=d,Parent=h.fill},{Color={'SliderProgress',ah.toColorSequence}})h.fillGlow=h.window:CreateGlow(h.fill,
-'AccentColor',20,1)if h.indeterminate then h:_startSweep()end end function ae._buildSteps(h)local i=h.steps::number h.
-track=h.window:Create('Frame',{AnchorPoint=Vector2.new(0.5,1),Position=UDim2.new(0.5,0,1,-17),Size=UDim2.new(1,-am*2,0,
-an),BackgroundTransparency=1,BorderSizePixel=0,Parent=h.main})h.window:Create('UIListLayout',{Padding=UDim.new(0,ao),
+BorderSizePixel=0,BackgroundTransparency=1,TextSize=aq,TextXAlignment=Enum.TextXAlignment.Right,Visible=c.showValue,
+TextTransparency=1,Parent=c.main},{TextColor3='ContentColor',FontFace='Font'})if c.steps then c:_buildSteps()return end
+c.track=c.window:Create('Frame',{AnchorPoint=Vector2.new(0.5,1),Position=UDim2.new(0.5,0,1,-16),Size=UDim2.new(1,-am*2,0
+,al),BorderSizePixel=0,BackgroundTransparency=1,Parent=c.main},{BackgroundColor3='SliderBackground'})c.window:Create(
+'UICorner',{CornerRadius=UDim.new(1,0),Parent=c.track})c.fill=c.window:Create('Frame',{AnchorPoint=Vector2.new(0,0.5),
+Position=UDim2.fromScale(0,0.5),Size=UDim2.fromScale(if c.indeterminate then 0 else c:_ratio(),1),BackgroundColor3=
+Color3.fromRGB(255,255,255),BorderSizePixel=0,ZIndex=2,BackgroundTransparency=1,Parent=c.track})c.window:Create(
+'UICorner',{CornerRadius=UDim.new(1,0),Parent=c.fill})c.window:Create('UIGradient',{Offset=Vector2.new(0,0.5),Rotation=2
+,Transparency=at,Parent=c.fill},{Color={'SliderProgress',ah.toColorSequence}})c.fillGlow=c.window:CreateGlow(c.fill,
+'AccentColor',20,1)if c.indeterminate then c:_startSweep()end end function ae._buildSteps(c)local d=c.steps::number c.
+track=c.window:Create('Frame',{AnchorPoint=Vector2.new(0.5,1),Position=UDim2.new(0.5,0,1,-17),Size=UDim2.new(1,-am*2,0,
+an),BackgroundTransparency=1,BorderSizePixel=0,Parent=c.main})c.window:Create('UIListLayout',{Padding=UDim.new(0,ao),
 FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum.
-HorizontalAlignment.Left,SortOrder=Enum.SortOrder.LayoutOrder,Parent=h.track})h.stepFrames={}for j=1,i do local k=h.
-window:Create('Frame',{Size=UDim2.new(1/i,-(ao*(i-1))/i,1,0),BorderSizePixel=0,LayoutOrder=j,BackgroundTransparency=1,
-Parent=h.track},{BackgroundColor3='SliderBackground'})h.window:Create('UICorner',{CornerRadius=UDim.new(1,0),Parent=k})
-local l=h.window:Create('Frame',{Size=UDim2.fromScale(1,1),BackgroundColor3=Color3.fromRGB(255,255,255),BorderSizePixel=
-0,ZIndex=2,BackgroundTransparency=1,Parent=k})h.window:Create('UICorner',{CornerRadius=UDim.new(1,0),Parent=l})h.window:
-Create('UIGradient',{Rotation=90,Parent=l},{Color={'SliderProgress',ah.toColorSequence}})table.insert(h.stepFrames,{
-segment=k,fill=l})end end function ae._startSweep(h)if h._sweep or h.steps then return end h.fill.AnchorPoint=Vector2.
-new(0,0.5)h.fill.Position=UDim2.fromScale(0,0.5)h.fill.Size=UDim2.fromScale(0,1)h._sweep=ag.tweenService:Create(h.fill,f
-,{Size=UDim2.fromScale(1,1)})h._sweep:Play()end function ae._stopSweep(h)if not h._sweep then return end h._sweep:
-Cancel()h._sweep=nil h.fill.AnchorPoint=Vector2.new(0,0.5)h.fill.Position=UDim2.fromScale(0,0.5)end function ae._render(
-h,i:boolean?)h.readout.Text=h:_readout()if h.steps then if not h._shown then return end local j=h:_filledSteps()for k,l
-in h.stepFrames do local m=if k<=j then 0 else 1 if i==false then l.fill.BackgroundTransparency=m else ag.tweenService:
-Create(l.fill,c,{BackgroundTransparency=m}):Play()end end return end local j=UDim2.fromScale(h:_ratio(),1)if i==false
-then h.fill.Size=j else ag.tweenService:Create(h.fill,c,{Size=j}):Play()end end function ae.Set(h,i)h.value=h:_clamp(i)
-if h.indeterminate then h.indeterminate=false h:_stopSweep()end h:_render()end function ae.Get(h):number return h.value
-end function ae.GetPercentage(h):number return h:_ratio()end function ae.SetRange(h,i,j)i=g(i)or h.min j=g(j)or h.max if
-i>j then i,j=j,i end h.min,h.max=i,j h.value=h:_clamp(h.value)h:_render()end function ae.SetText(h,i)h.text=i h.readout.
-Text=h:_readout()end function ae.SetIndeterminate(h,i)i=i==true if i==h.indeterminate then return end h.indeterminate=i
-if i then h:_startSweep()else h:_stopSweep()h:_render(false)end end function ae._setShown(h,i,j)local k=h.window h.
-_shown=i k:_reveal(h.readout,{TextTransparency=if i then b else 1},j)if i then k:_revealCommon(h,j)else k:_hideCommon(h,
-j)end if h.steps then local l=h:_filledSteps()for m,n in h.stepFrames do k:_reveal(n.segment,{BackgroundTransparency=if
-i then 0 else 1},j)k:_reveal(n.fill,{BackgroundTransparency=if i and m<=l then 0 else 1},j)end return end k:_reveal(h.
-track,{BackgroundTransparency=if i then 0 else 1},j)k:_reveal(h.fill,{BackgroundTransparency=if i then 0 else 1},j)k:
-_reveal(h.fillGlow,{Transparency=if i then k.theme.AccentGlow else 1},j)end function ae.Remove(h)h:_stopSweep()if h.
-descriptor then h.descriptor:Remove()end if h.tab._forget then h.tab:_forget(h)end h.window:DestroySubtree(h.main)end
+HorizontalAlignment.Left,SortOrder=Enum.SortOrder.LayoutOrder,Parent=c.track})c.stepFrames={}for e=1,d do local f=c.
+window:Create('Frame',{Size=UDim2.new(1/d,-(ao*(d-1))/d,1,0),BorderSizePixel=0,LayoutOrder=e,BackgroundTransparency=1,
+Parent=c.track},{BackgroundColor3='SliderBackground'})c.window:Create('UICorner',{CornerRadius=UDim.new(1,0),Parent=f})
+local g=c.window:Create('Frame',{Size=UDim2.fromScale(1,1),BackgroundColor3=Color3.fromRGB(255,255,255),BorderSizePixel=
+0,ZIndex=2,BackgroundTransparency=1,Parent=f})c.window:Create('UICorner',{CornerRadius=UDim.new(1,0),Parent=g})c.window:
+Create('UIGradient',{Rotation=90,Parent=g},{Color={'SliderProgress',ah.toColorSequence}})table.insert(c.stepFrames,{
+segment=f,fill=g})end end function ae._startSweep(c)if c._sweep or c.steps then return end c.fill.AnchorPoint=Vector2.
+new(0,0.5)c.fill.Position=UDim2.fromScale(0,0.5)c.fill.Size=UDim2.fromScale(0,1)c._sweep=ag.tweenService:Create(c.fill,
+av,{Size=UDim2.fromScale(1,1)})c._sweep:Play()end function ae._stopSweep(c)if not c._sweep then return end c._sweep:
+Cancel()c._sweep=nil c.fill.AnchorPoint=Vector2.new(0,0.5)c.fill.Position=UDim2.fromScale(0,0.5)end function ae._render(
+c,d:boolean?)c.readout.Text=c:_readout()if c.steps then if not c._shown then return end local e=c:_filledSteps()for f,g
+in c.stepFrames do local h=if f<=e then 0 else 1 if d==false then g.fill.BackgroundTransparency=h else ag.tweenService:
+Create(g.fill,as,{BackgroundTransparency=h}):Play()end end return end local e=UDim2.fromScale(c:_ratio(),1)if d==false
+then c.fill.Size=e else ag.tweenService:Create(c.fill,as,{Size=e}):Play()end end function ae.Set(c,d)c.value=c:_clamp(d)
+if c.indeterminate then c.indeterminate=false c:_stopSweep()end c:_render()end function ae.Get(c):number return c.value
+end function ae.GetPercentage(c):number return c:_ratio()end function ae.SetRange(c,d,e)d=b(d)or c.min e=b(e)or c.max if
+d>e then d,e=e,d end c.min,c.max=d,e c.value=c:_clamp(c.value)c:_render()end function ae.SetText(c,d)c.text=d c.readout.
+Text=c:_readout()end function ae.SetIndeterminate(c,d)d=d==true if d==c.indeterminate then return end c.indeterminate=d
+if d then c:_startSweep()else c:_stopSweep()c:_render(false)end end function ae._setShown(c,d,e)local f=c.window c.
+_shown=d f:_reveal(c.readout,{TextTransparency=if d then ar else 1},e)if d then f:_revealCommon(c,e)else f:_hideCommon(c
+,e)end if c.steps then local g=c:_filledSteps()for h,i in c.stepFrames do f:_reveal(i.segment,{BackgroundTransparency=if
+d then 0 else 1},e)f:_reveal(i.fill,{BackgroundTransparency=if d and h<=g then 0 else 1},e)end return end f:_reveal(c.
+track,{BackgroundTransparency=if d then 0 else 1},e)f:_reveal(c.fill,{BackgroundTransparency=if d then 0 else 1},e)f:
+_reveal(c.fillGlow,{Transparency=if d then f.theme.AccentGlow else 1},e)end function ae.Remove(c)c:_stopSweep()if c.
+descriptor then c.descriptor:Remove()end if c.tab._forget then c.tab:_forget(c)end c.window:DestroySubtree(c.main)end
 ai(ae)return ae end)()end,[21]=function()local aa,ab,ac=a(21)local ad return(function(...)local ae=ab.Parent.Parent.
 utility local af,ag,ah,ai,aj,ak,al,am=ac(ae.variables),ac(ae.constants),ac(ae.locale),ac(ab.Parent.action),{},TweenInfo.
 new(0.25,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),0.6,0.2 local function an(ao)if ao.__type=='Group'then local
-ap={}local function aq(b)for c,d in b.elements do if d.__type=='Group'then aq(d)elseif d.name then table.insert(ap,d.
-name)end end end aq(ao)return table.concat(ap,'\n')end return ao.name or''end local function ao(ap)local aq={}for b,c in
-ap.tabs do if c.neglectSelector then continue end for d,e in c.elements do if e.__type~='Section'then table.insert(aq,e)
-end end end return aq end local function ap(aq,b,c)af.tweenService:Create(aq.searchPill,c,{BackgroundTransparency=if b
-then 0.9 else 1}):Play()af.tweenService:Create(aq.searchStroke,c,{Transparency=if b then 0.85 else 1}):Play()af.
-tweenService:Create(aq.searchShadow,c,{Transparency=if b then 0.92 else 1}):Play()af.tweenService:Create(aq.searchIcon,c
-,{ImageTransparency=if b then 0.65 else 1}):Play()af.tweenService:Create(aq.searchInput,c,{TextTransparency=if b then
-0.2 else 1}):Play()end local function aq(b,c,d)if b.layout.mode=='sidebar'then return end for e,f in b.tabs do if not f.
-neglectSelector and f.topbarItem then f:_applyVisual(if c then(if b.selectedTab==f then'selected'else'unselected')else
-'hidden',d)end end end local function b(c,d)d=string.lower(d or'')local e=false for f,g in c._searchUnits do local h=d==
-''or string.find(g.text,d,1,true)~=nil g.unit.main.Visible=h if g.unit.descriptor then g.unit.descriptor.main.Visible=h
-end e=e or h end c.searchEmpty.Visible=not e and d~=''end local function c(d)d._searchUnits={}local e=0 for f,g in ao(d)
-do e+=1 local h=g.main table.insert(d._searchUnits,{unit=g,text=string.lower(an(g)),homeParent=h.Parent,homeOrder=h.
-LayoutOrder,descOrder=g.descriptor and g.descriptor.main.LayoutOrder})h.LayoutOrder=e*10 h.Parent=d.searchPage h.Visible
-=true if g.descriptor then g.descriptor.main.LayoutOrder=e*10+1 g.descriptor.main.Parent=d.searchPage g.descriptor.main.
-Visible=true end end end local function d(e)for f,g in e._searchUnits do local h=g.unit if h.main and h.main.Parent then
-h.main.LayoutOrder=g.homeOrder h.main.Parent=g.homeParent h.main.Visible=true end if h.descriptor and h.descriptor.main
-and h.descriptor.main.Parent then h.descriptor.main.LayoutOrder=g.descOrder h.descriptor.main.Parent=g.homeParent h.
-descriptor.main.Visible=true end end e._searchUnits={}end function aj.open(e)if e._searching or e.minimised or not e:
-_interactive()then return end e._searching=true c(e)b(e,'')e:_jumpTo(e.searchPage)aq(e,false,ak)task.delay(ak.Time,
-function()if e._searching and e.layout.mode~='sidebar'then e.tabList.Visible=false end end)e.searchPill.Visible=true ap(
-e,true,ak)e.searchInput:CaptureFocus()af.tweenService:Create(e.searchAction.iconLabel,ak,{ImageTransparency=am}):Play()
-end function aj.close(e,f)if not e._searching then return end f=f or{}e._searching=false e.searchInput.Text=''e.
-searchInput:ReleaseFocus()e.searchEmpty.Visible=false d(e)local g=if f.jumpTo==nil then e.selectedTab and e.selectedTab.
-tabPage else f.jumpTo if g then e:_jumpTo(g)end ap(e,false,ak)task.delay(ak.Time,function()if not e._searching then e.
-searchPill.Visible=false end end)if f.showTabs then e.tabList.Visible=true aq(e,true,ak)end af.tweenService:Create(e.
-searchAction.iconLabel,ak,{ImageTransparency=al}):Play()end function aj.toggle(e)if e._searching then aj.close(e,{
-showTabs=true})else aj.open(e)end end function aj.railWidth(e,f)if e.searchPill then e.searchPill.Size=UDim2.new(1,-(f+
-30),0,35)end end function aj.build(e)e._searching=false e.searchPage=e:Create('ScrollingFrame',{Name='Search',Size=UDim2
-.new(1,-20,1,0),Position=UDim2.new(0.5,0,0,68),AnchorPoint=Vector2.new(0.5,0.5),BorderSizePixel=0,BackgroundTransparency
-=1,AutomaticCanvasSize=Enum.AutomaticSize.Y,CanvasSize=UDim2.new(0,0,0,0),ScrollBarThickness=ag.pageScrollbar.thickness,
-ScrollBarImageTransparency=ag.pageScrollbar.transparency,VerticalScrollBarInset=Enum.ScrollBarInset.None,
-ScrollingDirection=Enum.ScrollingDirection.Y,LayoutOrder=2000,Parent=e.elements},{ScrollBarImageColor3='ContentColor'})e
-:Create('UIListLayout',{Padding=UDim.new(0,7),FillDirection=Enum.FillDirection.Vertical,VerticalAlignment=Enum.
-VerticalAlignment.Top,HorizontalAlignment=Enum.HorizontalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,Parent=e.
-searchPage})e:Create('UIPadding',{PaddingTop=UDim.new(0,if e.layout.mode=='sidebar'then 53 else 10),PaddingBottom=UDim.
-new(0,33),Parent=e.searchPage})e.searchEmpty=e:Create('TextLabel',{Name='NoResults',Text=ah.t'No results',FontFace=af.
-brandFont(Enum.FontWeight.Medium),TextSize=15,TextTransparency=0.6,BackgroundTransparency=1,AnchorPoint=Vector2.new(0.5,
-0.5),Position=UDim2.new(0.5,0,0.55,0),Size=UDim2.fromOffset(200,20),Visible=false,ZIndex=3,Parent=e.main},{TextColor3=
-'ContentColor',FontFace='Font'})local f=e.layout.mode=='sidebar'local g=if f then e.layout.chromeHeight+8 else e.layout.
-tabStripTop+1 e.searchPill=e:Create('Frame',{Name='SearchBar',AnchorPoint=Vector2.new(if f then 1 else 0.5,0),Position=
-UDim2.new(if f then 1 else 0.5,if f then-15 else 0,0,g),Size=UDim2.new(1,if f then-(e.layout.railWidth+30)else-35,0,35),
-BackgroundColor3=Color3.fromRGB(255,255,255),BorderSizePixel=0,ZIndex=10,BackgroundTransparency=1,Visible=false,Parent=e
-.main})e:Create('UICorner',{CornerRadius=UDim.new(1,0),Parent=e.searchPill})e.searchStroke=e:Create('UIStroke',{Color=
-Color3.fromRGB(255,255,255),Thickness=1,Transparency=1,Parent=e.searchPill})e.searchShadow=e:Create('UIShadow',{
-BlurRadius=UDim.new(0,20),Color=Color3.fromRGB(255,255,255),ZIndex=-1,Transparency=1,Parent=e.searchPill})e.searchIcon=e
-:Create('ImageLabel',{Image='rbxassetid://'..tostring(ag.icons.search),AnchorPoint=Vector2.new(0,0.5),Position=UDim2.
-new(0,15,0.5,1),Size=UDim2.fromOffset(16,16),BackgroundTransparency=1,ZIndex=10,ImageTransparency=1,Parent=e.searchPill}
-,{ImageColor3='ContentColor'})e.searchInput=e:Create('TextBox',{Text='',PlaceholderText=ah.t'Search all pages',
-AnchorPoint=Vector2.new(0,0.5),Position=UDim2.new(0,40,0.5,0),Size=UDim2.new(1,-110,0,18),BackgroundTransparency=1,
-TextSize=16,TextXAlignment=Enum.TextXAlignment.Left,ClearTextOnFocus=false,ClipsDescendants=true,ZIndex=10,
-TextTransparency=1,Parent=e.searchPill},{TextColor3='ContentColor',FontFace='Font',PlaceholderColor3='PlaceholderColor'}
-)e:Connect(e.searchInput:GetPropertyChangedSignal'Text',function()if e._searching then b(e,e.searchInput.Text)end end)e.
-searchAction=ai.new(e,{name='Search',icon=ag.icons.search,order=4,callback=function()aj.toggle(e)end})e.searchAction.
-isLit=function()return e._searching end end return aj end)()end,[22]=function()local aa,ab,ac=a(22)local ad return(
+ap={}local function aq(ar)for as,at in ar.elements do if at.__type=='Group'then aq(at)elseif at.name then table.insert(
+ap,at.name)end end end aq(ao)return table.concat(ap,'\n')end return ao.name or''end local function ao(ap)local aq={}for
+ar,as in ap.tabs do if as.neglectSelector then continue end for at,au in as.elements do if au.__type~='Section'then
+table.insert(aq,au)end end end return aq end local function ap(aq,ar,as)af.tweenService:Create(aq.searchPill,as,{
+BackgroundTransparency=if ar then 0.9 else 1}):Play()af.tweenService:Create(aq.searchStroke,as,{Transparency=if ar then
+0.85 else 1}):Play()af.tweenService:Create(aq.searchShadow,as,{Transparency=if ar then 0.92 else 1}):Play()af.
+tweenService:Create(aq.searchIcon,as,{ImageTransparency=if ar then 0.65 else 1}):Play()af.tweenService:Create(aq.
+searchInput,as,{TextTransparency=if ar then 0.2 else 1}):Play()end local function aq(ar,as,at)if ar.layout.mode==
+'sidebar'then return end for au,av in ar.tabs do if not av.neglectSelector and av.topbarItem then av:_applyVisual(if as
+then(if ar.selectedTab==av then'selected'else'unselected')else'hidden',at)end end end local function ar(as,at)at=string.
+lower(at or'')local au=false for av,b in as._searchUnits do local c=at==''or string.find(b.text,at,1,true)~=nil b.unit.
+main.Visible=c if b.unit.descriptor then b.unit.descriptor.main.Visible=c end au=au or c end as.searchEmpty.Visible=not
+au and at~=''end local function as(at)at._searchUnits={}local au=0 for av,b in ao(at)do au+=1 local c=b.main table.
+insert(at._searchUnits,{unit=b,text=string.lower(an(b)),homeParent=c.Parent,homeOrder=c.LayoutOrder,descOrder=b.
+descriptor and b.descriptor.main.LayoutOrder})c.LayoutOrder=au*10 c.Parent=at.searchPage c.Visible=true if b.descriptor
+then b.descriptor.main.LayoutOrder=au*10+1 b.descriptor.main.Parent=at.searchPage b.descriptor.main.Visible=true end end
+end local function at(au)for av,b in au._searchUnits do local c=b.unit if c.main and c.main.Parent then c.main.
+LayoutOrder=b.homeOrder c.main.Parent=b.homeParent c.main.Visible=true end if c.descriptor and c.descriptor.main and c.
+descriptor.main.Parent then c.descriptor.main.LayoutOrder=b.descOrder c.descriptor.main.Parent=b.homeParent c.descriptor
+.main.Visible=true end end au._searchUnits={}end function aj.open(au)if au._searching or au.minimised or not au:
+_interactive()then return end au._searching=true as(au)ar(au,'')au:_jumpTo(au.searchPage)aq(au,false,ak)task.delay(ak.
+Time,function()if au._searching and au.layout.mode~='sidebar'then au.tabList.Visible=false end end)au.searchPill.Visible
+=true ap(au,true,ak)au.searchInput:CaptureFocus()af.tweenService:Create(au.searchAction.iconLabel,ak,{ImageTransparency=
+am}):Play()end function aj.close(au,av)if not au._searching then return end av=av or{}au._searching=false au.searchInput
+.Text=''au.searchInput:ReleaseFocus()au.searchEmpty.Visible=false at(au)local b=if av.jumpTo==nil then au.selectedTab
+and au.selectedTab.tabPage else av.jumpTo if b then au:_jumpTo(b)end ap(au,false,ak)task.delay(ak.Time,function()if not
+au._searching then au.searchPill.Visible=false end end)if av.showTabs then au.tabList.Visible=true aq(au,true,ak)end af.
+tweenService:Create(au.searchAction.iconLabel,ak,{ImageTransparency=al}):Play()end function aj.toggle(au)if au.
+_searching then aj.close(au,{showTabs=true})else aj.open(au)end end function aj.railWidth(au,av)if au.searchPill then au
+.searchPill.Size=UDim2.new(1,-(av+30),0,35)end end function aj.build(au)au._searching=false au.searchPage=au:Create(
+'ScrollingFrame',{Name='Search',Size=UDim2.new(1,-20,1,0),Position=UDim2.new(0.5,0,0,68),AnchorPoint=Vector2.new(0.5,0.5
+),BorderSizePixel=0,BackgroundTransparency=1,AutomaticCanvasSize=Enum.AutomaticSize.Y,CanvasSize=UDim2.new(0,0,0,0),
+ScrollBarThickness=ag.pageScrollbar.thickness,ScrollBarImageTransparency=ag.pageScrollbar.transparency,
+VerticalScrollBarInset=Enum.ScrollBarInset.None,ScrollingDirection=Enum.ScrollingDirection.Y,LayoutOrder=2000,Parent=au.
+elements},{ScrollBarImageColor3='ContentColor'})au:Create('UIListLayout',{Padding=UDim.new(0,7),FillDirection=Enum.
+FillDirection.Vertical,VerticalAlignment=Enum.VerticalAlignment.Top,HorizontalAlignment=Enum.HorizontalAlignment.Center,
+SortOrder=Enum.SortOrder.LayoutOrder,Parent=au.searchPage})au:Create('UIPadding',{PaddingTop=UDim.new(0,if au.layout.
+mode=='sidebar'then 53 else 10),PaddingBottom=UDim.new(0,33),Parent=au.searchPage})au.searchEmpty=au:Create('TextLabel',
+{Name='NoResults',Text=ah.t'No results',FontFace=af.brandFont(Enum.FontWeight.Medium),TextSize=15,TextTransparency=0.6,
+BackgroundTransparency=1,AnchorPoint=Vector2.new(0.5,0.5),Position=UDim2.new(0.5,0,0.55,0),Size=UDim2.fromOffset(200,20)
+,Visible=false,ZIndex=3,Parent=au.main},{TextColor3='ContentColor',FontFace='Font'})local av=au.layout.mode=='sidebar'
+local b=if av then au.layout.chromeHeight+8 else au.layout.tabStripTop+1 au.searchPill=au:Create('Frame',{Name=
+'SearchBar',AnchorPoint=Vector2.new(if av then 1 else 0.5,0),Position=UDim2.new(if av then 1 else 0.5,if av then-15 else
+0,0,b),Size=UDim2.new(1,if av then-(au.layout.railWidth+30)else-35,0,35),BackgroundColor3=Color3.fromRGB(255,255,255),
+BorderSizePixel=0,ZIndex=10,BackgroundTransparency=1,Visible=false,Parent=au.main})au:Create('UICorner',{CornerRadius=
+UDim.new(1,0),Parent=au.searchPill})au.searchStroke=au:Create('UIStroke',{Color=Color3.fromRGB(255,255,255),Thickness=1,
+Transparency=1,Parent=au.searchPill})au.searchShadow=au:Create('UIShadow',{BlurRadius=UDim.new(0,20),Color=Color3.
+fromRGB(255,255,255),ZIndex=-1,Transparency=1,Parent=au.searchPill})au.searchIcon=au:Create('ImageLabel',{Image=
+'rbxassetid://'..tostring(ag.icons.search),AnchorPoint=Vector2.new(0,0.5),Position=UDim2.new(0,15,0.5,1),Size=UDim2.
+fromOffset(16,16),BackgroundTransparency=1,ZIndex=10,ImageTransparency=1,Parent=au.searchPill},{ImageColor3=
+'ContentColor'})au.searchInput=au:Create('TextBox',{Text='',PlaceholderText=ah.t'Search all pages',AnchorPoint=Vector2.
+new(0,0.5),Position=UDim2.new(0,40,0.5,0),Size=UDim2.new(1,-110,0,18),BackgroundTransparency=1,TextSize=16,
+TextXAlignment=Enum.TextXAlignment.Left,ClearTextOnFocus=false,ClipsDescendants=true,ZIndex=10,TextTransparency=1,Parent
+=au.searchPill},{TextColor3='ContentColor',FontFace='Font',PlaceholderColor3='PlaceholderColor'})au:Connect(au.
+searchInput:GetPropertyChangedSignal'Text',function()if au._searching then ar(au,au.searchInput.Text)end end)au.
+searchAction=ai.new(au,{name='Search',icon=ag.icons.search,order=4,callback=function()aj.toggle(au)end})au.searchAction.
+isLit=function()return au._searching end end return aj end)()end,[22]=function()local aa,ab,ac=a(22)local ad return(
 function(...)local ae={}ae.__index=ae ae.__type='Section'local af,ag=ac(ab.Parent.Parent.utility.moveable),ac(ab.Parent.
 Parent.utility.locale)function ae.new(ah,ai)ai=if typeof(ai)=='table'then ai else{}local aj=setmetatable({tab=assert(ah,
 'Missing argument #1 (Tab expected)'),window=ah.window,name=ai.name or ai.Name or'Section',icon=ai.icon or ai.Icon},ae)
@@ -1449,321 +1490,328 @@ ah.iconLabel,{ImageTransparency=if ai then 0.65 else 1},aj)end end af(ae)return 
 ac=a(23)local ad return(function(...)local ae=ab.Parent.Parent.utility local af,ag,ah,ai,aj,ak,al,am,an,ao=ac(ae.
 variables),ac(ae.image),ac(ae.locale),ac(ab.Parent.tabSelector),ac(ab.Parent.search),{},0,0.7,0.95,TweenInfo.new(0.25,
 Enum.EasingStyle.Quint,Enum.EasingDirection.Out)local function ap(aq)return aq.layout.mode=='sidebar'and aq.profile~=nil
-and aq.settings.showProfile and af.localPlayer~=nil end local function aq(b,c)local d=af.localPlayer if not d then
-return end b.profile=b:Create('Frame',{Name='Profile',AnchorPoint=Vector2.new(0.5,1),Position=UDim2.fromScale(0.5,1),
-Size=UDim2.new(1,0,0,c.footerHeight),BackgroundTransparency=1,Parent=b.sidebar})b.profileContainer=b:Create('Frame',{
-AnchorPoint=Vector2.new(0,0.5),Position=UDim2.new(0,c.rowInset,0.5,0),Size=UDim2.new(1,-c.rowInset,1,0),
-BackgroundTransparency=1,Parent=b.profile})b.profileLayout=b:Create('UIListLayout',{Padding=UDim.new(0,10),FillDirection
-=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum.
-HorizontalAlignment.Left,SortOrder=Enum.SortOrder.LayoutOrder,Parent=b.profileContainer})b.profileAvatar=b:Create(
-'ImageLabel',{Name='Avatar',Image=ag.avatar(d.UserId,function(e)if b.profileAvatar and not b.unloaded then ag.assign(b.
-profileAvatar,'Image',e)end end),Size=UDim2.fromOffset(c.avatarSize,c.avatarSize),BackgroundColor3=Color3.fromRGB(255,
-255,255),BorderSizePixel=0,BackgroundTransparency=1,ImageTransparency=1,Parent=b.profileContainer})b:Create('UICorner',{
-CornerRadius=UDim.new(1,0),Parent=b.profileAvatar})b.profileLabels=b:Create('Frame',{Size=UDim2.fromOffset(50,c.
-avatarSize),AutomaticSize=Enum.AutomaticSize.X,BackgroundTransparency=1,LayoutOrder=1,Parent=b.profileContainer})b:
-Create('UIListLayout',{Padding=UDim.new(0,2),FillDirection=Enum.FillDirection.Vertical,VerticalAlignment=Enum.
-VerticalAlignment.Center,HorizontalAlignment=Enum.HorizontalAlignment.Left,SortOrder=Enum.SortOrder.LayoutOrder,Parent=b
-.profileLabels})b.profileName=b:Create('TextLabel',{Text=d.DisplayName,Size=UDim2.fromOffset(50,16),AutomaticSize=Enum.
-AutomaticSize.X,BackgroundTransparency=1,TextSize=16,TextXAlignment=Enum.TextXAlignment.Left,TextTransparency=1,Parent=b
-.profileLabels},{TextColor3='TitlingColor',FontFace='Font'})b.profileSubtitle=b:Create('TextLabel',{Text='',Size=UDim2.
-fromOffset(50,14),AutomaticSize=Enum.AutomaticSize.X,BackgroundTransparency=1,TextSize=14,TextXAlignment=Enum.
-TextXAlignment.Left,LayoutOrder=1,Visible=false,TextTransparency=1,Parent=b.profileLabels},{TextColor3='TitlingColor',
-FontFace='Font'})end function ak.build(b,c)b.sidebar=b:Create('Frame',{Name='Sidebar',AnchorPoint=Vector2.new(0,1),
-Position=UDim2.fromScale(0,1),Size=UDim2.new(0,c.railWidth,1,-c.chromeHeight),BackgroundTransparency=1,Visible=false,
-Parent=b.main})b.tabList=b:Create('ScrollingFrame',{Name='Tabs',Active=true,Size=UDim2.new(1,0,1,0),
-BackgroundTransparency=1,BorderSizePixel=0,AutomaticCanvasSize=Enum.AutomaticSize.Y,CanvasSize=UDim2.new(0,0,0,0),
-ScrollBarThickness=0,ScrollBarImageTransparency=1,ScrollingDirection=Enum.ScrollingDirection.Y,ClipsDescendants=true,
-Parent=b.sidebar})b:Create('UIPadding',{PaddingTop=UDim.new(0,c.railPadding),PaddingBottom=UDim.new(0,c.railPadding),
-Parent=b.tabList})b.tabListLayout=b:Create('UIListLayout',{Padding=UDim.new(0,c.rowSpacing),FillDirection=Enum.
-FillDirection.Vertical,VerticalAlignment=Enum.VerticalAlignment.Top,HorizontalAlignment=Enum.HorizontalAlignment.Center,
-SortOrder=Enum.SortOrder.LayoutOrder,Parent=b.tabList})aq(b,c)ak.reflowProfile(b)end function ak.reflowProfile(b)local c
-,d=b.layout,ap(b)if b.profile then b.profile.Visible=d end b.tabList.Size=UDim2.new(1,0,1,if d then-c.footerHeight else
-0)end function ak.applyWidth(b,c)local d=b.layout b.sidebar.Size=UDim2.new(0,c,1,-d.chromeHeight)b.elements.Size=UDim2.
-new(1,-c,1,-d.chromeHeight)b.bottomFade.Size=UDim2.new(1,-c,d.fadeSize.Y.Scale,d.fadeSize.Y.Offset)aj.railWidth(b,c)
-local e=c<(d.railWidth::number)for f,g in b.tabs do if not g.neglectSelector then ai.setRowCollapsed(g,e,d)end end if b.
-profileContainer then b.profileContainer.Position=UDim2.new(0,if e then 0 else d.rowInset,0.5,0)b.profileContainer.Size=
-UDim2.new(1,if e then 0 else-d.rowInset,1,0)b.profileLayout.HorizontalAlignment=if e then Enum.HorizontalAlignment.
-Center else Enum.HorizontalAlignment.Left b.profileLabels.Visible=not e end end function ak.setProfileShown(b,c,d)if not
-b.profile or not b.profile.Visible then return end local e={[b.profileAvatar]={ImageTransparency=if c then 0 else 1,
-BackgroundTransparency=if c then an else 1},[b.profileName]={TextTransparency=if c then al else 1},[b.profileSubtitle]={
-TextTransparency=if c then am else 1}}for f,g in e do if d then af.tweenService:Create(f,d,g):Play()else for h,i in g do
-f[h]=i end end end end function ak.setProfileEnabled(b,c)if not b.profile then b.settings.showProfile=c return end if c
-then b.settings.showProfile=true ak.reflowProfile(b)ak.setProfileShown(b,true,ao)return end ak.setProfileShown(b,false,
-ao)task.delay(ao.Time,function()if b.unloaded or b.settings.showProfile then return end ak.reflowProfile(b)end)b.
-settings.showProfile=false end function ak.setSubtitle(b,c)if not b.profileSubtitle then return end local d=if type(c)==
-'string'and c~=''then ah.resolve(c)else nil b.profileSubtitle.Text=d or''b.profileSubtitle.Visible=d~=nil end return ak
-end)()end,[24]=function()local aa,ab,ac=a(24)local ad return(function(...)local ae={}ae.__index=ae ae.__type='Slider'
-local af=ab.Parent.Parent.utility local ag,ah,ai,aj,ak,al,am=ac(af.variables),ac(af.functions),ac(af.odometer),ac(af.
-moveable),ac(af.lockable),ac(af.locale),ac(af.HapticEngine)local function an(ao)local ap=0 while ap<6 do local aq=ao*10^
-ap if math.abs(aq-math.round(aq))<1e-9 then break end ap+=1 end return ap end local function ao(ap,aq,b)local c=ap[1]+
-math.round((b-ap[1])/aq)*aq return math.clamp(c,ap[1],ap[2])end local ap,aq,b,c,d,e=TweenInfo.new(0.45,Enum.EasingStyle.
-Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.3,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo
-.new(0.3,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),440,Vector2.new(35,20),Vector2.new(41,22)local f=math.ceil(d.X
-/2)local function g(h:number):UDim2 return UDim2.new(h,math.round(f*(1-2*h)),1,0)end local function h():UDim2 return
-UDim2.new(1,0,0.5,0)end local function i(j:number,k:number,l:number):number return math.clamp((j-k)/l,0,1)end function
-ae.new(j,k)k=if typeof(k)=='table'then k else{}local l=setmetatable({tab=assert(j,'Missing argument #1 (Tab expected)'),
-window=j.window,name=k.name or k.Name or'Slider',icon=k.icon or k.Icon,description=k.description or k.Description,
-forgetState=k.forgetState or k.ForgetState or j.forgetState,range=k.range or k.Range or{0,100},increment=k.increment or
-k.Increment or 1,suffix=k.suffix or k.Suffix or'',callback=k.callback or k.Callback or function()end,dragging=false,
-minimal=k.minimal or k.Minimal or false,_handleWidth=d.X},ae)assert(typeof(l.range)=='table'and typeof(l.range[1])==
-'number'and typeof(l.range[2])=='number','A slider range needs two numbers, like { 0, 100 }.')if l.range[1]>l.range[2]
-then l.range={l.range[2],l.range[1]}end if l.increment<=0 then l.increment=1 end l.value=if(k.value or k.Value)~=nil
-then(k.value or k.Value)elseif(k.currentValue or k.CurrentValue)~=nil then(k.currentValue or k.CurrentValue)else l.range
-[1]l.value=ao(l.range,l.increment,l.value)l._decimals=an(l.increment)l.flag=k.flag or k.Flag or(not l.forgetState and ah
-.deriveFlagFromName(l.name)or nil)l.window:_registerControl(l)l.main=l.window:Create('Frame',{Size=UDim2.new(1,-20,0,65)
-,BorderSizePixel=0,Name=l.name,BackgroundColor3=Color3.fromRGB(255,255,255),BackgroundTransparency=1,Parent=l.tab.
-tabPage},{BackgroundTransparency='ElementTransparency'})l.stroke=l.window:StyleElementBody(l.main)l._lastValue=l.value
-if not l.minimal then l:_buildLabel()end l.track=l.window:Create('Frame',{AnchorPoint=Vector2.new(1,0.5),Position=UDim2.
-new(1,-15,0.5,0),Size=UDim2.fromOffset(222,14),BorderSizePixel=0,BackgroundTransparency=1,Parent=l.main},{
-BackgroundColor3='SliderBackground'})l.window:Create('UICorner',{CornerRadius=UDim.new(0,13),Parent=l.track})l.progress=
-l.window:Create('Frame',{AnchorPoint=Vector2.new(0,0.5),Position=UDim2.fromScale(0,0.5),Size=UDim2.fromScale(0,1),
-BackgroundColor3=Color3.fromRGB(255,255,255),BorderSizePixel=0,ZIndex=2,BackgroundTransparency=1,Parent=l.track})l.
-window:Create('UICorner',{CornerRadius=UDim.new(0,13),Parent=l.progress})l.window:Create('UIGradient',{Offset=Vector2.
-new(0,0.5),Rotation=2,Transparency=NumberSequence.new{NumberSequenceKeypoint.new(0,0.85),NumberSequenceKeypoint.new(1,0)
-},Parent=l.progress},{Color={'SliderProgress',ah.toColorSequence}})l.progressGlow=l.window:CreateGlow(l.progress,
-'AccentColor',20,1)l.handle=l.window:Create('Frame',{AnchorPoint=Vector2.new(0.5,0.5),Position=h(),Size=UDim2.
-fromOffset(d.X,d.Y),BorderSizePixel=0,ZIndex=50,BackgroundTransparency=1,Parent=l.progress},{BackgroundColor3=
-'SliderHandle'})l.window:Create('UICorner',{CornerRadius=UDim.new(1,0),Parent=l.handle})l.handleGlow=l.window:
-CreateGlow(l.handle,Color3.fromRGB(255,255,255),10,1)l.handleStroke=l.window:Create('UIStroke',{Transparency=1,Parent=l.
-handle},{Color='SliderStroke'})l.interact=l.window:Create('TextButton',{BackgroundTransparency=1,Size=UDim2.fromScale(1,
-1),Text='',TextTransparency=1,ZIndex=10,Parent=l.track})l.window:ConnectFor(l,l.main.MouseEnter,function()if not l.
-window:_interactive()then return end ag.tweenService:Create(l.track,ap,{BackgroundColor3=l.window.theme.
-SliderBackgroundHover}):Play()end)l.window:ConnectFor(l,l.main.MouseLeave,function()ag.tweenService:Create(l.track,ap,{
-BackgroundColor3=l.window.theme.SliderBackground}):Play()end)l.window:ConnectFor(l,l.interact.InputBegan,function(m)if m
-.UserInputType==Enum.UserInputType.MouseButton1 or m.UserInputType==Enum.UserInputType.Touch then am.click()l.dragging=
-true l:_setHeld(true)l:_updateFromMouse()if l._dragConnection then l._dragConnection:Disconnect()l._dragConnection=nil
-end l._dragConnection=ag.runService.RenderStepped:Connect(function()if l.window.unloaded or not l.dragging then if l.
-_dragConnection then l._dragConnection:Disconnect()l._dragConnection=nil end return end l:_updateFromMouse()end)end end)
-l.window:ConnectFor(l,ag.userInputService.InputEnded,function(m)if m.UserInputType==Enum.UserInputType.MouseButton1 or m
-.UserInputType==Enum.UserInputType.Touch then l:_endDrag()end end)l.window:ConnectFor(l,ag.userInputService.
-WindowFocusReleased,function()l:_endDrag()end)if l.description and not l.minimal then l.descriptor=ac(ab.Parent.
-descriptor).new(l.tab,{description=l.description})end l.window:ConnectFor(l,l.main:GetPropertyChangedSignal
-'AbsoluteSize',function()if l.window.animating or(l.window.hidden and l.window.hasShownOnce)then return end l:
-_applyLayout()end)l:_applyLayout()if l.minimal then l.main.Size=UDim2.new(1,-20,0,41)l.track.AnchorPoint=Vector2.new(0.5
-,0.5)l.track.Position=UDim2.new(0.5,0,0.5,0)l.track.Size=UDim2.new(1,-30,0,14)end l:_renderProgress()return l end
-function ae._buildLabel(j)j.container=j.window:Create('Frame',{AnchorPoint=Vector2.new(0,0.5),Position=UDim2.new(0,20,
-0.5,0),Size=UDim2.fromOffset(170,33),BackgroundTransparency=1,BorderSizePixel=0,ZIndex=5,Parent=j.main})j.
-containerLayout=j.window:Create('UIListLayout',{Padding=UDim.new(0,2),VerticalAlignment=Enum.VerticalAlignment.Center,
-SortOrder=Enum.SortOrder.LayoutOrder,Parent=j.container})j.titleContainer=j.window:Create('Frame',{Size=UDim2.new(1,0,0,
-16),BackgroundTransparency=1,BorderSizePixel=0,ZIndex=5,Parent=j.container})j.window:Create('UIListLayout',{Padding=UDim
-.new(0,5),FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,SortOrder=Enum.
-SortOrder.LayoutOrder,Parent=j.titleContainer})j.titleFlex=j.window:Create('UIFlexItem',{FlexMode=Enum.UIFlexMode.None,
-Parent=j.titleContainer})if j.icon then j.iconLabel=j.window:Create('ImageLabel',{Image=j.icon,Size=UDim2.fromOffset(16,
-16),BorderSizePixel=0,BackgroundTransparency=1,ZIndex=5,ImageTransparency=1,Parent=j.titleContainer},{ImageColor3=
-'ContentColor'})end j.title=j.window:Create('TextLabel',{Text=al.t(j.name),Size=UDim2.new(1,0,0,16),BorderSizePixel=0,
-BackgroundTransparency=1,TextSize=16,TextXAlignment=Enum.TextXAlignment.Left,TextTruncate=Enum.TextTruncate.AtEnd,
-RichText=true,LayoutOrder=1,ZIndex=5,TextTransparency=1,Parent=j.titleContainer},{TextColor3='ContentColor',FontFace=
-'Font'})j.window:Create('UIFlexItem',{FlexMode=Enum.UIFlexMode.Shrink,Parent=j.title})j.valueHost=j.window:Create(
-'Frame',{Size=UDim2.new(1,0,0,16),BackgroundTransparency=1,BorderSizePixel=0,ZIndex=6,LayoutOrder=1,Parent=j.container})
-j.valueOdo=ai.new(j.window,j.valueHost,{textSize=15,alignment=Enum.HorizontalAlignment.Left,transparency=1,duration=0.28
-})j.valueOdo:snap(j:_format(j.value))end function ae._setMainHeight(j,k)if j._widthManaged then j.main.Size=UDim2.new(j.
-main.Size.X.Scale,j.main.Size.X.Offset,0,k)else j.main.Size=UDim2.new(1,-20,0,k)end end function ae._applyLayout(j)if j.
-minimal then return end local k=j.main.AbsoluteSize.X local l=if k>0 and k<c then'narrow'else'wide'if j._layoutMode==l
-then return end j._layoutMode=l if l=='narrow'then j:_setMainHeight(70)j.container.AnchorPoint=Vector2.new(0,0)j.
-container.Position=UDim2.new(0,20,0,14)j.container.Size=UDim2.new(1,-40,0,16)j.containerLayout.FillDirection=Enum.
-FillDirection.Horizontal j.titleFlex.FlexMode=Enum.UIFlexMode.Fill j.valueHost.AutomaticSize=Enum.AutomaticSize.X j.
-valueHost.Size=UDim2.new(0,0,0,16)j.track.AnchorPoint=Vector2.new(0.5,1)j.track.Position=UDim2.new(0.5,0,1,-14)j.track.
-Size=UDim2.new(1,-30,0,14)else j:_setMainHeight(65)j.container.AnchorPoint=Vector2.new(0,0.5)j.container.Position=UDim2.
-new(0,20,0.5,0)j.container.Size=UDim2.new(0,170,0,33)j.containerLayout.FillDirection=Enum.FillDirection.Vertical j.
-titleFlex.FlexMode=Enum.UIFlexMode.None j.valueHost.AutomaticSize=Enum.AutomaticSize.None j.valueHost.Size=UDim2.new(1,0
-,0,16)j.track.AnchorPoint=Vector2.new(1,0.5)j.track.Position=UDim2.new(1,-15,0.5,0)j.track.Size=UDim2.new(0,222,0,14)end
-end function ae._format(j,k)local l=string.format('%.'..j._decimals..'f',k)if j.suffix~=''then return l..' '..j.suffix
-end return l end function ae._pillTravel(j)return math.max(j.track.AbsoluteSize.X-f*2,0)end function ae._renderProgress(
-j,k)local l=j.range[2]-j.range[1]local m=if l~=0 then math.clamp((j.value-j.range[1])/l,0,1)else 0 local n=g(m)if k then
-ag.tweenService:Create(j.progress,k,{Size=n}):Play()else j.progress.Size=n end end function ae._updateFromMouse(j)local
-k=j:_pillTravel()if k<=0 then return end local l=i(ag.userInputService:GetMouseLocation().X,j.track.AbsolutePosition.X+f
-,k)local m=ao(j.range,j.increment,j.range[1]+l*(j.range[2]-j.range[1]))if m~=j.value then j.value=m if j.valueOdo then j
-.valueOdo:snap(j:_format(m))end j._lastValue=m j:_renderProgress(b)j:_fireCallback(m)end end function ae._endDrag(j)if
-not j.dragging then return end j.dragging=false j:_setHeld(false)if j._dragConnection then j._dragConnection:Disconnect(
-)j._dragConnection=nil end j.window:_persist(j)end function ae._setHeld(j,k)if not k then j:_fireCallback(j.value)end
-local l=if k then e else d j._handleWidth=l.X ag.tweenService:Create(j.handle,aq,{Size=UDim2.fromOffset(l.X,l.Y),
-BackgroundTransparency=if k then 0.7 else 0}):Play()ag.tweenService:Create(j.handleStroke,aq,{Transparency=if k then 0.6
-else 1}):Play()j:_renderProgress(aq)end function ae._fireCallback(j,k)j.window:_runGuarded(j,j.callback,k,j.dragging==
-true)end function ae.Set(j,k,l)k=ao(j.range,j.increment,k)j.value=k if j.valueOdo then j.valueOdo:to(j:_format(k),k>=(j.
-_lastValue or k))end j._lastValue=k j:_renderProgress(ap)if not l then j:_fireCallback(k)j.window:_persist(j)end end
-local j=TweenInfo.new(0.4,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out,0,false,0.35)function ae._setShown(k,l,m
-)local n=k.window if l then n:_revealCommon(k,m)n:_reveal(k.track,{BackgroundTransparency=0},m)n:_reveal(k.progress,{
-BackgroundTransparency=0},m)n:_reveal(k.handle,{BackgroundTransparency=0},m)if k.valueOdo then k.valueOdo:reveal(0.3,m)
-end n:_reveal(k.progressGlow,{Transparency=math.max(0.55,n.theme.AccentGlow)},m,j)n:_reveal(k.handleGlow,{Transparency=
-0.8},m,j)else n:_hideCommon(k,m)n:_reveal(k.track,{BackgroundTransparency=1},m)n:_reveal(k.progress,{
-BackgroundTransparency=1},m)n:_reveal(k.handle,{BackgroundTransparency=1},m)if k.valueOdo then k.valueOdo:reveal(1,m)end
-n:_reveal(k.progressGlow,{Transparency=1},m,j)n:_reveal(k.handleGlow,{Transparency=1},m,j)end end function ae.
-_refreshTheme(k)ag.tweenService:Create(k.progressGlow,TweenInfo.new(0.5,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
-,{Transparency=math.max(0.55,k.window.theme.AccentGlow)}):Play()end function ae._minWidth(k)if k.minimal then return 100
-end local l=40 if k.icon then l+=22 end l+=ah.textWidth(k.window.theme.Font,16,al.resolve(k.name))l+=12 l+=ah.textWidth(
-k.window.theme.Font,15,k:_format(k.value))return math.max(l,160)end aj(ae)ak(ae)return ae end)()end,[25]=function()local
+and aq.settings.showProfile and af.localPlayer~=nil end local function aq(ar,as)local at=af.localPlayer if not at then
+return end ar.profile=ar:Create('Frame',{Name='Profile',AnchorPoint=Vector2.new(0.5,1),Position=UDim2.fromScale(0.5,1),
+Size=UDim2.new(1,0,0,as.footerHeight),BackgroundTransparency=1,Parent=ar.sidebar})ar.profileContainer=ar:Create('Frame',
+{AnchorPoint=Vector2.new(0,0.5),Position=UDim2.new(0,as.rowInset,0.5,0),Size=UDim2.new(1,-as.rowInset,1,0),
+BackgroundTransparency=1,Parent=ar.profile})ar.profileLayout=ar:Create('UIListLayout',{Padding=UDim.new(0,10),
+FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum.
+HorizontalAlignment.Left,SortOrder=Enum.SortOrder.LayoutOrder,Parent=ar.profileContainer})ar.profileAvatar=ar:Create(
+'ImageLabel',{Name='Avatar',Image=ag.avatar(at.UserId,function(au)if ar.profileAvatar and not ar.unloaded then ag.
+assign(ar.profileAvatar,'Image',au)end end),Size=UDim2.fromOffset(as.avatarSize,as.avatarSize),BackgroundColor3=Color3.
+fromRGB(255,255,255),BorderSizePixel=0,BackgroundTransparency=1,ImageTransparency=1,Parent=ar.profileContainer})ar:
+Create('UICorner',{CornerRadius=UDim.new(1,0),Parent=ar.profileAvatar})ar.profileLabels=ar:Create('Frame',{Size=UDim2.
+fromOffset(50,as.avatarSize),AutomaticSize=Enum.AutomaticSize.X,BackgroundTransparency=1,LayoutOrder=1,Parent=ar.
+profileContainer})ar:Create('UIListLayout',{Padding=UDim.new(0,2),FillDirection=Enum.FillDirection.Vertical,
+VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum.HorizontalAlignment.Left,SortOrder=Enum.
+SortOrder.LayoutOrder,Parent=ar.profileLabels})ar.profileName=ar:Create('TextLabel',{Text=at.DisplayName,Size=UDim2.
+fromOffset(50,16),AutomaticSize=Enum.AutomaticSize.X,BackgroundTransparency=1,TextSize=16,TextXAlignment=Enum.
+TextXAlignment.Left,TextTransparency=1,Parent=ar.profileLabels},{TextColor3='TitlingColor',FontFace='Font'})ar.
+profileSubtitle=ar:Create('TextLabel',{Text='',Size=UDim2.fromOffset(50,14),AutomaticSize=Enum.AutomaticSize.X,
+BackgroundTransparency=1,TextSize=14,TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=1,Visible=false,
+TextTransparency=1,Parent=ar.profileLabels},{TextColor3='TitlingColor',FontFace='Font'})end function ak.build(ar,as)ar.
+sidebar=ar:Create('Frame',{Name='Sidebar',AnchorPoint=Vector2.new(0,1),Position=UDim2.fromScale(0,1),Size=UDim2.new(0,as
+.railWidth,1,-as.chromeHeight),BackgroundTransparency=1,Visible=false,Parent=ar.main})ar.tabList=ar:Create(
+'ScrollingFrame',{Name='Tabs',Active=true,Size=UDim2.new(1,0,1,0),BackgroundTransparency=1,BorderSizePixel=0,
+AutomaticCanvasSize=Enum.AutomaticSize.Y,CanvasSize=UDim2.new(0,0,0,0),ScrollBarThickness=0,ScrollBarImageTransparency=1
+,ScrollingDirection=Enum.ScrollingDirection.Y,ClipsDescendants=true,Parent=ar.sidebar})ar:Create('UIPadding',{PaddingTop
+=UDim.new(0,as.railPadding),PaddingBottom=UDim.new(0,as.railPadding),Parent=ar.tabList})ar.tabListLayout=ar:Create(
+'UIListLayout',{Padding=UDim.new(0,as.rowSpacing),FillDirection=Enum.FillDirection.Vertical,VerticalAlignment=Enum.
+VerticalAlignment.Top,HorizontalAlignment=Enum.HorizontalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,Parent=ar
+.tabList})aq(ar,as)ak.reflowProfile(ar)end function ak.reflowProfile(ar)local as,at=ar.layout,ap(ar)if ar.profile then
+ar.profile.Visible=at end ar.tabList.Size=UDim2.new(1,0,1,if at then-as.footerHeight else 0)end function ak.applyWidth(
+ar,as)local at=ar.layout ar.sidebar.Size=UDim2.new(0,as,1,-at.chromeHeight)ar.elements.Size=UDim2.new(1,-as,1,-at.
+chromeHeight)ar.bottomFade.Size=UDim2.new(1,-as,at.fadeSize.Y.Scale,at.fadeSize.Y.Offset)aj.railWidth(ar,as)local au=as<
+(at.railWidth::number)for av,b in ar.tabs do if not b.neglectSelector then ai.setRowCollapsed(b,au,at)end end if ar.
+profileContainer then ar.profileContainer.Position=UDim2.new(0,if au then 0 else at.rowInset,0.5,0)ar.profileContainer.
+Size=UDim2.new(1,if au then 0 else-at.rowInset,1,0)ar.profileLayout.HorizontalAlignment=if au then Enum.
+HorizontalAlignment.Center else Enum.HorizontalAlignment.Left ar.profileLabels.Visible=not au end end function ak.
+setProfileShown(ar,as,at)if not ar.profile or not ar.profile.Visible then return end local au={[ar.profileAvatar]={
+ImageTransparency=if as then 0 else 1,BackgroundTransparency=if as then an else 1},[ar.profileName]={TextTransparency=if
+as then al else 1},[ar.profileSubtitle]={TextTransparency=if as then am else 1}}for av,b in au do if at then af.
+tweenService:Create(av,at,b):Play()else for c,d in b do av[c]=d end end end end function ak.setProfileEnabled(ar,as)if
+not ar.profile then ar.settings.showProfile=as return end if as then ar.settings.showProfile=true ak.reflowProfile(ar)ak
+.setProfileShown(ar,true,ao)return end ak.setProfileShown(ar,false,ao)task.delay(ao.Time,function()if ar.unloaded or ar.
+settings.showProfile then return end ak.reflowProfile(ar)end)ar.settings.showProfile=false end function ak.setSubtitle(
+ar,as)if not ar.profileSubtitle then return end local at=if type(as)=='string'and as~=''then ah.resolve(as)else nil ar.
+profileSubtitle.Text=at or''ar.profileSubtitle.Visible=at~=nil end return ak end)()end,[24]=function()local aa,ab,ac=a(
+24)local ad return(function(...)local ae={}ae.__index=ae ae.__type='Slider'local af=ab.Parent.Parent.utility local ag,ah
+,ai,aj,ak,al,am=ac(af.variables),ac(af.functions),ac(af.odometer),ac(af.moveable),ac(af.lockable),ac(af.locale),ac(af.
+HapticEngine)local function an(ao)local ap=0 while ap<6 do local aq=ao*10^ap if math.abs(aq-math.round(aq))<1e-9 then
+break end ap+=1 end return ap end local function ao(ap,aq,ar)local as=ap[1]+math.round((ar-ap[1])/aq)*aq return math.
+clamp(as,ap[1],ap[2])end local ap,aq,ar,as,at,au=TweenInfo.new(0.45,Enum.EasingStyle.Exponential,Enum.EasingDirection.
+Out),TweenInfo.new(0.3,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.3,Enum.EasingStyle.Quint,
+Enum.EasingDirection.Out),440,Vector2.new(35,20),Vector2.new(41,22)local av=math.ceil(at.X/2)local function b(c:number):
+UDim2 return UDim2.new(c,math.round(av*(1-2*c)),1,0)end local function c():UDim2 return UDim2.new(1,0,0.5,0)end
+local function d(e:number,f:number,g:number):number return math.clamp((e-f)/g,0,1)end function ae.new(e,f)f=if typeof(f)
+=='table'then f else{}local g=setmetatable({tab=assert(e,'Missing argument #1 (Tab expected)'),window=e.window,name=f.
+name or f.Name or'Slider',icon=f.icon or f.Icon,description=f.description or f.Description,forgetState=f.forgetState or
+f.ForgetState or e.forgetState,range=f.range or f.Range or{0,100},increment=f.increment or f.Increment or 1,suffix=f.
+suffix or f.Suffix or'',callback=f.callback or f.Callback or function()end,dragging=false,minimal=f.minimal or f.Minimal
+or false,_handleWidth=at.X},ae)assert(typeof(g.range)=='table'and typeof(g.range[1])=='number'and typeof(g.range[2])==
+'number','A slider range needs two numbers, like { 0, 100 }.')if g.range[1]>g.range[2]then g.range={g.range[2],g.range[1
+]}end if g.increment<=0 then g.increment=1 end g.value=if(f.value or f.Value)~=nil then(f.value or f.Value)elseif(f.
+currentValue or f.CurrentValue)~=nil then(f.currentValue or f.CurrentValue)else g.range[1]g.value=ao(g.range,g.increment
+,g.value)g._decimals=an(g.increment)g.flag=f.flag or f.Flag or(not g.forgetState and ah.deriveFlagFromName(g.name)or nil
+)g.window:_registerControl(g)g.main=g.window:Create('Frame',{Size=UDim2.new(1,-20,0,65),BorderSizePixel=0,Name=g.name,
+BackgroundColor3=Color3.fromRGB(255,255,255),BackgroundTransparency=1,Parent=g.tab.tabPage},{BackgroundTransparency=
+'ElementTransparency'})g.stroke=g.window:StyleElementBody(g.main)g._lastValue=g.value if not g.minimal then g:
+_buildLabel()end g.track=g.window:Create('Frame',{AnchorPoint=Vector2.new(1,0.5),Position=UDim2.new(1,-15,0.5,0),Size=
+UDim2.fromOffset(222,14),BorderSizePixel=0,BackgroundTransparency=1,Parent=g.main},{BackgroundColor3='SliderBackground'}
+)g.window:Create('UICorner',{CornerRadius=UDim.new(0,13),Parent=g.track})g.progress=g.window:Create('Frame',{AnchorPoint
+=Vector2.new(0,0.5),Position=UDim2.fromScale(0,0.5),Size=UDim2.fromScale(0,1),BackgroundColor3=Color3.fromRGB(255,255,
+255),BorderSizePixel=0,ZIndex=2,BackgroundTransparency=1,Parent=g.track})g.window:Create('UICorner',{CornerRadius=UDim.
+new(0,13),Parent=g.progress})g.window:Create('UIGradient',{Offset=Vector2.new(0,0.5),Rotation=2,Transparency=
+NumberSequence.new{NumberSequenceKeypoint.new(0,0.85),NumberSequenceKeypoint.new(1,0)},Parent=g.progress},{Color={
+'SliderProgress',ah.toColorSequence}})g.progressGlow=g.window:CreateGlow(g.progress,'AccentColor',20,1)g.handle=g.window
+:Create('Frame',{AnchorPoint=Vector2.new(0.5,0.5),Position=c(),Size=UDim2.fromOffset(at.X,at.Y),BorderSizePixel=0,ZIndex
+=50,BackgroundTransparency=1,Parent=g.progress},{BackgroundColor3='SliderHandle'})g.window:Create('UICorner',{
+CornerRadius=UDim.new(1,0),Parent=g.handle})g.handleGlow=g.window:CreateGlow(g.handle,Color3.fromRGB(255,255,255),10,1)g
+.handleStroke=g.window:Create('UIStroke',{Transparency=1,Parent=g.handle},{Color='SliderStroke'})g.interact=g.window:
+Create('TextButton',{BackgroundTransparency=1,Size=UDim2.fromScale(1,1),Text='',TextTransparency=1,ZIndex=10,Parent=g.
+track})g.window:ConnectFor(g,g.main.MouseEnter,function()if not g.window:_interactive()then return end ag.tweenService:
+Create(g.track,ap,{BackgroundColor3=g.window.theme.SliderBackgroundHover}):Play()end)g.window:ConnectFor(g,g.main.
+MouseLeave,function()ag.tweenService:Create(g.track,ap,{BackgroundColor3=g.window.theme.SliderBackground}):Play()end)g.
+window:ConnectFor(g,g.interact.InputBegan,function(h)if h.UserInputType==Enum.UserInputType.MouseButton1 or h.
+UserInputType==Enum.UserInputType.Touch then am.click()g.dragging=true g:_setHeld(true)g:_updateFromMouse()if g.
+_dragConnection then g._dragConnection:Disconnect()g._dragConnection=nil end g._dragConnection=ag.runService.
+RenderStepped:Connect(function()if g.window.unloaded or not g.dragging then if g._dragConnection then g._dragConnection:
+Disconnect()g._dragConnection=nil end return end g:_updateFromMouse()end)end end)g.window:ConnectFor(g,ag.
+userInputService.InputEnded,function(h)if h.UserInputType==Enum.UserInputType.MouseButton1 or h.UserInputType==Enum.
+UserInputType.Touch then g:_endDrag()end end)g.window:ConnectFor(g,ag.userInputService.WindowFocusReleased,function()g:
+_endDrag()end)if g.description and not g.minimal then g.descriptor=ac(ab.Parent.descriptor).new(g.tab,{description=g.
+description})end g.window:ConnectFor(g,g.main:GetPropertyChangedSignal'AbsoluteSize',function()if g.window.animating or(
+g.window.hidden and g.window.hasShownOnce)then return end g:_applyLayout()end)g:_applyLayout()if g.minimal then g.main.
+Size=UDim2.new(1,-20,0,41)g.track.AnchorPoint=Vector2.new(0.5,0.5)g.track.Position=UDim2.new(0.5,0,0.5,0)g.track.Size=
+UDim2.new(1,-30,0,14)end g:_renderProgress()return g end function ae._buildLabel(e)e.container=e.window:Create('Frame',{
+AnchorPoint=Vector2.new(0,0.5),Position=UDim2.new(0,20,0.5,0),Size=UDim2.fromOffset(170,33),BackgroundTransparency=1,
+BorderSizePixel=0,ZIndex=5,Parent=e.main})e.containerLayout=e.window:Create('UIListLayout',{Padding=UDim.new(0,2),
+VerticalAlignment=Enum.VerticalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,Parent=e.container})e.
+titleContainer=e.window:Create('Frame',{Size=UDim2.new(1,0,0,16),BackgroundTransparency=1,BorderSizePixel=0,ZIndex=5,
+Parent=e.container})e.window:Create('UIListLayout',{Padding=UDim.new(0,5),FillDirection=Enum.FillDirection.Horizontal,
+VerticalAlignment=Enum.VerticalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,Parent=e.titleContainer})e.
+titleFlex=e.window:Create('UIFlexItem',{FlexMode=Enum.UIFlexMode.None,Parent=e.titleContainer})if e.icon then e.
+iconLabel=e.window:Create('ImageLabel',{Image=e.icon,Size=UDim2.fromOffset(16,16),BorderSizePixel=0,
+BackgroundTransparency=1,ZIndex=5,ImageTransparency=1,Parent=e.titleContainer},{ImageColor3='ContentColor'})end e.title=
+e.window:Create('TextLabel',{Text=al.t(e.name),Size=UDim2.new(1,0,0,16),BorderSizePixel=0,BackgroundTransparency=1,
+TextSize=16,TextXAlignment=Enum.TextXAlignment.Left,TextTruncate=Enum.TextTruncate.AtEnd,RichText=true,LayoutOrder=1,
+ZIndex=5,TextTransparency=1,Parent=e.titleContainer},{TextColor3='ContentColor',FontFace='Font'})e.window:Create(
+'UIFlexItem',{FlexMode=Enum.UIFlexMode.Shrink,Parent=e.title})e.valueHost=e.window:Create('Frame',{Size=UDim2.new(1,0,0,
+16),BackgroundTransparency=1,BorderSizePixel=0,ZIndex=6,LayoutOrder=1,Parent=e.container})e.valueOdo=ai.new(e.window,e.
+valueHost,{textSize=15,alignment=Enum.HorizontalAlignment.Left,transparency=1,duration=0.28})e.valueOdo:snap(e:_format(e
+.value))end function ae._setMainHeight(e,f)if e._widthManaged then e.main.Size=UDim2.new(e.main.Size.X.Scale,e.main.Size
+.X.Offset,0,f)else e.main.Size=UDim2.new(1,-20,0,f)end end function ae._applyLayout(e)if e.minimal then return end local
+f=e.main.AbsoluteSize.X local g=if f>0 and f<as then'narrow'else'wide'if e._layoutMode==g then return end e._layoutMode=
+g if g=='narrow'then e:_setMainHeight(70)e.container.AnchorPoint=Vector2.new(0,0)e.container.Position=UDim2.new(0,20,0,
+14)e.container.Size=UDim2.new(1,-40,0,16)e.containerLayout.FillDirection=Enum.FillDirection.Horizontal e.titleFlex.
+FlexMode=Enum.UIFlexMode.Fill e.valueHost.AutomaticSize=Enum.AutomaticSize.X e.valueHost.Size=UDim2.new(0,0,0,16)e.track
+.AnchorPoint=Vector2.new(0.5,1)e.track.Position=UDim2.new(0.5,0,1,-14)e.track.Size=UDim2.new(1,-30,0,14)else e:
+_setMainHeight(65)e.container.AnchorPoint=Vector2.new(0,0.5)e.container.Position=UDim2.new(0,20,0.5,0)e.container.Size=
+UDim2.new(0,170,0,33)e.containerLayout.FillDirection=Enum.FillDirection.Vertical e.titleFlex.FlexMode=Enum.UIFlexMode.
+None e.valueHost.AutomaticSize=Enum.AutomaticSize.None e.valueHost.Size=UDim2.new(1,0,0,16)e.track.AnchorPoint=Vector2.
+new(1,0.5)e.track.Position=UDim2.new(1,-15,0.5,0)e.track.Size=UDim2.new(0,222,0,14)end end function ae._format(e,f)local
+g=string.format('%.'..e._decimals..'f',f)if e.suffix~=''then return g..' '..e.suffix end return g end function ae.
+_pillTravel(e)return math.max(e.track.AbsoluteSize.X-av*2,0)end function ae._renderProgress(e,f)local g=e.range[2]-e.
+range[1]local h=if g~=0 then math.clamp((e.value-e.range[1])/g,0,1)else 0 local i=b(h)if f then ag.tweenService:Create(e
+.progress,f,{Size=i}):Play()else e.progress.Size=i end end function ae._updateFromMouse(e)local f=e:_pillTravel()if f<=0
+then return end local g=d(ag.userInputService:GetMouseLocation().X,e.track.AbsolutePosition.X+av,f)local h=ao(e.range,e.
+increment,e.range[1]+g*(e.range[2]-e.range[1]))if h~=e.value then e.value=h if e.valueOdo then e.valueOdo:snap(e:
+_format(h))end e._lastValue=h e:_renderProgress(ar)e:_fireCallback(h)end end function ae._endDrag(e)if not e.dragging
+then return end e.dragging=false e:_setHeld(false)if e._dragConnection then e._dragConnection:Disconnect()e.
+_dragConnection=nil end e.window:_persist(e)end function ae._setHeld(e,f)if not f then e:_fireCallback(e.value)end local
+g=if f then au else at e._handleWidth=g.X ag.tweenService:Create(e.handle,aq,{Size=UDim2.fromOffset(g.X,g.Y),
+BackgroundTransparency=if f then 0.7 else 0}):Play()ag.tweenService:Create(e.handleStroke,aq,{Transparency=if f then 0.6
+else 1}):Play()e:_renderProgress(aq)end function ae._fireCallback(e,f)e.window:_runGuarded(e,e.callback,f,e.dragging==
+true)end function ae.Set(e,f,g)f=ao(e.range,e.increment,f)e.value=f if e.valueOdo then e.valueOdo:to(e:_format(f),f>=(e.
+_lastValue or f))end e._lastValue=f e:_renderProgress(ap)if not g then e:_fireCallback(f)e.window:_persist(e)end end
+local e=TweenInfo.new(0.4,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out,0,false,0.35)function ae._setShown(f,g,h
+)local i=f.window if g then i:_revealCommon(f,h)i:_reveal(f.track,{BackgroundTransparency=0},h)i:_reveal(f.progress,{
+BackgroundTransparency=0},h)i:_reveal(f.handle,{BackgroundTransparency=0},h)if f.valueOdo then f.valueOdo:reveal(0.3,h)
+end i:_reveal(f.progressGlow,{Transparency=math.max(0.55,i.theme.AccentGlow)},h,e)i:_reveal(f.handleGlow,{Transparency=
+0.8},h,e)else i:_hideCommon(f,h)i:_reveal(f.track,{BackgroundTransparency=1},h)i:_reveal(f.progress,{
+BackgroundTransparency=1},h)i:_reveal(f.handle,{BackgroundTransparency=1},h)if f.valueOdo then f.valueOdo:reveal(1,h)end
+i:_reveal(f.progressGlow,{Transparency=1},h,e)i:_reveal(f.handleGlow,{Transparency=1},h,e)end end function ae.
+_refreshTheme(f)ag.tweenService:Create(f.progressGlow,TweenInfo.new(0.5,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
+,{Transparency=math.max(0.55,f.window.theme.AccentGlow)}):Play()end function ae._minWidth(f)if f.minimal then return 100
+end local g=40 if f.icon then g+=22 end g+=ah.textWidth(f.window.theme.Font,16,al.resolve(f.name))g+=12 g+=ah.textWidth(
+f.window.theme.Font,15,f:_format(f.value))return math.max(g,160)end aj(ae)ak(ae)return ae end)()end,[25]=function()local
 aa,ab,ac=a(25)local ad return(function(...)local ae={}ae.__index=ae ae.__type='Statistic'local af=ab.Parent.Parent.
 utility local ag,ah,ai,aj,ak,al,am=ac(af.variables),ac(af.functions),ac(af.odometer),ac(af.moveable),ac(af.constants),
 ac(af.locale),ac(af.log)local an,ao,ap,aq=ak.statAccents,NumberSequence.new{NumberSequenceKeypoint.new(0,0.85),
-NumberSequenceKeypoint.new(1,0)},41,TweenInfo.new(0.6,Enum.EasingStyle.Exponential)local function b(c)return c.fill.
-Keypoints[1].Value end local function c(d)if d>0 then return string.format('+%.1f%%',d)elseif d<0 then return string.
-format('%.1f%%',d)else return'0%'end end local function d(e)if typeof(e)~='number'then return tostring(e)end local f=
-math.round(math.abs(e))local g=string.format('%.0f',f)local h=g:reverse():gsub('%d%d%d','%0,'):reverse()if h:sub(1,1)==
-','then h=h:sub(2)end return if e<0 and f~=0 then'-'..h else h end local function e(f)local g=math.round(f)if g>0 then
-return'+'..d(g)elseif g<0 then return d(g)else return'0'end end function ae.new(f,g)g=if typeof(g)=='table'then g else{}
-local h=setmetatable({tab=assert(f,'Missing argument #1 (Tab expected)'),window=f.window,name=g.name or g.Name or
-'Statistic',icon=g.icon or g.Icon,description=g.description or g.Description,value=if(g.value or g.Value)~=nil then(g.
-value or g.Value)else 0,_hasValue=(g.value or g.Value)~=nil,numberEasing=if(g.numberEasing~=nil)then g.numberEasing
-elseif g.NumberEasing~=nil then g.NumberEasing else true,changeMode=g.changeMode or g.ChangeMode or'percentage',
-changeBaseline=g.changeBaseline or g.ChangeBaseline or'previous',prefix=g.prefix or g.Prefix or'',suffix=g.suffix or g.
-Suffix or'',compact=g.compact or g.Compact or f.compact or false,display=(g.display or g.Display or'value'),
-_initialValue=if(g.value or g.Value)~=nil then(g.value or g.Value)else nil,_lastChange=0},ae)if h.compact then h:
-_buildCompact()else h:_buildFull()end if h.description then if h.compact then am.warn(`Rayfield: a compact stat has no room for a description, ignoring it on '{
-h.name}'.`)else h.descriptor=ac(ab.Parent.descriptor).new(h.tab,{description=h.description})end end return h end
-function ae._buildFull(f)local g=f.window f.main=g:Create('Frame',{Size=UDim2.new(1,-20,0,90),BorderSizePixel=0,Name=f.
-name,ZIndex=5,BackgroundTransparency=1,Parent=f.tab.tabPage},{BackgroundColor3='StatBackground',BackgroundTransparency=
-'ElementTransparency'})g:Create('UICorner',{Parent=f.main},{CornerRadius='ElementCornerRadius'})f.stroke=g:Create(
-'UIStroke',{Transparency=1,Color=Color3.fromRGB(255,255,255),Parent=f.main},{Transparency='ElementStrokeTransparency'})f
-.strokeGradient=g:Create('UIGradient',{Rotation=2,Offset=Vector2.new(0,0.5),Color=an.neutral.stroke,Transparency=ao,
-Parent=f.stroke})f.titleContainer=g:Create('Frame',{Size=UDim2.new(1,-40,0,32),Position=UDim2.fromOffset(20,15),
-BorderSizePixel=0,LayoutOrder=-1,BackgroundTransparency=1,ZIndex=5,Parent=f.main})f.gradientContainer=g:Create('Frame',{
-Size=UDim2.fromScale(1,1),Position=UDim2.fromOffset(0,0),BorderSizePixel=0,BackgroundTransparency=1,BackgroundColor3=
-Color3.fromRGB(255,255,255),ZIndex=5,Parent=f.main})f.glow=g:CreateGlow(f.main,b(an.neutral),13,1)f.title=g:Create(
-'TextLabel',{Text=al.t(f.name),Size=UDim2.fromOffset(300,19),BorderSizePixel=0,BackgroundTransparency=1,TextSize=19,
-TextXAlignment=Enum.TextXAlignment.Left,TextWrapped=true,LayoutOrder=1,ZIndex=10,TextTransparency=1,Parent=f.
-titleContainer},{TextColor3='ContentColor',FontFace='TitleFont'})f.mainGradient=g:Create('UIGradient',{Rotation=2,Offset
-=Vector2.new(0,0.5),Color=an.neutral.fill,Transparency=ao,Parent=f.gradientContainer})g:Create('UICorner',{Parent=f.
-gradientContainer},{CornerRadius='ElementCornerRadius'})if f.icon then f.iconLabel=g:Create('ImageLabel',{Image=f.icon,
-Size=UDim2.fromOffset(32,32),BorderSizePixel=0,BackgroundTransparency=1,ZIndex=10,ImageTransparency=1,Parent=f.
-titleContainer},{ImageColor3='ContentColor'})end f.containerLayout=g:Create('UIListLayout',{Padding=UDim.new(0,8),
-FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum.
-HorizontalAlignment.Left,SortOrder=Enum.SortOrder.LayoutOrder,Parent=f.titleContainer})f.valueHost=g:Create('Frame',{
-AnchorPoint=Vector2.new(0,1),Position=UDim2.new(0,20,1,-15),Size=UDim2.fromOffset(200,20),BackgroundTransparency=1,
-BorderSizePixel=0,ZIndex=10,Parent=f.main})f.changeHost=g:Create('Frame',{AnchorPoint=Vector2.new(1,1),Position=UDim2.
-new(1,-20,1,-15),Size=UDim2.fromOffset(200,15),BackgroundTransparency=1,BorderSizePixel=0,ZIndex=10,Parent=f.main})f.
-valueOdo=ai.new(g,f.valueHost,{textSize=20,alignment=Enum.HorizontalAlignment.Left,transparency=1})f.valueOdo:snap(f:
-_formatValue(f.value))f.changeOdo=ai.new(g,f.changeHost,{textSize=15,alignment=Enum.HorizontalAlignment.Right,
-transparency=1})f.changeOdo:snap(f:_formatChange(0))f._accentGradients={f.strokeGradient,f.mainGradient}end function ae.
-_buildCompact(f)local g,h=f.window,f.tab.compact or false f.main=g:Create('Frame',{Name=f.name,Size=if h then UDim2.
-fromOffset(0,ap)else UDim2.new(1,-20,0,ap),AutomaticSize=if h then Enum.AutomaticSize.X else Enum.AutomaticSize.None,
-ClipsDescendants=true,BorderSizePixel=0,ZIndex=5,BackgroundTransparency=1,Parent=f.tab.tabPage},{BackgroundColor3=
-'StatBackground',BackgroundTransparency='ElementTransparency'})g:Create('UICorner',{Parent=f.main},{CornerRadius=
-'ElementCornerRadius'})f.stroke=g:Create('UIStroke',{Transparency=1,Color=Color3.fromRGB(255,255,255),Parent=f.main},{
-Transparency='ElementStrokeTransparency'})f.strokeGradient=g:Create('UIGradient',{Rotation=2,Offset=Vector2.new(0,0.5),
-Color=an.neutral.stroke,Transparency=ao,Parent=f.stroke})if h then g:Create('UIFlexItem',{FlexMode=Enum.UIFlexMode.Fill,
-Parent=f.main})end g:Create('UIListLayout',{FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.
-VerticalAlignment.Center,HorizontalFlex=Enum.UIFlexAlignment.Fill,Parent=f.main})f.card=g:Create('Frame',{AutomaticSize=
-Enum.AutomaticSize.X,Size=UDim2.fromOffset(0,ap),BackgroundColor3=Color3.fromRGB(255,255,255),BorderSizePixel=0,ZIndex=5
-,BackgroundTransparency=1,Parent=f.main})g:Create('UICorner',{Parent=f.card},{CornerRadius='ElementCornerRadius'})f.
-mainGradient=g:Create('UIGradient',{Rotation=2,Offset=Vector2.new(0,0.5),Color=an.neutral.fill,Transparency=ao,Parent=f.
-card})g:Create('UIPadding',{PaddingLeft=UDim.new(0,15),PaddingRight=UDim.new(0,15),Parent=f.card})g:Create(
+NumberSequenceKeypoint.new(1,0)},41,TweenInfo.new(0.6,Enum.EasingStyle.Exponential)local function ar(as)return as.fill.
+Keypoints[1].Value end local function as(at)if at>0 then return string.format('+%.1f%%',at)elseif at<0 then return
+string.format('%.1f%%',at)else return'0%'end end local function at(au)if typeof(au)~='number'then return tostring(au)end
+local av=math.round(math.abs(au))local b=string.format('%.0f',av)local c=b:reverse():gsub('%d%d%d','%0,'):reverse()if c:
+sub(1,1)==','then c=c:sub(2)end return if au<0 and av~=0 then'-'..c else c end local function au(av)local b=math.round(
+av)if b>0 then return'+'..at(b)elseif b<0 then return at(b)else return'0'end end function ae.new(av,b)b=if typeof(b)==
+'table'then b else{}local c=setmetatable({tab=assert(av,'Missing argument #1 (Tab expected)'),window=av.window,name=b.
+name or b.Name or'Statistic',icon=b.icon or b.Icon,description=b.description or b.Description,value=if(b.value or b.
+Value)~=nil then(b.value or b.Value)else 0,_hasValue=(b.value or b.Value)~=nil,numberEasing=if(b.numberEasing~=nil)then
+b.numberEasing elseif b.NumberEasing~=nil then b.NumberEasing else true,changeMode=b.changeMode or b.ChangeMode or
+'percentage',changeBaseline=b.changeBaseline or b.ChangeBaseline or'previous',prefix=b.prefix or b.Prefix or'',suffix=b.
+suffix or b.Suffix or'',compact=b.compact or b.Compact or av.compact or false,display=(b.display or b.Display or'value')
+,_initialValue=if(b.value or b.Value)~=nil then(b.value or b.Value)else nil,_lastChange=0},ae)if c.compact then c:
+_buildCompact()else c:_buildFull()end if c.description then if c.compact then am.warn(`Rayfield: a compact stat has no room for a description, ignoring it on '{
+c.name}'.`)else c.descriptor=ac(ab.Parent.descriptor).new(c.tab,{description=c.description})end end return c end
+function ae._buildFull(av)local b=av.window av.main=b:Create('Frame',{Size=UDim2.new(1,-20,0,90),BorderSizePixel=0,Name=
+av.name,ZIndex=5,BackgroundTransparency=1,Parent=av.tab.tabPage},{BackgroundColor3='StatBackground',
+BackgroundTransparency='ElementTransparency'})b:Create('UICorner',{Parent=av.main},{CornerRadius='ElementCornerRadius'})
+av.stroke=b:Create('UIStroke',{Transparency=1,Color=Color3.fromRGB(255,255,255),Parent=av.main},{Transparency=
+'ElementStrokeTransparency'})av.strokeGradient=b:Create('UIGradient',{Rotation=2,Offset=Vector2.new(0,0.5),Color=an.
+neutral.stroke,Transparency=ao,Parent=av.stroke})av.titleContainer=b:Create('Frame',{Size=UDim2.new(1,-40,0,32),Position
+=UDim2.fromOffset(20,15),BorderSizePixel=0,LayoutOrder=-1,BackgroundTransparency=1,ZIndex=5,Parent=av.main})av.
+gradientContainer=b:Create('Frame',{Size=UDim2.fromScale(1,1),Position=UDim2.fromOffset(0,0),BorderSizePixel=0,
+BackgroundTransparency=1,BackgroundColor3=Color3.fromRGB(255,255,255),ZIndex=5,Parent=av.main})av.glow=b:CreateGlow(av.
+main,ar(an.neutral),13,1)av.title=b:Create('TextLabel',{Text=al.t(av.name),Size=UDim2.fromOffset(300,19),BorderSizePixel
+=0,BackgroundTransparency=1,TextSize=19,TextXAlignment=Enum.TextXAlignment.Left,TextWrapped=true,LayoutOrder=1,ZIndex=10
+,TextTransparency=1,Parent=av.titleContainer},{TextColor3='ContentColor',FontFace='TitleFont'})av.mainGradient=b:Create(
+'UIGradient',{Rotation=2,Offset=Vector2.new(0,0.5),Color=an.neutral.fill,Transparency=ao,Parent=av.gradientContainer})b:
+Create('UICorner',{Parent=av.gradientContainer},{CornerRadius='ElementCornerRadius'})if av.icon then av.iconLabel=b:
+Create('ImageLabel',{Image=av.icon,Size=UDim2.fromOffset(32,32),BorderSizePixel=0,BackgroundTransparency=1,ZIndex=10,
+ImageTransparency=1,Parent=av.titleContainer},{ImageColor3='ContentColor'})end av.containerLayout=b:Create(
+'UIListLayout',{Padding=UDim.new(0,8),FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.
+VerticalAlignment.Center,HorizontalAlignment=Enum.HorizontalAlignment.Left,SortOrder=Enum.SortOrder.LayoutOrder,Parent=
+av.titleContainer})av.valueHost=b:Create('Frame',{AnchorPoint=Vector2.new(0,1),Position=UDim2.new(0,20,1,-15),Size=UDim2
+.fromOffset(200,20),BackgroundTransparency=1,BorderSizePixel=0,ZIndex=10,Parent=av.main})av.changeHost=b:Create('Frame',
+{AnchorPoint=Vector2.new(1,1),Position=UDim2.new(1,-20,1,-15),Size=UDim2.fromOffset(200,15),BackgroundTransparency=1,
+BorderSizePixel=0,ZIndex=10,Parent=av.main})av.valueOdo=ai.new(b,av.valueHost,{textSize=20,alignment=Enum.
+HorizontalAlignment.Left,transparency=1})av.valueOdo:snap(av:_formatValue(av.value))av.changeOdo=ai.new(b,av.changeHost,
+{textSize=15,alignment=Enum.HorizontalAlignment.Right,transparency=1})av.changeOdo:snap(av:_formatChange(0))av.
+_accentGradients={av.strokeGradient,av.mainGradient}end function ae._buildCompact(av)local b,c=av.window,av.tab.compact
+or false av.main=b:Create('Frame',{Name=av.name,Size=if c then UDim2.fromOffset(0,ap)else UDim2.new(1,-20,0,ap),
+AutomaticSize=if c then Enum.AutomaticSize.X else Enum.AutomaticSize.None,ClipsDescendants=true,BorderSizePixel=0,ZIndex
+=5,BackgroundTransparency=1,Parent=av.tab.tabPage},{BackgroundColor3='StatBackground',BackgroundTransparency=
+'ElementTransparency'})b:Create('UICorner',{Parent=av.main},{CornerRadius='ElementCornerRadius'})av.stroke=b:Create(
+'UIStroke',{Transparency=1,Color=Color3.fromRGB(255,255,255),Parent=av.main},{Transparency='ElementStrokeTransparency'})
+av.strokeGradient=b:Create('UIGradient',{Rotation=2,Offset=Vector2.new(0,0.5),Color=an.neutral.stroke,Transparency=ao,
+Parent=av.stroke})if c then b:Create('UIFlexItem',{FlexMode=Enum.UIFlexMode.Fill,Parent=av.main})end b:Create(
 'UIListLayout',{FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,
-HorizontalFlex=Enum.UIFlexAlignment.SpaceBetween,Padding=UDim.new(0,10),Parent=f.card})f.titleContainer=g:Create('Frame'
-,{AutomaticSize=Enum.AutomaticSize.X,Size=UDim2.fromOffset(0,16),BackgroundTransparency=1,BorderSizePixel=0,LayoutOrder=
-0,ZIndex=6,Parent=f.card})g:Create('UIFlexItem',{FlexMode=Enum.UIFlexMode.Shrink,Parent=f.titleContainer})g:Create(
-'UIListLayout',{Padding=UDim.new(0,6),FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.
-VerticalAlignment.Center,HorizontalAlignment=Enum.HorizontalAlignment.Left,SortOrder=Enum.SortOrder.LayoutOrder,Parent=f
-.titleContainer})if f.icon then f.iconLabel=g:Create('ImageLabel',{Image=f.icon,Size=UDim2.fromOffset(20,20),
-BorderSizePixel=0,BackgroundTransparency=1,LayoutOrder=0,ZIndex=6,ImageTransparency=1,Parent=f.titleContainer},{
-ImageColor3='ContentColor'})end f.title=g:Create('TextLabel',{Text=al.t(f.name),Size=UDim2.fromOffset(0,16),
+HorizontalFlex=Enum.UIFlexAlignment.Fill,Parent=av.main})av.card=b:Create('Frame',{AutomaticSize=Enum.AutomaticSize.X,
+Size=UDim2.fromOffset(0,ap),BackgroundColor3=Color3.fromRGB(255,255,255),BorderSizePixel=0,ZIndex=5,
+BackgroundTransparency=1,Parent=av.main})b:Create('UICorner',{Parent=av.card},{CornerRadius='ElementCornerRadius'})av.
+mainGradient=b:Create('UIGradient',{Rotation=2,Offset=Vector2.new(0,0.5),Color=an.neutral.fill,Transparency=ao,Parent=av
+.card})b:Create('UIPadding',{PaddingLeft=UDim.new(0,15),PaddingRight=UDim.new(0,15),Parent=av.card})b:Create(
+'UIListLayout',{FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,
+HorizontalFlex=Enum.UIFlexAlignment.SpaceBetween,Padding=UDim.new(0,10),Parent=av.card})av.titleContainer=b:Create(
+'Frame',{AutomaticSize=Enum.AutomaticSize.X,Size=UDim2.fromOffset(0,16),BackgroundTransparency=1,BorderSizePixel=0,
+LayoutOrder=0,ZIndex=6,Parent=av.card})b:Create('UIFlexItem',{FlexMode=Enum.UIFlexMode.Shrink,Parent=av.titleContainer})
+b:Create('UIListLayout',{Padding=UDim.new(0,6),FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.
+VerticalAlignment.Center,HorizontalAlignment=Enum.HorizontalAlignment.Left,SortOrder=Enum.SortOrder.LayoutOrder,Parent=
+av.titleContainer})if av.icon then av.iconLabel=b:Create('ImageLabel',{Image=av.icon,Size=UDim2.fromOffset(20,20),
+BorderSizePixel=0,BackgroundTransparency=1,LayoutOrder=0,ZIndex=6,ImageTransparency=1,Parent=av.titleContainer},{
+ImageColor3='ContentColor'})end av.title=b:Create('TextLabel',{Text=al.t(av.name),Size=UDim2.fromOffset(0,16),
 AutomaticSize=Enum.AutomaticSize.X,BorderSizePixel=0,BackgroundTransparency=1,TextSize=16,TextXAlignment=Enum.
-TextXAlignment.Left,TextTruncate=Enum.TextTruncate.AtEnd,LayoutOrder=1,ZIndex=6,TextTransparency=1,Parent=f.
-titleContainer},{TextColor3='ContentColor',FontFace='Font'})g:Create('UIFlexItem',{FlexMode=Enum.UIFlexMode.Shrink,
-Parent=f.title})f.readoutHost=g:Create('Frame',{AutomaticSize=Enum.AutomaticSize.X,Size=UDim2.fromOffset(0,18),
-BackgroundTransparency=1,BorderSizePixel=0,LayoutOrder=1,ZIndex=6,Parent=f.card})f.readoutOdo=ai.new(g,f.readoutHost,{
-textSize=17,alignment=Enum.HorizontalAlignment.Right,transparency=1})f.readoutOdo:snap(f.display=='change'and f:
-_formatChange(0)or f:_formatValue(f.value))f._accentGradients={f.strokeGradient,f.mainGradient}end function ae.
-_setAccent(f,g,h)local i=an[g]f.strokeGradient.Color=i.stroke f.mainGradient.Color=i.fill if f.glow then f.glow.Color=b(
-i)end local j,k=if h==1 then 14 elseif h==-1 then-10 else 2,if h==1 then Vector2.new(0.04,0.5)elseif h==-1 then Vector2.
-new(-4E-2,0.5)else Vector2.new(0,0.5)for l,m in f._accentGradients do ag.tweenService:Create(m,aq,{Rotation=j,Offset=k})
-:Play()end end function ae._formatValue(f,g)return f.prefix..d(g)..f.suffix end function ae._formatChange(f,g)if f.
-changeMode=='absolute'then return e(g)else return c(g)end end function ae._showValue(f,g,h,i,j)if f.numberEasing and not
-j then g:to(f:_formatValue(h),h>=i)else g:snap(f:_formatValue(h))end end function ae._updateFullReadouts(f,g,h,i,j,k,l)f
-:_showValue(f.valueOdo,g,h,l)if k then f.changeOdo:snap(k)f._lastChange=0 elseif f.numberEasing and not j then f.
-changeOdo:to(f:_formatChange(i),i>=f._lastChange)f._lastChange=i else f.changeOdo:snap(f:_formatChange(i or 0))f.
-_lastChange=i or 0 end end function ae._updateCompactReadout(f,g,h,i,j,k,l)if f.display=='change'then if k then f.
-readoutOdo:snap(k)f._lastChange=0 elseif f.numberEasing and not j then f.readoutOdo:to(f:_formatChange(i),i>=f.
-_lastChange)f._lastChange=i else f.readoutOdo:snap(f:_formatChange(i or 0))f._lastChange=i or 0 end else f:_showValue(f.
-readoutOdo,g,h,l)end end function ae.Set(f,g)assert(typeof(g)=='number','Statistic:Set() - value must be a number, got '
-..typeof(g))local h,i=f.value,not f._hasValue f.value=g f._hasValue=true if i then f._initialValue=g end local j=if f.
-changeBaseline=='initial'then f._initialValue else h local k,l,m,n,o=i or j==g if k then l=0 n='neutral'o=0 elseif j==0
-then local p,q=if g>0 then'+'else'-',if f.changeMode=='percentage'then'\u{221e}%'else'\u{221e}'m=p..q n=if g>0 then
-'positive'else'negative'o=if g>0 then 1 else-1 elseif f.changeMode=='percentage'then l=((g-j)/math.abs(j))*100 o=if l>0
-then 1 elseif l<0 then-1 else 0 n=if o==1 then'positive'elseif o==-1 then'negative'else'neutral'else l=g-j o=if l>0 then
-1 elseif l<0 then-1 else 0 n=if o==1 then'positive'elseif o==-1 then'negative'else'neutral'end f:_setAccent(n,o)if f.
-compact then f:_updateCompactReadout(g,h,l,k,m,i)else f:_updateFullReadouts(g,h,l,k,m,i)end end function ae.
-ResetBaseline(f,g)local h,i,j=f.value,not f._hasValue,if typeof(g)=='number'then g else f.value f._initialValue=j f.
-value=j f._hasValue=true f._lastChange=0 if f.compact then if f.display=='change'then f.readoutOdo:snap(f:_formatChange(
-0))else f:_showValue(f.readoutOdo,j,h,i)end else f.changeOdo:snap(f:_formatChange(0))f:_showValue(f.valueOdo,j,h,i)end f
-:_setAccent('neutral',0)end function ae._setShown(f,g,h)local i=f.window if f.compact then i:_reveal(f.main,{
-BackgroundTransparency=if g then(f.window.theme.ElementTransparency or 0)else 1},h)i:_reveal(f.stroke,{Transparency=if g
-then f.window.theme.ElementStrokeTransparency else 1},h)i:_reveal(f.card,{BackgroundTransparency=if g then 0 else 1},h)i
-:_reveal(f.title,{TextTransparency=if g then 0 else 1},h)if f.iconLabel then i:_reveal(f.iconLabel,{ImageTransparency=if
-g then 0 else 1},h)end f.readoutOdo:reveal(if g then 0 else 1,h)return end if g then i:_revealCommon(f,h)i:_reveal(f.
-gradientContainer,{BackgroundTransparency=0},h)i:_reveal(f.glow,{Transparency=0.82},h)f.valueOdo:reveal(0,h)f.changeOdo:
-reveal(0,h)else i:_hideCommon(f,h)i:_reveal(f.gradientContainer,{BackgroundTransparency=1},h)i:_reveal(f.glow,{
-Transparency=1},h)f.valueOdo:reveal(1,h)f.changeOdo:reveal(1,h)end end function ae._minWidth(f)local g=40 if f.icon then
-g+=26 end g+=ah.textWidth(f.window.theme.Font,16,al.resolve(f.name))local h=if f.display=='change'then f:_formatChange(0
-)else f:_formatValue(f.value)g+=ah.textWidth(f.window.theme.Font,17,h)return g end aj(ae)return ae end)()end,[26]=
-function()local aa,ab,ac=a(26)local ad return(function(...)local ae={}ae.__index=ae ae.__type='Tab'local af=ab.Parent.
-Parent.utility local ag,ah,ai,aj,ak,al,am,an=ac(af.variables),ac(af.constants),ac(af.HapticEngine),ac(af.log),ac(af.
-columns),ac(ab.Parent.search),ac(ab.Parent.tabSelector),ac(ab.Parent.column)local function ao(ap,aq)for b,c in aq do if
-c.__type=='Group'then ao(ap,c.elements)else ap:_unregisterControl(c)end if c.connections then for d,e in c.connections
-do ap:Disconnect(e)end c.connections=nil end if c._dragConnection then c._dragConnection:Disconnect()c._dragConnection=
-nil end if ap._recordingKeybind==c then ap._recordingKeybind=nil end if c._outsideClickConn then ap:Disconnect(c.
-_outsideClickConn)c._outsideClickConn=nil end end end local ap,aq=TweenInfo.new(0.4,Enum.EasingStyle.Quint,Enum.
-EasingDirection.Out),TweenInfo.new(0.25,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)function ae.new(b,c)c=if typeof(
-c)=='table'then c else{}local d=setmetatable({window=assert(b,'Missing argument #1 (Window expected)'),name=c.name or c.
-Name,icon=c.icon or c.Icon,neglectSelector=c.neglectSelector or c.NeglectSelector or false,customOrder=c.customOrder or
-c.CustomOrder or 0,forgetState=c.forgetState or c.ForgetState or false,elements={},connections={}},ae)assert(d.name or d
-.icon,'A tab needs a name or an icon.')if not d.neglectSelector then am.build(d,d.window.layout)end d.tabPage=d.window:
-Create('ScrollingFrame',{Name=d.name,Size=UDim2.new(1,-20,1,0),Position=UDim2.new(0.5,0,0,68),AnchorPoint=Vector2.new(
-0.5,0.5),BorderSizePixel=0,BackgroundTransparency=1,AutomaticCanvasSize=Enum.AutomaticSize.Y,CanvasSize=UDim2.new(0,0,0,
-0),ScrollBarThickness=ah.pageScrollbar.thickness,ScrollBarImageTransparency=ah.pageScrollbar.transparency,
-VerticalScrollBarInset=Enum.ScrollBarInset.None,ScrollingDirection=Enum.ScrollingDirection.Y,LayoutOrder=d.customOrder
-or 0,Parent=d.window.elements},{ScrollBarImageColor3='ContentColor'})d.tabPageLayout=d.window:Create('UIListLayout',{
-Padding=UDim.new(0,7),FillDirection=Enum.FillDirection.Vertical,VerticalAlignment=Enum.VerticalAlignment.Top,
-HorizontalAlignment=Enum.HorizontalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,Parent=d.tabPage})d.window:
-Create('UIPadding',{PaddingTop=UDim.new(0,10),PaddingBottom=UDim.new(0,33),Parent=d.tabPage})d.columnsRow=d.window:
-Create('Frame',{Name='Columns',BackgroundTransparency=1,BorderSizePixel=0,AutomaticSize=Enum.AutomaticSize.Y,Size=UDim2.
-fromScale(1,0),Parent=d.tabPage})d.columnsLayout=d.window:Create('UIListLayout',{FillDirection=Enum.FillDirection.
-Horizontal,VerticalAlignment=Enum.VerticalAlignment.Top,HorizontalAlignment=Enum.HorizontalAlignment.Left,SortOrder=Enum
-.SortOrder.LayoutOrder,Parent=d.columnsRow})d.Left=an.new(d,'Left')d.Right=an.new(d,'Right')d.left=d.Left d.right=d.
-Right d:_layoutColumns()if not d.neglectSelector then table.insert(d.connections,d.window:Connect(d.topbarItemInteract.
-MouseButton1Click,function()ai.click()d:Select()end))table.insert(d.connections,d.window:Connect(d.topbarItemInteract.
-MouseEnter,function()if not d.window:_interactive()then return end if d.window.selectedTab~=d then d:_applyVisual(
-'hover',aq)d:_spinGradients()end end))table.insert(d.connections,d.window:Connect(d.topbarItemInteract.MouseLeave,
-function()if d.window.selectedTab~=d then d:_applyVisual('unselected',aq)end end))end return d end function ae.
-_applyVisual(b,c,d)if b.neglectSelector or not b.topbarItem then return end local e=am.states[b.window.layout.mode][c]if
-not e then return end am.applyVisual(b,e,d)end function ae._spinGradients(b)if b.neglectSelector then return end local c
-=TweenInfo.new(0.7,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)for d,e in{b.topbarItemGradient,b.
-topbarItemStrokeGradient}do e.Rotation=-270 ag.tweenService:Create(e,c,{Rotation=90}):Play()end end function ae.Select(b
-,c)if b.window._searching then al.close(b.window,{showTabs=true,jumpTo=false})end b.window.selectedTab=b b.window:
-_jumpTo(b.tabPage)local d=c or not b.window:_interactive()if not b.neglectSelector and not d then b:_applyVisual(
-'selected',ap)end for e,f in b.window.tabs do if f~=b.window.selectedTab then f:Deselect(d)end end if b~=b.window.
-rfSettings and b.window.settingsAction and not d then ag.tweenService:Create(b.window.settingsAction.iconLabel,TweenInfo
-.new(0.25,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{ImageTransparency=0.6}):Play()end end function ae.Deselect(b
-,c)if not b.neglectSelector and not c then b:_applyVisual('unselected',ap)end end function ae.GetColumn(b,c)local d=ak.
-resolveSide(c)if not d then aj.warn(`Rayfield: unknown column '{tostring(c)}', using the left one. Use "Left" or "Right".`
-)d='Left'end return if d=='Right'then b.Right else b.Left end function ae._columnFor(b,c)if typeof(c)~='table'then
-return b.Left end return b:GetColumn(c.side or c.Side or c.column or c.Column)end function ae._layoutColumns(b)local c,d
-=b.Left,b.Right if not c or not d or not b.columnsRow then return end local e=b.window local f=if e.size then ak.
-pageWidth(e.size.X.Offset,e.layout)else 0 local g,h,i=ak.shouldStack(f),#c.elements>0,#d.elements>0 c.main.Visible=h d.
-main.Visible=i b.stacked=g if g or not(h and i)then b.columnsLayout.FillDirection=Enum.FillDirection.Vertical b.
-columnsLayout.Padding=UDim.new(0,if h and i then 20 else 0)c.main.Size=UDim2.fromScale(1,0)d.main.Size=UDim2.fromScale(1
-,0)else b.columnsLayout.FillDirection=Enum.FillDirection.Horizontal b.columnsLayout.Padding=UDim.new(0,-ak.overlap)c.
-main.Size=UDim2.new(0.5,ak.overlap/2,0,0)d.main.Size=UDim2.new(0.5,ak.overlap/2,0,0)end end function ae.CreateButton(b,c
-)return b:_columnFor(c):CreateButton(c)end function ae.CreateToggle(b,c)return b:_columnFor(c):CreateToggle(c)end
-function ae.CreateSwitch(b,c)return b:CreateToggle(c)end function ae.CreateSection(b,c)return b:_columnFor(c):
-CreateSection(c)end function ae.CreateText(b,c)return b:_columnFor(c):CreateText(c)end function ae.CreateDivider(b,c)
-return b:_columnFor(c):CreateDivider(c)end function ae.CreateProgress(b,c)return b:_columnFor(c):CreateProgress(c)end
-function ae.CreateConsole(b,c)return b:_columnFor(c):CreateConsole(c)end function ae.CreateChat(b,c)return b:_columnFor(
-c):CreateChat(c)end function ae.CreateStat(b,c)return b:_columnFor(c):CreateStat(c)end function ae.CreateSlider(b,c)
-return b:_columnFor(c):CreateSlider(c)end function ae.CreateDropdown(b,c)return b:_columnFor(c):CreateDropdown(c)end
-function ae.CreateInput(b,c)return b:_columnFor(c):CreateInput(c)end function ae.CreateKeybind(b,c)return b:_columnFor(c
-):CreateKeybind(c)end function ae.CreateColorPicker(b,c)return b:_columnFor(c):CreateColorPicker(c)end function ae.
-CreateGroup(b,c)return b:_columnFor(c):CreateGroup(c)end function ae.Remove(b)local c=b.window if c._searching then al.
-close(c,{showTabs=true,jumpTo=c.selectedTab and c.selectedTab.tabPage})end local d=table.find(c.tabs,b)if d then table.
-remove(c.tabs,d)end if c.selectedTab==b then c.selectedTab=nil for e,f in ipairs(c.tabs)do if not f.neglectSelector then
-f:Select()break end end end ao(c,b.elements)for e,f in b.connections do c:Disconnect(f)end b.connections={}if b.
-topbarItem then c:DestroySubtree(b.topbarItem)end if b.tabPage then c:DestroySubtree(b.tabPage)end b.topbarItem=nil b.
-tabPage=nil b.columnsRow=nil b.elements={}for e,f in{b.Left,b.Right}do f.elements={}end end return ae end)()end,[27]=
-function()local aa,ab,ac=a(27)local ad return(function(...)local ae={}ae.__index=ae ae.__type='TabSection'local af,ag,ah
-,ai,aj=ac(ab.Parent.Parent.utility.locale),ac(ab.Parent.Parent.utility.log),20,6,3 local function ak(al)for am,an in al.
-tabs do if not an.neglectSelector then return true end end return#al.tabSections>0 end function ae.new(al,am)am=if
-typeof(am)=='table'then am else{}local an=setmetatable({window=assert(al,'Missing argument #1 (Window expected)'),name=
-am.name or am.Name or'Section',icon=am.icon or am.Icon},ae)if al.layout.mode~='sidebar'then if not al._warnedTabSection
-then al._warnedTabSection=true ag.warn
+TextXAlignment.Left,TextTruncate=Enum.TextTruncate.AtEnd,LayoutOrder=1,ZIndex=6,TextTransparency=1,Parent=av.
+titleContainer},{TextColor3='ContentColor',FontFace='Font'})b:Create('UIFlexItem',{FlexMode=Enum.UIFlexMode.Shrink,
+Parent=av.title})av.readoutHost=b:Create('Frame',{AutomaticSize=Enum.AutomaticSize.X,Size=UDim2.fromOffset(0,18),
+BackgroundTransparency=1,BorderSizePixel=0,LayoutOrder=1,ZIndex=6,Parent=av.card})av.readoutOdo=ai.new(b,av.readoutHost,
+{textSize=17,alignment=Enum.HorizontalAlignment.Right,transparency=1})av.readoutOdo:snap(av.display=='change'and av:
+_formatChange(0)or av:_formatValue(av.value))av._accentGradients={av.strokeGradient,av.mainGradient}end function ae.
+_setAccent(av,b,c)local d=an[b]av.strokeGradient.Color=d.stroke av.mainGradient.Color=d.fill if av.glow then av.glow.
+Color=ar(d)end local e,f=if c==1 then 14 elseif c==-1 then-10 else 2,if c==1 then Vector2.new(0.04,0.5)elseif c==-1 then
+Vector2.new(-4E-2,0.5)else Vector2.new(0,0.5)for g,h in av._accentGradients do ag.tweenService:Create(h,aq,{Rotation=e,
+Offset=f}):Play()end end function ae._formatValue(av,b)return av.prefix..at(b)..av.suffix end function ae._formatChange(
+av,b)if av.changeMode=='absolute'then return au(b)else return as(b)end end function ae._showValue(av,b,c,d,e)if av.
+numberEasing and not e then b:to(av:_formatValue(c),c>=d)else b:snap(av:_formatValue(c))end end function ae.
+_updateFullReadouts(av,b,c,d,e,f,g)av:_showValue(av.valueOdo,b,c,g)if f then av.changeOdo:snap(f)av._lastChange=0 elseif
+av.numberEasing and not e then av.changeOdo:to(av:_formatChange(d),d>=av._lastChange)av._lastChange=d else av.changeOdo:
+snap(av:_formatChange(d or 0))av._lastChange=d or 0 end end function ae._updateCompactReadout(av,b,c,d,e,f,g)if av.
+display=='change'then if f then av.readoutOdo:snap(f)av._lastChange=0 elseif av.numberEasing and not e then av.
+readoutOdo:to(av:_formatChange(d),d>=av._lastChange)av._lastChange=d else av.readoutOdo:snap(av:_formatChange(d or 0))av
+._lastChange=d or 0 end else av:_showValue(av.readoutOdo,b,c,g)end end function ae.Set(av,b)assert(typeof(b)=='number',
+'Statistic:Set() - value must be a number, got '..typeof(b))local c,d=av.value,not av._hasValue av.value=b av._hasValue=
+true if d then av._initialValue=b end local e=if av.changeBaseline=='initial'then av._initialValue else c local f,g,h,i,
+j=d or e==b if f then g=0 i='neutral'j=0 elseif e==0 then local k,l=if b>0 then'+'else'-',if av.changeMode=='percentage'
+then'\u{221e}%'else'\u{221e}'h=k..l i=if b>0 then'positive'else'negative'j=if b>0 then 1 else-1 elseif av.changeMode==
+'percentage'then g=((b-e)/math.abs(e))*100 j=if g>0 then 1 elseif g<0 then-1 else 0 i=if j==1 then'positive'elseif j==-1
+then'negative'else'neutral'else g=b-e j=if g>0 then 1 elseif g<0 then-1 else 0 i=if j==1 then'positive'elseif j==-1 then
+'negative'else'neutral'end av:_setAccent(i,j)if av.compact then av:_updateCompactReadout(b,c,g,f,h,d)else av:
+_updateFullReadouts(b,c,g,f,h,d)end end function ae.ResetBaseline(av,b)local c,d,e=av.value,not av._hasValue,if typeof(b
+)=='number'then b else av.value av._initialValue=e av.value=e av._hasValue=true av._lastChange=0 if av.compact then if
+av.display=='change'then av.readoutOdo:snap(av:_formatChange(0))else av:_showValue(av.readoutOdo,e,c,d)end else av.
+changeOdo:snap(av:_formatChange(0))av:_showValue(av.valueOdo,e,c,d)end av:_setAccent('neutral',0)end function ae.
+_setShown(av,b,c)local d=av.window if av.compact then d:_reveal(av.main,{BackgroundTransparency=if b then(av.window.
+theme.ElementTransparency or 0)else 1},c)d:_reveal(av.stroke,{Transparency=if b then av.window.theme.
+ElementStrokeTransparency else 1},c)d:_reveal(av.card,{BackgroundTransparency=if b then 0 else 1},c)d:_reveal(av.title,{
+TextTransparency=if b then 0 else 1},c)if av.iconLabel then d:_reveal(av.iconLabel,{ImageTransparency=if b then 0 else 1
+},c)end av.readoutOdo:reveal(if b then 0 else 1,c)return end if b then d:_revealCommon(av,c)d:_reveal(av.
+gradientContainer,{BackgroundTransparency=0},c)d:_reveal(av.glow,{Transparency=0.82},c)av.valueOdo:reveal(0,c)av.
+changeOdo:reveal(0,c)else d:_hideCommon(av,c)d:_reveal(av.gradientContainer,{BackgroundTransparency=1},c)d:_reveal(av.
+glow,{Transparency=1},c)av.valueOdo:reveal(1,c)av.changeOdo:reveal(1,c)end end function ae._minWidth(av)local b=40 if av
+.icon then b+=26 end b+=ah.textWidth(av.window.theme.Font,16,al.resolve(av.name))local c=if av.display=='change'then av:
+_formatChange(0)else av:_formatValue(av.value)b+=ah.textWidth(av.window.theme.Font,17,c)return b end aj(ae)return ae end
+)()end,[26]=function()local aa,ab,ac=a(26)local ad return(function(...)local ae={}ae.__index=ae ae.__type='Tab'local af=
+ab.Parent.Parent.utility local ag,ah,ai,aj,ak,al,am,an=ac(af.variables),ac(af.constants),ac(af.HapticEngine),ac(af.log),
+ac(af.columns),ac(ab.Parent.search),ac(ab.Parent.tabSelector),ac(ab.Parent.column)local function ao(ap,aq)for ar,as in
+aq do if as.__type=='Group'then ao(ap,as.elements)else ap:_unregisterControl(as)end if as.connections then for at,au in
+as.connections do ap:Disconnect(au)end as.connections=nil end if as._dragConnection then as._dragConnection:Disconnect()
+as._dragConnection=nil end if ap._recordingKeybind==as then ap._recordingKeybind=nil end if as._outsideClickConn then ap
+:Disconnect(as._outsideClickConn)as._outsideClickConn=nil end end end local ap,aq=TweenInfo.new(0.4,Enum.EasingStyle.
+Quint,Enum.EasingDirection.Out),TweenInfo.new(0.25,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)function ae.new(ar,as
+)as=if typeof(as)=='table'then as else{}local at=setmetatable({window=assert(ar,'Missing argument #1 (Window expected)')
+,name=as.name or as.Name,icon=as.icon or as.Icon,neglectSelector=as.neglectSelector or as.NeglectSelector or false,
+customOrder=as.customOrder or as.CustomOrder or 0,forgetState=as.forgetState or as.ForgetState or false,elements={},
+connections={}},ae)assert(at.name or at.icon,'A tab needs a name or an icon.')if not at.neglectSelector then am.build(at
+,at.window.layout)end at.tabPage=at.window:Create('ScrollingFrame',{Name=at.name,Size=UDim2.new(1,-20,1,0),Position=
+UDim2.new(0.5,0,0,68),AnchorPoint=Vector2.new(0.5,0.5),BorderSizePixel=0,BackgroundTransparency=1,AutomaticCanvasSize=
+Enum.AutomaticSize.Y,CanvasSize=UDim2.new(0,0,0,0),ScrollBarThickness=ah.pageScrollbar.thickness,
+ScrollBarImageTransparency=ah.pageScrollbar.transparency,VerticalScrollBarInset=Enum.ScrollBarInset.None,
+ScrollingDirection=Enum.ScrollingDirection.Y,LayoutOrder=at.customOrder or 0,Parent=at.window.elements},{
+ScrollBarImageColor3='ContentColor'})at.tabPageLayout=at.window:Create('UIListLayout',{Padding=UDim.new(0,7),
+FillDirection=Enum.FillDirection.Vertical,VerticalAlignment=Enum.VerticalAlignment.Top,HorizontalAlignment=Enum.
+HorizontalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,Parent=at.tabPage})at.window:Create('UIPadding',{
+PaddingTop=UDim.new(0,10),PaddingBottom=UDim.new(0,33),Parent=at.tabPage})at.columnsRow=at.window:Create('Frame',{Name=
+'Columns',BackgroundTransparency=1,BorderSizePixel=0,AutomaticSize=Enum.AutomaticSize.Y,Size=UDim2.fromScale(1,0),Parent
+=at.tabPage})at.columnsLayout=at.window:Create('UIListLayout',{FillDirection=Enum.FillDirection.Horizontal,
+VerticalAlignment=Enum.VerticalAlignment.Top,HorizontalAlignment=Enum.HorizontalAlignment.Left,SortOrder=Enum.SortOrder.
+LayoutOrder,Parent=at.columnsRow})at.Left=an.new(at,'Left')at.Right=an.new(at,'Right')at.left=at.Left at.right=at.Right
+at:_layoutColumns()if not at.neglectSelector then table.insert(at.connections,at.window:Connect(at.topbarItemInteract.
+MouseButton1Click,function()ai.click()at:Select()end))table.insert(at.connections,at.window:Connect(at.
+topbarItemInteract.MouseEnter,function()if not at.window:_interactive()then return end if at.window.selectedTab~=at then
+at:_applyVisual('hover',aq)at:_spinGradients()end end))table.insert(at.connections,at.window:Connect(at.
+topbarItemInteract.MouseLeave,function()if at.window.selectedTab~=at then at:_applyVisual('unselected',aq)end end))end
+return at end function ae._applyVisual(ar,as,at)if ar.neglectSelector or not ar.topbarItem then return end local au=am.
+states[ar.window.layout.mode][as]if not au then return end am.applyVisual(ar,au,at)end function ae._spinGradients(ar)if
+ar.neglectSelector then return end local as=TweenInfo.new(0.7,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)for at,au
+in{ar.topbarItemGradient,ar.topbarItemStrokeGradient}do au.Rotation=-270 ag.tweenService:Create(au,as,{Rotation=90}):
+Play()end end function ae.Select(ar,as)if ar.window._searching then al.close(ar.window,{showTabs=true,jumpTo=false})end
+ar.window.selectedTab=ar ar.window:_jumpTo(ar.tabPage)local at=as or not ar.window:_interactive()if not ar.
+neglectSelector and not at then ar:_applyVisual('selected',ap)end for au,av in ar.window.tabs do if av~=ar.window.
+selectedTab then av:Deselect(at)end end if ar~=ar.window.rfSettings and ar.window.settingsAction and not at then ag.
+tweenService:Create(ar.window.settingsAction.iconLabel,TweenInfo.new(0.25,Enum.EasingStyle.Quint,Enum.EasingDirection.
+Out),{ImageTransparency=0.6}):Play()end end function ae.Deselect(ar,as)if not ar.neglectSelector and not as then ar:
+_applyVisual('unselected',ap)end end function ae.GetColumn(ar,as)local at=ak.resolveSide(as)if not at then aj.warn(`Rayfield: unknown column '{
+tostring(as)}', using the left one. Use "Left" or "Right".`)at='Left'end return if at=='Right'then ar.Right else ar.Left
+end function ae._columnFor(ar,as)if typeof(as)~='table'then return ar.Left end return ar:GetColumn(as.side or as.Side or
+as.column or as.Column)end function ae._layoutColumns(ar)local as,at=ar.Left,ar.Right if not as or not at or not ar.
+columnsRow then return end local au=ar.window local av=if au.size then ak.pageWidth(au.size.X.Offset,au.layout)else 0
+local b,c,d=ak.shouldStack(av),#as.elements>0,#at.elements>0 as.main.Visible=c at.main.Visible=d ar.stacked=b if b or
+not(c and d)then ar.columnsLayout.FillDirection=Enum.FillDirection.Vertical ar.columnsLayout.Padding=UDim.new(0,if c and
+d then 20 else 0)as.main.Size=UDim2.fromScale(1,0)at.main.Size=UDim2.fromScale(1,0)else ar.columnsLayout.FillDirection=
+Enum.FillDirection.Horizontal ar.columnsLayout.Padding=UDim.new(0,-ak.overlap)as.main.Size=UDim2.new(0.5,ak.overlap/2,0,
+0)at.main.Size=UDim2.new(0.5,ak.overlap/2,0,0)end end function ae.CreateButton(ar,as)return ar:_columnFor(as):
+CreateButton(as)end function ae.CreateToggle(ar,as)return ar:_columnFor(as):CreateToggle(as)end function ae.CreateSwitch
+(ar,as)return ar:CreateToggle(as)end function ae.CreateSection(ar,as)return ar:_columnFor(as):CreateSection(as)end
+function ae.CreateText(ar,as)return ar:_columnFor(as):CreateText(as)end function ae.CreateDivider(ar,as)return ar:
+_columnFor(as):CreateDivider(as)end function ae.CreateProgress(ar,as)return ar:_columnFor(as):CreateProgress(as)end
+function ae.CreateConsole(ar,as)return ar:_columnFor(as):CreateConsole(as)end function ae.CreateChat(ar,as)return ar:
+_columnFor(as):CreateChat(as)end function ae.CreateStat(ar,as)return ar:_columnFor(as):CreateStat(as)end function ae.
+CreateSlider(ar,as)return ar:_columnFor(as):CreateSlider(as)end function ae.CreateDropdown(ar,as)return ar:_columnFor(as
+):CreateDropdown(as)end function ae.CreateInput(ar,as)return ar:_columnFor(as):CreateInput(as)end function ae.
+CreateKeybind(ar,as)return ar:_columnFor(as):CreateKeybind(as)end function ae.CreateColorPicker(ar,as)return ar:
+_columnFor(as):CreateColorPicker(as)end function ae.CreateGroup(ar,as)return ar:_columnFor(as):CreateGroup(as)end
+function ae.Remove(ar)local as=ar.window if as._searching then al.close(as,{showTabs=true,jumpTo=as.selectedTab and as.
+selectedTab.tabPage})end local at=table.find(as.tabs,ar)if at then table.remove(as.tabs,at)end if as.selectedTab==ar
+then as.selectedTab=nil for au,av in ipairs(as.tabs)do if not av.neglectSelector then av:Select()break end end end ao(as
+,ar.elements)for au,av in ar.connections do as:Disconnect(av)end ar.connections={}if ar.topbarItem then as:
+DestroySubtree(ar.topbarItem)end if ar.tabPage then as:DestroySubtree(ar.tabPage)end ar.topbarItem=nil ar.tabPage=nil ar
+.columnsRow=nil ar.elements={}for au,av in{ar.Left,ar.Right}do av.elements={}end end return ae end)()end,[27]=function()
+local aa,ab,ac=a(27)local ad return(function(...)local ae={}ae.__index=ae ae.__type='TabSection'local af,ag,ah,ai,aj=ac(
+ab.Parent.Parent.utility.locale),ac(ab.Parent.Parent.utility.log),20,6,3 local function ak(al)for am,an in al.tabs do if
+not an.neglectSelector then return true end end return#al.tabSections>0 end function ae.new(al,am)am=if typeof(am)==
+'table'then am else{}local an=setmetatable({window=assert(al,'Missing argument #1 (Window expected)'),name=am.name or am
+.Name or'Section',icon=am.icon or am.Icon},ae)if al.layout.mode~='sidebar'then if not al._warnedTabSection then al.
+_warnedTabSection=true ag.warn
 [[Rayfield: Window:CreateSection needs the sidebar layout; it does nothing on the top strip.]]end an.inert=true return
 an end an.main=al:Create('Frame',{Name=an.name,Size=UDim2.new(1,-ah*2,0,0),AutomaticSize=Enum.AutomaticSize.Y,
 BackgroundTransparency=1,BorderSizePixel=0,Visible=false,Parent=al.tabList})an.padding=al:Create('UIPadding',{PaddingTop
@@ -1824,172 +1872,172 @@ FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,Horizon
 Left,SortOrder=Enum.SortOrder.LayoutOrder,Parent=ao.topbarItemContainer})al(ao,ap.rowIconSize,true)end function ai.build
 (ao,ap)if ap.mode=='sidebar'then an(ao,ap)else am(ao)end end function ai.setRowCollapsed(ao,ap,aq)if aq.mode~='sidebar'
 or not ao.topbarItem then return end if ao.topbarItemTitle then ao.topbarItemTitle.Visible=not ap end if ao.
-topbarItemInitial then ao.topbarItemInitial.Visible=ap end local b=if ap then 0 else aq.rowPadding ao.
-topbarItemContainer.Size=UDim2.new(1,-b,0,24)ao.topbarItemContainer.Position=UDim2.new(0,b,0.5,0)ao.topbarItemLayout.
+topbarItemInitial then ao.topbarItemInitial.Visible=ap end local ar=if ap then 0 else aq.rowPadding ao.
+topbarItemContainer.Size=UDim2.new(1,-ar,0,24)ao.topbarItemContainer.Position=UDim2.new(0,ar,0.5,0)ao.topbarItemLayout.
 HorizontalAlignment=if ap then Enum.HorizontalAlignment.Center else Enum.HorizontalAlignment.Left end function ai.
-applyVisual(ao,ap,aq)local b={[ao.topbarItem]={BackgroundTransparency=ap.background},[ao.topbarItemStroke]={Transparency
-=ap.stroke}}if ao.topbarItemIcon then b[ao.topbarItemIcon]={ImageTransparency=ap.content}end if ao.topbarItemTitle then
-b[ao.topbarItemTitle]={TextTransparency=ap.content}end if ao.topbarItemInitial then b[ao.topbarItemInitial]={
-TextTransparency=ap.content}end if ao.topbarItemShadow and ap.shadow then b[ao.topbarItemShadow]={Transparency=ap.shadow
-}end for c,d in b do if aq then af.tweenService:Create(c,aq,d):Play()else for e,f in d do c[e]=f end end end end return
-ai end)()end,[29]=function()local aa,ab,ac=a(29)local ad return(function(...)local ae={}ae.__index=ae ae.__type='Tag'
-local af=ab.Parent.Parent.utility local ag,ah,ai,aj,ak=ac(af.variables),ac(af.functions),ac(af.image),Color3.fromRGB(255
-,175,15),TweenInfo.new(0.25,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)function ae.new(al,am)am=if typeof(am)==
-'table'then am else{}local an=setmetatable({window=assert(al,'Missing argument #1 (Window expected)'),text=am.text or am
-.Text or am.title or am.Title,icon=am.icon or am.Icon,color=am.color or am.Color or aj},ae)assert(an.icon or(an.text and
-an.text~=''),'A Tag requires an icon, text, or both.')an.main=an.window:Create('Frame',{Name='Tag',Size=UDim2.
-fromOffset(10,24),AutomaticSize=Enum.AutomaticSize.X,BackgroundColor3=an.color,BorderSizePixel=0,LayoutOrder=am.order or
-am.Order or 0,BackgroundTransparency=1,Parent=an.window.tagContainer})an.window:Create('UICorner',{CornerRadius=UDim.
-new(1,0),Parent=an.main})an.window:Create('UIPadding',{PaddingLeft=UDim.new(0,10),PaddingRight=UDim.new(0,10),Parent=an.
-main})an.window:Create('UIListLayout',{Padding=UDim.new(0,5),FillDirection=Enum.FillDirection.Horizontal,
-VerticalAlignment=Enum.VerticalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,Parent=an.main})local ao=ah.
-contrastColor(an.color)an.iconLabel=an.window:Create('ImageLabel',{Name='Icon',Image=an.icon or'',ImageColor3=ao,Size=
-UDim2.fromOffset(16,16),BackgroundTransparency=1,Visible=an.icon~=nil,ZIndex=5,ImageTransparency=1,Parent=an.main})an.
-title=an.window:Create('TextLabel',{Name='Title',AnchorPoint=Vector2.new(0,0.5),Size=UDim2.fromOffset(10,15),
-AutomaticSize=Enum.AutomaticSize.X,BackgroundTransparency=1,Text=an.text or'',TextColor3=ao,TextSize=15,TextXAlignment=
-Enum.TextXAlignment.Left,TextWrapped=true,RichText=true,Visible=an.text~=nil and an.text~='',LayoutOrder=1,ZIndex=5,
-TextTransparency=1,Parent=an.main},{FontFace='Font'})an.window.tagContainer.Visible=true if not an.window.hidden then an
-:_setShown(true,ak)end return an end function ae._setShown(al,am,an)local ao,ap=if am then 0 else 1,if typeof(an)==
-'TweenInfo'then an elseif an then ak else nil if ap then ag.tweenService:Create(al.main,ap,{BackgroundTransparency=ao}):
-Play()ag.tweenService:Create(al.iconLabel,ap,{ImageTransparency=ao}):Play()ag.tweenService:Create(al.title,ap,{
-TextTransparency=ao}):Play()else al.main.BackgroundTransparency=ao al.iconLabel.ImageTransparency=ao al.title.
-TextTransparency=ao end end function ae.SetColor(al,am)al.color=am local an=ah.contrastColor(am)ag.tweenService:Create(
-al.main,ak,{BackgroundColor3=am}):Play()ag.tweenService:Create(al.iconLabel,ak,{ImageColor3=an}):Play()ag.tweenService:
-Create(al.title,ak,{TextColor3=an}):Play()end function ae.SetText(al,am)al.text=am al.title.Text=am or''al.title.Visible
-=am~=nil and am~=''end function ae.SetIcon(al,am)al.icon=am ai.assign(al.iconLabel,'Image',am)al.iconLabel.Visible=am~=
-nil end function ae.Set(al,am)if am.color or am.Color then al:SetColor(am.color or am.Color)end if am.text or am.Text or
-am.title or am.Title then al:SetText(am.text or am.Text or am.title or am.Title)end if am.icon~=nil or am.Icon~=nil then
-al:SetIcon(am.icon or am.Icon)end end function ae.Remove(al)al.window:DestroySubtree(al.main)local am=table.find(al.
-window.tags,al)if am then table.remove(al.window.tags,am)end if#al.window.tags==0 then al.window.tagContainer.Visible=
-false end end return ae end)()end,[30]=function()local aa,ab,ac=a(30)local ad return(function(...)local ae={}ae.__index=
-ae ae.__type='Text'local af,ag,ah,ai,aj=ac(ab.Parent.Parent.utility.moveable),ac(ab.Parent.Parent.utility.locale),16,14,
-0.45 function ae.new(ak,al)al=if typeof(al)=='table'then al else{}local am=setmetatable({tab=assert(ak,
-'Missing argument #1 (Tab expected)'),window=ak.window,name=tostring(al.name or al.Name or''),text=tostring(al.text or
-al.Text or''),icon=al.icon or al.Icon},ae)am.main=am.window:Create('Frame',{Size=UDim2.new(1,-20,0,0),AutomaticSize=Enum
-.AutomaticSize.Y,BorderSizePixel=0,Name=if am.name~=''then am.name else'Text',BackgroundColor3=Color3.fromRGB(255,255,
-255),BackgroundTransparency=1,Parent=am.tab.tabPage},{BackgroundTransparency='ElementTransparency'})am.stroke=am.window:
-StyleElementBody(am.main)am.window:Create('UIPadding',{PaddingTop=UDim.new(0,14),PaddingBottom=UDim.new(0,14),
-PaddingLeft=UDim.new(0,20),PaddingRight=UDim.new(0,20),Parent=am.main})am.window:Create('UIListLayout',{Padding=UDim.
-new(0,6),SortOrder=Enum.SortOrder.LayoutOrder,Parent=am.main})am.titleRow=am.window:Create('Frame',{Name='Title',Size=
-UDim2.new(1,0,0,0),AutomaticSize=Enum.AutomaticSize.Y,BorderSizePixel=0,BackgroundTransparency=1,LayoutOrder=1,Parent=am
-.main})am.window:Create('UIListLayout',{FillDirection=Enum.FillDirection.Horizontal,Padding=UDim.new(0,6),SortOrder=Enum
-.SortOrder.LayoutOrder,VerticalAlignment=Enum.VerticalAlignment.Top,Parent=am.titleRow})if am.icon then am.iconLabel=am.
-window:Create('ImageLabel',{Image=am.icon,Size=UDim2.fromOffset(16,16),BorderSizePixel=0,BackgroundTransparency=1,
-ImageTransparency=1,Parent=am.titleRow},{ImageColor3='ContentColor'})end am.title=am.window:Create('TextLabel',{Text=ag.
-t(am.name),Size=UDim2.new(1,if am.icon then-22 else 0,0,0),AutomaticSize=Enum.AutomaticSize.Y,BorderSizePixel=0,
-BackgroundTransparency=1,RichText=true,TextSize=ah,TextWrapped=true,TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=
-1,TextTransparency=1,Parent=am.titleRow},{TextColor3='TitlingColor',FontFace='Font'})am.body=am.window:Create(
-'TextLabel',{Text=ag.t(am.text),Size=UDim2.new(1,0,0,0),AutomaticSize=Enum.AutomaticSize.Y,BorderSizePixel=0,
-BackgroundTransparency=1,RichText=true,TextSize=ai,TextWrapped=true,TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=
-2,TextTransparency=1,Parent=am.main},{TextColor3='ContentColor',FontFace='Font'})am:_applyPresence()return am end
-function ae._applyPresence(ak)ak.titleRow.Visible=ak.name~=''or ak.icon~=nil ak.body.Visible=ak.text~=''end function ae.
-Set(ak,al)ak.text=tostring(al)ak.window:_bindLocale(ak.body,'Text',ak.text)ak:_applyPresence()end function ae.SetTitle(
-ak,al)ak.name=tostring(al)ak.window:_bindLocale(ak.title,'Text',ak.name)ak:_applyPresence()end function ae._setShown(ak,
-al,am)if al then ak.window:_revealCommon(ak,am)else ak.window:_hideCommon(ak,am)end ak.window:_reveal(ak.body,{
-TextTransparency=if al then aj else 1},am)end af(ae)return ae end)()end,[31]=function()local aa,ab,ac=a(31)local ad
-return(function(...)local ae={}ae.__index=ae ae.__type='Toast'local af=ab.Parent.Parent.utility local ag,ah,ai,aj,ak,al,
-am,an,ao,ap,aq,b,c,d,e,f,g,h,i,j,k,l,m,n=ac(af.variables),ac(af.functions),ac(af.constants),ac(af.image),ac(af.
-HapticEngine),TweenInfo.new(0.6,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.6,Enum.
-EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.4,Enum.EasingStyle.Exponential,Enum.EasingDirection.
-Out),TweenInfo.new(0.3,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.6,Enum.EasingStyle.
-Exponential,Enum.EasingDirection.Out),24,32,18,18,10,28,12,8,140,320,6,UDim2.new(0.5,0,0.5,-180),UDim2.new(0.5,0,0.5,180
-),UDim2.new(0.5,0,0.5,0)local function o(p)return math.clamp(#p*0.06+3,3,9)end local function p(q)if type(q)=='number'
-then return'rbxassetid://'..tostring(q)end return q end function ae.new(q,r,s)r=if typeof(r)=='table'then r else{}local
-t=setmetatable({window=assert(q,'Missing argument #1 (Window expected)'),title=r.title or r.Title or'',subtitle=r.
-subtitle or r.Subtitle,icon=r.icon or r.Icon,avatar=r.avatar or r.Avatar,minWidth=r.minWidth or r.MinWidth,subtitleAbove
-=r.subtitleAbove or r.SubtitleAbove or false,position=r.position or'Top',_hovered=false,_dismissed=false},ae)t.duration=
-r.duration or r.Duration or o(t.title..(t.subtitle or''))local u=t.avatar~=nil and t.avatar~=0 local v=u or(t.icon~=nil
-and t.icon~=0 and t.icon~='')t._iconImage=if u then aj.avatar(t.avatar,function(w)if t.iconLabel and not t._dismissed
-and t.main.Parent then aj.assign(t.iconLabel,'Image',w)end end)elseif v then p(t.icon)else nil t._iconSize=if u then b
-else aq t._leftPad=if u then e else c t._rightPad=if u then f else d t._minWidth=math.clamp(t.minWidth or 0,i,j)local w=
-t.subtitle~=nil and t.subtitle~=''t.main=t.window:Create('Frame',{Name='Toast',BackgroundTransparency=1,Size=UDim2.new(0
-,0,0,0),BorderSizePixel=0,ZIndex=ai.zIndex.toast,Parent=s or t.window.toasts})t.window:Create('UIPadding',{PaddingTop=
-UDim.new(0,h),Parent=t.main})t.body=t.window:Create('Frame',{BackgroundColor3=Color3.fromRGB(255,255,255),Size=UDim2.
-new(1,0,1,0),Position=if t.position=='Bottom'then m else l,AnchorPoint=Vector2.new(0.5,0.5),Active=true,BorderSizePixel=
-0,ZIndex=ai.zIndex.toast,BackgroundTransparency=1,Parent=t.main})t.window:Create('UIGradient',{Rotation=270,Offset=
-Vector2.new(0,-0.1),Parent=t.body},{Color={'WindowColor',ah.toColorSequence}})t.window:Create('UICorner',{CornerRadius=
-UDim.new(1,0),Parent=t.body})t.stroke=t.window:Create('UIStroke',{Transparency=1,Parent=t.body},{Color='SurfaceStroke'})
-t.shadow=t.window:CreateGlow(t.body,'ShadowColor',20,1)t.window:Create('UIPadding',{PaddingLeft=UDim.new(0,t._leftPad),
-PaddingRight=UDim.new(0,t._rightPad),Parent=t.body})t.window:Create('UIListLayout',{FillDirection=Enum.FillDirection.
-Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum.HorizontalAlignment.Left,SortOrder=
-Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,g),Parent=t.body})if v then t.iconLabel=t.window:Create('ImageLabel',{
-Image=t._iconImage,Size=UDim2.fromOffset(t._iconSize,t._iconSize),BackgroundColor3=Color3.fromRGB(255,255,255),
-BorderSizePixel=0,LayoutOrder=1,ZIndex=ai.zIndex.toastContent,BackgroundTransparency=1,ImageTransparency=1,Parent=t.body
-},if u then nil else{ImageColor3='ContentColor'})t.window:Create('UICorner',{CornerRadius=UDim.new(1,0),Parent=t.
-iconLabel})end t.container=t.window:Create('Frame',{AutomaticSize=Enum.AutomaticSize.X,Size=UDim2.fromOffset(0,w and 32
-or 16),BackgroundTransparency=1,BorderSizePixel=0,LayoutOrder=2,ZIndex=ai.zIndex.toastContent,Parent=t.body})t.window:
-Create('UIListLayout',{FillDirection=Enum.FillDirection.Vertical,VerticalAlignment=Enum.VerticalAlignment.Center,
-SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,1),Parent=t.container})t.titleLabel=t.window:Create('TextLabel',
-{Text=t.title,AutomaticSize=Enum.AutomaticSize.X,Size=UDim2.fromOffset(0,16),BackgroundTransparency=1,TextSize=16,
-TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=if t.subtitleAbove then 2 else 1,ZIndex=ai.zIndex.toastContent,
-TextTransparency=1,Parent=t.container},{TextColor3='ContentColor',FontFace='TitleFont'})if w then t.subtitleLabel=t.
-window:Create('TextLabel',{Text=t.subtitle,AutomaticSize=Enum.AutomaticSize.X,Size=UDim2.fromOffset(0,14),
-BackgroundTransparency=1,TextSize=14,TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=if t.subtitleAbove then 1 else
-2,ZIndex=ai.zIndex.toastContent,TextTransparency=1,Parent=t.container},{TextColor3='ContentColor',FontFace='Font'})end t
-.window._toastCount=(t.window._toastCount or 0)+1 t.main.LayoutOrder=-t.window._toastCount local x=t.window._liveToasts
-if not x then x={}t.window._liveToasts=x end local y=x[t.main.Parent]if not y then y={}x[t.main.Parent]=y end t._live=y
-table.insert(y,t)while#y>k do local z=table.remove(y,1)if z and z~=t then task.spawn(z._dismiss,z)end end t._connections
-={t.window:Connect(t.body.MouseEnter,function()t._hovered=true end),t.window:Connect(t.body.MouseLeave,function()t.
-_hovered=false end),t.window:Connect(t.body.InputBegan,function(z)if z.UserInputType==Enum.UserInputType.MouseButton1 or
-z.UserInputType==Enum.UserInputType.Touch then t:_dismiss()end end)}task.spawn(function()t:_show()end)return t end
-function ae._measure(q)local r,s=ah.textWidth(q.window.theme.TitleFont,16,q.title),if q.subtitleLabel then ah.textWidth(
-q.window.theme.Font,14,q.subtitle)else 0 local t,u=math.max(r,s),if q.iconLabel then q._leftPad+q._iconSize+g else q.
-_leftPad local v=math.clamp(u+t+q._rightPad,q._minWidth,j)if u+t+q._rightPad>j then local w=j-u-q._rightPad for x,y in{q
-.titleLabel,q.subtitleLabel}do if y then y.AutomaticSize=Enum.AutomaticSize.None y.TextTruncate=Enum.TextTruncate.AtEnd
-y.Size=UDim2.fromOffset(w,y.Size.Y.Offset)end end end local w=if q.subtitleLabel then 31 else 16 local x=math.max(w,if q
-.iconLabel then q._iconSize else 0)+18 return v,x end function ae._show(q)if not q.main.Parent then return end ak.
-notify()local r,s=q:_measure()if q._dismissed or not q.main.Parent then return end q.main.Size=UDim2.new(0,r,0,0)ag.
-tweenService:Create(q.main,am,{Size=UDim2.new(0,r,0,s+h)}):Play()ag.tweenService:Create(q.body,al,{Position=n}):Play()ag
-.tweenService:Create(q.body,an,{BackgroundTransparency=0}):Play()ag.tweenService:Create(q.stroke,an,{Transparency=0.9}):
-Play()ag.tweenService:Create(q.shadow,ao,{Transparency=0.6}):Play()ag.tweenService:Create(q.titleLabel,ao,{
-TextTransparency=0}):Play()task.wait(0.05)if q._dismissed or not q.main.Parent then return end if q.iconLabel then ag.
-tweenService:Create(q.iconLabel,ao,{BackgroundTransparency=0.95}):Play()ag.tweenService:Create(q.iconLabel,ao,{
-ImageTransparency=0}):Play()end task.wait(0.05)if q._dismissed or not q.main.Parent then return end if q.subtitleLabel
-then ag.tweenService:Create(q.subtitleLabel,ao,{TextTransparency=0.5}):Play()end local t=0 while t<q.duration and not q.
-_dismissed and q.main.Parent do local u=task.wait()if not q._hovered then t+=u end end q:_dismiss()end function ae.
-_dismiss(q)if q._dismissed then return end q._dismissed=true local r=q._live local s=r and table.find(r,q)if r and s
-then table.remove(r,s)end if not q.main.Parent then return end ag.tweenService:Create(q.body,an,{BackgroundTransparency=
-1}):Play()ag.tweenService:Create(q.stroke,an,{Transparency=1}):Play()ag.tweenService:Create(q.shadow,ao,{Transparency=1}
-):Play()ag.tweenService:Create(q.titleLabel,ao,{TextTransparency=1}):Play()if q.subtitleLabel then ag.tweenService:
-Create(q.subtitleLabel,ao,{TextTransparency=1}):Play()end if q.iconLabel then ag.tweenService:Create(q.iconLabel,ao,{
-ImageTransparency=1,BackgroundTransparency=1}):Play()end ag.tweenService:Create(q.body,ap,{Size=UDim2.new(1,-60,1,0)}):
-Play()local t=ag.tweenService:Create(q.main,ap,{Size=UDim2.new(0,q.main.Size.X.Offset,0,0)})t:Play()t.Completed:Wait()if
-not q.main.Parent then return end for u,v in q._connections do q.window:Disconnect(v)end q.window:DestroySubtree(q.main)
-end return ae end)()end,[32]=function()local aa,ab,ac=a(32)local ad return(function(...)local ae={}ae.__index=ae ae.
-__type='Toggle'local af=ab.Parent.Parent.utility local ag,ah,ai,aj,ak,al=ac(af.variables),ac(af.functions),ac(af.
-moveable),ac(af.lockable),ac(af.locale),ac(af.HapticEngine)function ae.new(am,an)an=if typeof(an)=='table'then an else{}
-local ao=setmetatable({tab=assert(am,'Missing argument #1 (Tab expected)'),window=am.window,name=an.name or an.Name or
-'Switch',icon=an.icon or an.Icon,description=an.description or an.Description,forgetState=an.forgetState or an.
-ForgetState or am.forgetState,compact=am.compact or false,flag=an.flag or an.Flag or(not(an.forgetState or an.
-ForgetState or am.forgetState)and ah.deriveFlagFromName(an.name or an.Name or'Switch')or nil),callback=an.callback or an
-.Callback or function()end,value=if(an.value or an.Value)~=nil then(an.value or an.Value)else false},ae)ao.window:
-_registerControl(ao)if ao.compact then ao:_buildCompact()else ao:_buildFull()end if ao.description and not ao.compact
-then ao.descriptor=ac(ab.Parent.descriptor).new(ao.tab,{description=ao.description})end return ao end function ae.
-_buildSwitch(am,an)local ao=am.window am.functionContainer=ao:Create('Frame',{BorderSizePixel=0,Size=UDim2.fromOffset(50
-,21),BackgroundTransparency=1,Parent=an},{BackgroundColor3='ToggleTrack'})ao:Create('UICorner',{CornerRadius=UDim.new(0,
-15),Parent=am.functionContainer})am.containerStroke=ao:Create('UIStroke',{Transparency=1,Parent=am.functionContainer},{
-Color='SurfaceStroke'})am.indicator=ao:Create('Frame',{BorderSizePixel=0,Size=UDim2.fromOffset(25,17),Position=am.value
-and UDim2.new(1,-28,0.5,0)or UDim2.new(1,-47,0.5,0),AnchorPoint=Vector2.new(0,0.5),BackgroundColor3=am.value and am.
-window.theme.AccentColor or am.window.theme.ToggleKnobOff,BackgroundTransparency=1,Parent=am.functionContainer})ao:
-Create('UICorner',{CornerRadius=UDim.new(1,0),Parent=am.indicator})am.indicatorStroke=ao:Create('UIStroke',{Color=am.
-value and am.window.theme.AccentStroke or Color3.fromRGB(255,255,255),Transparency=1,Parent=am.indicator})am.
-indicatorGlow=ao:CreateGlow(am.indicator,'AccentColor',20,1)am.overlay=ao:Create('Frame',{BorderSizePixel=0,Size=UDim2.
-fromScale(1,1),Position=UDim2.fromScale(0,0),AnchorPoint=Vector2.new(0,0),BackgroundColor3=Color3.fromRGB(255,255,255),
-BackgroundTransparency=1,Parent=am.functionContainer},{Visible='DarkToggleOverlay'})ao:Create('UICorner',{CornerRadius=
-UDim.new(0,15),Parent=am.overlay})am.overlayGradient=ao:Create('UIGradient',{Rotation=90,Color=ColorSequence.new{
-ColorSequenceKeypoint.new(0,Color3.fromRGB(30,30,30)),ColorSequenceKeypoint.new(1,Color3.fromRGB(30,30,30))},
-Transparency=NumberSequence.new{NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(1,0.35)},Parent=am.overlay})
-return am.functionContainer end function ae._performToggle(am)al.click()am.value=not am.value am:_animateIndicator()am.
-window:_runGuarded(am,am.callback,am.value)am.window:_persist(am)end function ae._buildFull(am)local an=am.window am.
-main=an:Create('Frame',{Size=UDim2.new(1,-20,0,41),BorderSizePixel=0,Name=am.name,BackgroundColor3=Color3.fromRGB(255,
-255,255),BackgroundTransparency=1,Parent=am.tab.tabPage},{BackgroundTransparency='ElementTransparency'})am.stroke=an:
-StyleElementBody(am.main)am.hoverOverlay=an:CreateHoverOverlay(am.main)am.container=an:Create('Frame',{BorderSizePixel=0
-,Parent=am.main,Size=UDim2.new(0,170,0,16),Position=UDim2.new(0,20,0.5,0),AnchorPoint=Vector2.new(0,0.5),
-BackgroundTransparency=1})am.containerLayout=an:Create('UIListLayout',{Padding=UDim.new(0,5),FillDirection=Enum.
-FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum.HorizontalAlignment.
-Left,Parent=am.container})if am.icon then am.iconLabel=an:Create('ImageLabel',{Image=am.icon,Size=UDim2.fromOffset(16,16
-),BorderSizePixel=0,BackgroundTransparency=1,ImageTransparency=1,Parent=am.container},{ImageColor3='ContentColor'})end
-am.title=an:Create('TextLabel',{Text=ak.t(am.name),Size=UDim2.fromOffset(250,16),BorderSizePixel=0,
+applyVisual(ao,ap,aq)local ar={[ao.topbarItem]={BackgroundTransparency=ap.background},[ao.topbarItemStroke]={
+Transparency=ap.stroke}}if ao.topbarItemIcon then ar[ao.topbarItemIcon]={ImageTransparency=ap.content}end if ao.
+topbarItemTitle then ar[ao.topbarItemTitle]={TextTransparency=ap.content}end if ao.topbarItemInitial then ar[ao.
+topbarItemInitial]={TextTransparency=ap.content}end if ao.topbarItemShadow and ap.shadow then ar[ao.topbarItemShadow]={
+Transparency=ap.shadow}end for as,at in ar do if aq then af.tweenService:Create(as,aq,at):Play()else for au,av in at do
+as[au]=av end end end end return ai end)()end,[29]=function()local aa,ab,ac=a(29)local ad return(function(...)local ae={
+}ae.__index=ae ae.__type='Tag'local af=ab.Parent.Parent.utility local ag,ah,ai,aj,ak=ac(af.variables),ac(af.functions),
+ac(af.image),Color3.fromRGB(255,175,15),TweenInfo.new(0.25,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)function ae.
+new(al,am)am=if typeof(am)=='table'then am else{}local an=setmetatable({window=assert(al,
+'Missing argument #1 (Window expected)'),text=am.text or am.Text or am.title or am.Title,icon=am.icon or am.Icon,color=
+am.color or am.Color or aj},ae)assert(an.icon or(an.text and an.text~=''),'A Tag requires an icon, text, or both.')an.
+main=an.window:Create('Frame',{Name='Tag',Size=UDim2.fromOffset(10,24),AutomaticSize=Enum.AutomaticSize.X,
+BackgroundColor3=an.color,BorderSizePixel=0,LayoutOrder=am.order or am.Order or 0,BackgroundTransparency=1,Parent=an.
+window.tagContainer})an.window:Create('UICorner',{CornerRadius=UDim.new(1,0),Parent=an.main})an.window:Create(
+'UIPadding',{PaddingLeft=UDim.new(0,10),PaddingRight=UDim.new(0,10),Parent=an.main})an.window:Create('UIListLayout',{
+Padding=UDim.new(0,5),FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,
+SortOrder=Enum.SortOrder.LayoutOrder,Parent=an.main})local ao=ah.contrastColor(an.color)an.iconLabel=an.window:Create(
+'ImageLabel',{Name='Icon',Image=an.icon or'',ImageColor3=ao,Size=UDim2.fromOffset(16,16),BackgroundTransparency=1,
+Visible=an.icon~=nil,ZIndex=5,ImageTransparency=1,Parent=an.main})an.title=an.window:Create('TextLabel',{Name='Title',
+AnchorPoint=Vector2.new(0,0.5),Size=UDim2.fromOffset(10,15),AutomaticSize=Enum.AutomaticSize.X,BackgroundTransparency=1,
+Text=an.text or'',TextColor3=ao,TextSize=15,TextXAlignment=Enum.TextXAlignment.Left,TextWrapped=true,RichText=true,
+Visible=an.text~=nil and an.text~='',LayoutOrder=1,ZIndex=5,TextTransparency=1,Parent=an.main},{FontFace='Font'})an.
+window.tagContainer.Visible=true if not an.window.hidden then an:_setShown(true,ak)end return an end function ae.
+_setShown(al,am,an)local ao,ap=if am then 0 else 1,if typeof(an)=='TweenInfo'then an elseif an then ak else nil if ap
+then ag.tweenService:Create(al.main,ap,{BackgroundTransparency=ao}):Play()ag.tweenService:Create(al.iconLabel,ap,{
+ImageTransparency=ao}):Play()ag.tweenService:Create(al.title,ap,{TextTransparency=ao}):Play()else al.main.
+BackgroundTransparency=ao al.iconLabel.ImageTransparency=ao al.title.TextTransparency=ao end end function ae.SetColor(al
+,am)al.color=am local an=ah.contrastColor(am)ag.tweenService:Create(al.main,ak,{BackgroundColor3=am}):Play()ag.
+tweenService:Create(al.iconLabel,ak,{ImageColor3=an}):Play()ag.tweenService:Create(al.title,ak,{TextColor3=an}):Play()
+end function ae.SetText(al,am)al.text=am al.title.Text=am or''al.title.Visible=am~=nil and am~=''end function ae.SetIcon
+(al,am)al.icon=am ai.assign(al.iconLabel,'Image',am)al.iconLabel.Visible=am~=nil end function ae.Set(al,am)if am.color
+or am.Color then al:SetColor(am.color or am.Color)end if am.text or am.Text or am.title or am.Title then al:SetText(am.
+text or am.Text or am.title or am.Title)end if am.icon~=nil or am.Icon~=nil then al:SetIcon(am.icon or am.Icon)end end
+function ae.Remove(al)al.window:DestroySubtree(al.main)local am=table.find(al.window.tags,al)if am then table.remove(al.
+window.tags,am)end if#al.window.tags==0 then al.window.tagContainer.Visible=false end end return ae end)()end,[30]=
+function()local aa,ab,ac=a(30)local ad return(function(...)local ae={}ae.__index=ae ae.__type='Text'local af,ag,ah,ai,aj
+=ac(ab.Parent.Parent.utility.moveable),ac(ab.Parent.Parent.utility.locale),16,14,0.45 function ae.new(ak,al)al=if
+typeof(al)=='table'then al else{}local am=setmetatable({tab=assert(ak,'Missing argument #1 (Tab expected)'),window=ak.
+window,name=tostring(al.name or al.Name or''),text=tostring(al.text or al.Text or''),icon=al.icon or al.Icon},ae)am.main
+=am.window:Create('Frame',{Size=UDim2.new(1,-20,0,0),AutomaticSize=Enum.AutomaticSize.Y,BorderSizePixel=0,Name=if am.
+name~=''then am.name else'Text',BackgroundColor3=Color3.fromRGB(255,255,255),BackgroundTransparency=1,Parent=am.tab.
+tabPage},{BackgroundTransparency='ElementTransparency'})am.stroke=am.window:StyleElementBody(am.main)am.window:Create(
+'UIPadding',{PaddingTop=UDim.new(0,14),PaddingBottom=UDim.new(0,14),PaddingLeft=UDim.new(0,20),PaddingRight=UDim.new(0,
+20),Parent=am.main})am.window:Create('UIListLayout',{Padding=UDim.new(0,6),SortOrder=Enum.SortOrder.LayoutOrder,Parent=
+am.main})am.titleRow=am.window:Create('Frame',{Name='Title',Size=UDim2.new(1,0,0,0),AutomaticSize=Enum.AutomaticSize.Y,
+BorderSizePixel=0,BackgroundTransparency=1,LayoutOrder=1,Parent=am.main})am.window:Create('UIListLayout',{FillDirection=
+Enum.FillDirection.Horizontal,Padding=UDim.new(0,6),SortOrder=Enum.SortOrder.LayoutOrder,VerticalAlignment=Enum.
+VerticalAlignment.Top,Parent=am.titleRow})if am.icon then am.iconLabel=am.window:Create('ImageLabel',{Image=am.icon,Size
+=UDim2.fromOffset(16,16),BorderSizePixel=0,BackgroundTransparency=1,ImageTransparency=1,Parent=am.titleRow},{ImageColor3
+='ContentColor'})end am.title=am.window:Create('TextLabel',{Text=ag.t(am.name),Size=UDim2.new(1,if am.icon then-22 else
+0,0,0),AutomaticSize=Enum.AutomaticSize.Y,BorderSizePixel=0,BackgroundTransparency=1,RichText=true,TextSize=ah,
+TextWrapped=true,TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=1,TextTransparency=1,Parent=am.titleRow},{
+TextColor3='TitlingColor',FontFace='Font'})am.body=am.window:Create('TextLabel',{Text=ag.t(am.text),Size=UDim2.new(1,0,0
+,0),AutomaticSize=Enum.AutomaticSize.Y,BorderSizePixel=0,BackgroundTransparency=1,RichText=true,TextSize=ai,TextWrapped=
+true,TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=2,TextTransparency=1,Parent=am.main},{TextColor3='ContentColor'
+,FontFace='Font'})am:_applyPresence()return am end function ae._applyPresence(ak)ak.titleRow.Visible=ak.name~=''or ak.
+icon~=nil ak.body.Visible=ak.text~=''end function ae.Set(ak,al)ak.text=tostring(al)ak.window:_bindLocale(ak.body,'Text',
+ak.text)ak:_applyPresence()end function ae.SetTitle(ak,al)ak.name=tostring(al)ak.window:_bindLocale(ak.title,'Text',ak.
+name)ak:_applyPresence()end function ae._setShown(ak,al,am)if al then ak.window:_revealCommon(ak,am)else ak.window:
+_hideCommon(ak,am)end ak.window:_reveal(ak.body,{TextTransparency=if al then aj else 1},am)end af(ae)return ae end)()end
+,[31]=function()local aa,ab,ac=a(31)local ad return(function(...)local ae={}ae.__index=ae ae.__type='Toast'local af=ab.
+Parent.Parent.utility local ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au,av,b,c,d,e,f,g,h,i=ac(af.variables),ac(af.
+functions),ac(af.constants),ac(af.image),ac(af.HapticEngine),TweenInfo.new(0.6,Enum.EasingStyle.Exponential,Enum.
+EasingDirection.Out),TweenInfo.new(0.6,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.4,Enum.
+EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.3,Enum.EasingStyle.Exponential,Enum.EasingDirection.
+Out),TweenInfo.new(0.6,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),24,32,18,18,10,28,12,8,140,320,6,UDim2.
+new(0.5,0,0.5,-180),UDim2.new(0.5,0,0.5,180),UDim2.new(0.5,0,0.5,0)local function j(k)return math.clamp(#k*0.06+3,3,9)
+end local function k(l)if type(l)=='number'then return'rbxassetid://'..tostring(l)end return l end function ae.new(l,m,n
+)m=if typeof(m)=='table'then m else{}local o=setmetatable({window=assert(l,'Missing argument #1 (Window expected)'),
+title=m.title or m.Title or'',subtitle=m.subtitle or m.Subtitle,icon=m.icon or m.Icon,avatar=m.avatar or m.Avatar,
+minWidth=m.minWidth or m.MinWidth,subtitleAbove=m.subtitleAbove or m.SubtitleAbove or false,position=m.position or'Top',
+_hovered=false,_dismissed=false},ae)o.duration=m.duration or m.Duration or j(o.title..(o.subtitle or''))local p=o.avatar
+~=nil and o.avatar~=0 local q=p or(o.icon~=nil and o.icon~=0 and o.icon~='')o._iconImage=if p then aj.avatar(o.avatar,
+function(r)if o.iconLabel and not o._dismissed and o.main.Parent then aj.assign(o.iconLabel,'Image',r)end end)elseif q
+then k(o.icon)else nil o._iconSize=if p then ar else aq o._leftPad=if p then au else as o._rightPad=if p then av else at
+o._minWidth=math.clamp(o.minWidth or 0,d,e)local r=o.subtitle~=nil and o.subtitle~=''o.main=o.window:Create('Frame',{
+Name='Toast',BackgroundTransparency=1,Size=UDim2.new(0,0,0,0),BorderSizePixel=0,ZIndex=ai.zIndex.toast,Parent=n or o.
+window.toasts})o.window:Create('UIPadding',{PaddingTop=UDim.new(0,c),Parent=o.main})o.body=o.window:Create('Frame',{
+BackgroundColor3=Color3.fromRGB(255,255,255),Size=UDim2.new(1,0,1,0),Position=if o.position=='Bottom'then h else g,
+AnchorPoint=Vector2.new(0.5,0.5),Active=true,BorderSizePixel=0,ZIndex=ai.zIndex.toast,BackgroundTransparency=1,Parent=o.
+main})o.window:Create('UIGradient',{Rotation=270,Offset=Vector2.new(0,-0.1),Parent=o.body},{Color={'WindowColor',ah.
+toColorSequence}})o.window:Create('UICorner',{CornerRadius=UDim.new(1,0),Parent=o.body})o.stroke=o.window:Create(
+'UIStroke',{Transparency=1,Parent=o.body},{Color='SurfaceStroke'})o.shadow=o.window:CreateGlow(o.body,'ShadowColor',20,1
+)o.window:Create('UIPadding',{PaddingLeft=UDim.new(0,o._leftPad),PaddingRight=UDim.new(0,o._rightPad),Parent=o.body})o.
+window:Create('UIListLayout',{FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.
+Center,HorizontalAlignment=Enum.HorizontalAlignment.Left,SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,b),
+Parent=o.body})if q then o.iconLabel=o.window:Create('ImageLabel',{Image=o._iconImage,Size=UDim2.fromOffset(o._iconSize,
+o._iconSize),BackgroundColor3=Color3.fromRGB(255,255,255),BorderSizePixel=0,LayoutOrder=1,ZIndex=ai.zIndex.toastContent,
+BackgroundTransparency=1,ImageTransparency=1,Parent=o.body},if p then nil else{ImageColor3='ContentColor'})o.window:
+Create('UICorner',{CornerRadius=UDim.new(1,0),Parent=o.iconLabel})end o.container=o.window:Create('Frame',{AutomaticSize
+=Enum.AutomaticSize.X,Size=UDim2.fromOffset(0,r and 32 or 16),BackgroundTransparency=1,BorderSizePixel=0,LayoutOrder=2,
+ZIndex=ai.zIndex.toastContent,Parent=o.body})o.window:Create('UIListLayout',{FillDirection=Enum.FillDirection.Vertical,
+VerticalAlignment=Enum.VerticalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,1),Parent=o.
+container})o.titleLabel=o.window:Create('TextLabel',{Text=o.title,AutomaticSize=Enum.AutomaticSize.X,Size=UDim2.
+fromOffset(0,16),BackgroundTransparency=1,TextSize=16,TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=if o.
+subtitleAbove then 2 else 1,ZIndex=ai.zIndex.toastContent,TextTransparency=1,Parent=o.container},{TextColor3=
+'ContentColor',FontFace='TitleFont'})if r then o.subtitleLabel=o.window:Create('TextLabel',{Text=o.subtitle,
+AutomaticSize=Enum.AutomaticSize.X,Size=UDim2.fromOffset(0,14),BackgroundTransparency=1,TextSize=14,TextXAlignment=Enum.
+TextXAlignment.Left,LayoutOrder=if o.subtitleAbove then 1 else 2,ZIndex=ai.zIndex.toastContent,TextTransparency=1,Parent
+=o.container},{TextColor3='ContentColor',FontFace='Font'})end o.window._toastCount=(o.window._toastCount or 0)+1 o.main.
+LayoutOrder=-o.window._toastCount local s=o.window._liveToasts if not s then s={}o.window._liveToasts=s end local t=s[o.
+main.Parent]if not t then t={}s[o.main.Parent]=t end o._live=t table.insert(t,o)while#t>f do local u=table.remove(t,1)if
+u and u~=o then task.spawn(u._dismiss,u)end end o._connections={o.window:Connect(o.body.MouseEnter,function()o._hovered=
+true end),o.window:Connect(o.body.MouseLeave,function()o._hovered=false end),o.window:Connect(o.body.InputBegan,function
+(u)if u.UserInputType==Enum.UserInputType.MouseButton1 or u.UserInputType==Enum.UserInputType.Touch then o:_dismiss()end
+end)}task.spawn(function()o:_show()end)return o end function ae._measure(l)local m,n=ah.textWidth(l.window.theme.
+TitleFont,16,l.title),if l.subtitleLabel then ah.textWidth(l.window.theme.Font,14,l.subtitle)else 0 local o,p=math.max(m
+,n),if l.iconLabel then l._leftPad+l._iconSize+b else l._leftPad local q=math.clamp(p+o+l._rightPad,l._minWidth,e)if p+o
++l._rightPad>e then local r=e-p-l._rightPad for s,t in{l.titleLabel,l.subtitleLabel}do if t then t.AutomaticSize=Enum.
+AutomaticSize.None t.TextTruncate=Enum.TextTruncate.AtEnd t.Size=UDim2.fromOffset(r,t.Size.Y.Offset)end end end local r=
+if l.subtitleLabel then 31 else 16 local s=math.max(r,if l.iconLabel then l._iconSize else 0)+18 return q,s end function
+ae._show(l)if not l.main.Parent then return end ak.notify()local m,n=l:_measure()if l._dismissed or not l.main.Parent
+then return end l.main.Size=UDim2.new(0,m,0,0)ag.tweenService:Create(l.main,am,{Size=UDim2.new(0,m,0,n+c)}):Play()ag.
+tweenService:Create(l.body,al,{Position=i}):Play()ag.tweenService:Create(l.body,an,{BackgroundTransparency=0}):Play()ag.
+tweenService:Create(l.stroke,an,{Transparency=0.9}):Play()ag.tweenService:Create(l.shadow,ao,{Transparency=0.6}):Play()
+ag.tweenService:Create(l.titleLabel,ao,{TextTransparency=0}):Play()task.wait(0.05)if l._dismissed or not l.main.Parent
+then return end if l.iconLabel then ag.tweenService:Create(l.iconLabel,ao,{BackgroundTransparency=0.95}):Play()ag.
+tweenService:Create(l.iconLabel,ao,{ImageTransparency=0}):Play()end task.wait(0.05)if l._dismissed or not l.main.Parent
+then return end if l.subtitleLabel then ag.tweenService:Create(l.subtitleLabel,ao,{TextTransparency=0.5}):Play()end
+local o=0 while o<l.duration and not l._dismissed and l.main.Parent do local p=task.wait()if not l._hovered then o+=p
+end end l:_dismiss()end function ae._dismiss(l)if l._dismissed then return end l._dismissed=true local m=l._live local n
+=m and table.find(m,l)if m and n then table.remove(m,n)end if not l.main.Parent then return end ag.tweenService:Create(l
+.body,an,{BackgroundTransparency=1}):Play()ag.tweenService:Create(l.stroke,an,{Transparency=1}):Play()ag.tweenService:
+Create(l.shadow,ao,{Transparency=1}):Play()ag.tweenService:Create(l.titleLabel,ao,{TextTransparency=1}):Play()if l.
+subtitleLabel then ag.tweenService:Create(l.subtitleLabel,ao,{TextTransparency=1}):Play()end if l.iconLabel then ag.
+tweenService:Create(l.iconLabel,ao,{ImageTransparency=1,BackgroundTransparency=1}):Play()end ag.tweenService:Create(l.
+body,ap,{Size=UDim2.new(1,-60,1,0)}):Play()local o=ag.tweenService:Create(l.main,ap,{Size=UDim2.new(0,l.main.Size.X.
+Offset,0,0)})o:Play()o.Completed:Wait()if not l.main.Parent then return end for p,q in l._connections do l.window:
+Disconnect(q)end l.window:DestroySubtree(l.main)end return ae end)()end,[32]=function()local aa,ab,ac=a(32)local ad
+return(function(...)local ae={}ae.__index=ae ae.__type='Toggle'local af=ab.Parent.Parent.utility local ag,ah,ai,aj,ak,al
+=ac(af.variables),ac(af.functions),ac(af.moveable),ac(af.lockable),ac(af.locale),ac(af.HapticEngine)function ae.new(am,
+an)an=if typeof(an)=='table'then an else{}local ao=setmetatable({tab=assert(am,'Missing argument #1 (Tab expected)'),
+window=am.window,name=an.name or an.Name or'Switch',icon=an.icon or an.Icon,description=an.description or an.Description
+,forgetState=an.forgetState or an.ForgetState or am.forgetState,compact=am.compact or false,flag=an.flag or an.Flag or(
+not(an.forgetState or an.ForgetState or am.forgetState)and ah.deriveFlagFromName(an.name or an.Name or'Switch')or nil),
+callback=an.callback or an.Callback or function()end,value=if(an.value or an.Value)~=nil then(an.value or an.Value)else
+false},ae)ao.window:_registerControl(ao)if ao.compact then ao:_buildCompact()else ao:_buildFull()end if ao.description
+and not ao.compact then ao.descriptor=ac(ab.Parent.descriptor).new(ao.tab,{description=ao.description})end return ao end
+function ae._buildSwitch(am,an)local ao=am.window am.functionContainer=ao:Create('Frame',{BorderSizePixel=0,Size=UDim2.
+fromOffset(50,21),BackgroundTransparency=1,Parent=an},{BackgroundColor3='ToggleTrack'})ao:Create('UICorner',{
+CornerRadius=UDim.new(0,15),Parent=am.functionContainer})am.containerStroke=ao:Create('UIStroke',{Transparency=1,Parent=
+am.functionContainer},{Color='SurfaceStroke'})am.indicator=ao:Create('Frame',{BorderSizePixel=0,Size=UDim2.fromOffset(25
+,17),Position=am.value and UDim2.new(1,-28,0.5,0)or UDim2.new(1,-47,0.5,0),AnchorPoint=Vector2.new(0,0.5),
+BackgroundColor3=am.value and am.window.theme.AccentColor or am.window.theme.ToggleKnobOff,BackgroundTransparency=1,
+Parent=am.functionContainer})ao:Create('UICorner',{CornerRadius=UDim.new(1,0),Parent=am.indicator})am.indicatorStroke=ao
+:Create('UIStroke',{Color=am.value and am.window.theme.AccentStroke or Color3.fromRGB(255,255,255),Transparency=1,Parent
+=am.indicator})am.indicatorGlow=ao:CreateGlow(am.indicator,'AccentColor',20,1)am.overlay=ao:Create('Frame',{
+BorderSizePixel=0,Size=UDim2.fromScale(1,1),Position=UDim2.fromScale(0,0),AnchorPoint=Vector2.new(0,0),BackgroundColor3=
+Color3.fromRGB(255,255,255),BackgroundTransparency=1,Parent=am.functionContainer},{Visible='DarkToggleOverlay'})ao:
+Create('UICorner',{CornerRadius=UDim.new(0,15),Parent=am.overlay})am.overlayGradient=ao:Create('UIGradient',{Rotation=90
+,Color=ColorSequence.new{ColorSequenceKeypoint.new(0,Color3.fromRGB(30,30,30)),ColorSequenceKeypoint.new(1,Color3.
+fromRGB(30,30,30))},Transparency=NumberSequence.new{NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(1,0.35)},
+Parent=am.overlay})return am.functionContainer end function ae._performToggle(am)al.click()am.value=not am.value am:
+_animateIndicator()am.window:_runGuarded(am,am.callback,am.value)am.window:_persist(am)end function ae._buildFull(am)
+local an=am.window am.main=an:Create('Frame',{Size=UDim2.new(1,-20,0,41),BorderSizePixel=0,Name=am.name,BackgroundColor3
+=Color3.fromRGB(255,255,255),BackgroundTransparency=1,Parent=am.tab.tabPage},{BackgroundTransparency=
+'ElementTransparency'})am.stroke=an:StyleElementBody(am.main)am.hoverOverlay=an:CreateHoverOverlay(am.main)am.container=
+an:Create('Frame',{BorderSizePixel=0,Parent=am.main,Size=UDim2.new(0,170,0,16),Position=UDim2.new(0,20,0.5,0),
+AnchorPoint=Vector2.new(0,0.5),BackgroundTransparency=1})am.containerLayout=an:Create('UIListLayout',{Padding=UDim.new(0
+,5),FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum
+.HorizontalAlignment.Left,Parent=am.container})if am.icon then am.iconLabel=an:Create('ImageLabel',{Image=am.icon,Size=
+UDim2.fromOffset(16,16),BorderSizePixel=0,BackgroundTransparency=1,ImageTransparency=1,Parent=am.container},{ImageColor3
+='ContentColor'})end am.title=an:Create('TextLabel',{Text=ak.t(am.name),Size=UDim2.fromOffset(250,16),BorderSizePixel=0,
 BackgroundTransparency=1,TextSize=16,AutomaticSize=Enum.AutomaticSize.X,TextXAlignment=Enum.TextXAlignment.Left,
 TextWrapped=true,LayoutOrder=1,TextTransparency=1,Parent=am.container},{TextColor3='ContentColor',FontFace='Font'})am.
 interact=an:Create('TextButton',{BackgroundTransparency=1,Size=UDim2.new(1,0,1,0),BorderSizePixel=0,Position=UDim2.
@@ -2027,475 +2075,475 @@ Transparency=0}):Play()else ag.tweenService:Create(am.indicator,an,{Position=UDi
 window.theme.ToggleKnobOff,BackgroundTransparency=am.window.theme.ToggleKnobOffTransparency}):Play()ag.tweenService:
 Create(am.indicatorStroke,an,{Color=Color3.fromRGB(255,255,255),Transparency=0.7}):Play()end end local am,an=TweenInfo.
 new(0.6,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.6,Enum.EasingStyle.Exponential,Enum.
-EasingDirection.Out,0,false,0.35)function ae._setShown(ao,ap,aq)local b=ao.window if ap then b:_revealCommon(ao,aq)b:
-_reveal(ao.indicator,{BackgroundColor3=ao.value and b.theme.AccentColor or b.theme.ToggleKnobOff,BackgroundTransparency=
-ao.value and 0 or b.theme.ToggleKnobOffTransparency},aq,am)b:_reveal(ao.indicatorStroke,{Color=ao.value and b.theme.
-AccentStroke or Color3.fromRGB(255,255,255),Transparency=ao.value and 0 or 0.7},aq,am)b:_reveal(ao.indicatorGlow,{
-Transparency=ao.value and b.theme.AccentGlow or 1},aq,an)b:_reveal(ao.overlay,{BackgroundTransparency=0},aq,am)b:
-_reveal(ao.containerStroke,{Transparency=0.85},aq,am)b:_reveal(ao.functionContainer,{BackgroundTransparency=b.theme.
-ToggleTrackTransparency},aq,am)else b:_hideCommon(ao,aq)b:_reveal(ao.indicator,{BackgroundTransparency=1},aq,am)b:
-_reveal(ao.indicatorStroke,{Transparency=1},aq,am)b:_reveal(ao.indicatorGlow,{Transparency=1},aq,an)b:_reveal(ao.overlay
-,{BackgroundTransparency=1},aq,am)b:_reveal(ao.containerStroke,{Transparency=1},aq,am)b:_reveal(ao.functionContainer,{
-BackgroundTransparency=1},aq,am)end end function ae._refreshTheme(ao)local ap,aq,b=ao.window.theme,TweenInfo.new(0.5,
-Enum.EasingStyle.Quint,Enum.EasingDirection.Out),ag.tweenService b:Create(ao.functionContainer,aq,{
-BackgroundTransparency=ap.ToggleTrackTransparency}):Play()b:Create(ao.indicator,aq,{BackgroundColor3=ao.value and ap.
-AccentColor or ap.ToggleKnobOff,BackgroundTransparency=ao.value and 0 or ap.ToggleKnobOffTransparency}):Play()b:Create(
-ao.indicatorStroke,aq,{Color=ao.value and ap.AccentStroke or Color3.fromRGB(255,255,255)}):Play()if ao.indicatorGlow
-then b:Create(ao.indicatorGlow,aq,{Transparency=ao.value and ap.AccentGlow or 1}):Play()end end function ae._minWidth(ao
-)local ap=90 if ao.icon then ap+=21 end ap+=ah.textWidth(ao.window.theme.Font,16,ak.resolve(ao.name))return ap end ai(ae
-)aj(ae)function ae.Set(ao,ap,aq)local b=ao.value~=ap ao.value=ap if b then ao:_animateIndicator()end if not aq then ao.
-window:_runGuarded(ao,ao.callback,ao.value)ao.window:_persist(ao)end end return ae end)()end,[33]=function()local aa,ab,
-ac=a(33)local ad return(function(...)local ae=ab.Parent.Parent.utility local af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,b,c,d=
-ac(ae.image),ac(ae.functions),ac(ae.persistence),ac(ae.constants),ac(ae.locale),ac(ae.log),ac(ae.HapticEngine),ac(ae.
-windowSizing),ac(ae.layouts),ac(ab.Parent.chrome),ac(ab.Parent.search),ac(ab.Parent.sidebar),ac(ae.variables),ab.Parent.
-Parent.themes,{}d.__index=d local e,f,g,h,i=TweenInfo.new(0.4,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),
-UDim2.fromOffset(185,50),UDim2.fromOffset(50,50),UDim2.new(0.5,0,0,20),UDim2.new(0.5,0,0,12)local j,k,l,m,n,o,p,q,r=
-UDim2.new(0.5,0,0,h.Y.Offset+f.Y.Offset+12),TweenInfo.new(0.2,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),320,41,
-0.55,0.55,0.04,8,2 local function s(t,u):(UDim2,number)local v=b.workspace.CurrentCamera local w=v and v.ViewportSize
-local x=u or am.scaleFor(w,t)return am.fit(if w then w/x else nil,t),x end local t,u={'TopLeftRadius','TopRightRadius',
-'BottomLeftRadius','BottomRightRadius'},(function()return(pcall(function()local t=Instance.new'UICorner't.TopLeftRadius=
-UDim.new(0,1)t:Destroy()end))end)()local function v(w)return if w then an.sidebar else an.top end local w={WindowColor=
-true,ElementGradient=true,ElementStrokeGradient=true,TabBackground=true,TabStroke=true,SliderProgress=true}
-local function x(y,z)if w[y]and typeof(z)=='Color3'then return ColorSequence.new(z)end return z end local function y(z)
-return if typeof(z)=='ColorSequence'then z.Keypoints[1].Value else z end local function z(A,B)local C=A._toastsTop if
-not C then return end local D=if A._collapsedShown then j else i if not B or C.Position==D then C.Position=D return end
-b.tweenService:Create(C,k,{Position=D}):Play()end local function A(B,C)local D=0.299*B.R+0.587*B.G+0.114*B.B local E=if
-D>0.5 then Color3.new(0,0,0)else Color3.new(1,1,1)return B:Lerp(E,C)end local function B(C,D)if D.ElementGradient then
-local E=y(C.ElementGradient)if D.ElementStroke==nil then C.ElementStroke=A(E,0.28)end if D.ElementStrokeGradient==nil
-then C.ElementStrokeGradient=ColorSequence.new(A(E,0.4))end if D.ElementStrokeHover==nil then C.ElementStrokeHover=A(E,
-0.52)end end if D.TabBackground and D.TabStroke==nil then C.TabStroke=ColorSequence.new(A(y(C.TabBackground),0.4))end
-end local function C(D)if typeof(D)~='string'then return nil end for E,F in ai.builtInThemes do if string.lower(F)==
-string.lower(D)then return F end end return nil end local function D(E)if typeof(E)=='table'then return E elseif typeof(
-E)=='string'then local F=c:FindFirstChild(string.lower(E))if F then return ac(F)end ak.warn("Rayfield: unknown theme '"
-..E.."', using default")elseif E~=nil then ak.warn
-[[Rayfield: invalid theme (expected a built-in name or a theme table), using default]]end return ac(c.default)end
-local function E(F)local G,H=table.clone(ac(c.default)),D(F)for I,J in H do G[I]=x(I,J)end if typeof(F)=='table'then B(G
-,H)end local I=if typeof(F)=='table'then F else nil if not(I and(I.Font or I.font))then G.Font=b.brandFont(Enum.
-FontWeight.Medium)end if not(I and(I.TitleFont or I.titleFont))then G.TitleFont=b.brandFont(Enum.FontWeight.SemiBold)end
-return G end function d.new(F)F=if typeof(F)=='table'then F else{}if F.translations or F.Translations then aj.register(F
-.translations or F.Translations)end if F.translator or F.Translator then aj.translator=F.translator or F.Translator end
-aj.setActive(F.locale or F.Locale or aj.detect())local G=F.fallbackFont or F.FallbackFont if G then b.setFallbackFont(G)
-end local H,I=v(F.sidebarLayout or F.SidebarLayout),F.scale or F.Scale if I~=nil and(typeof(I)~='number'or I<=0)then ak.
-warn[[Rayfield: scale must be a number above 0, using automatic scaling]]I=nil end local J,K=s(H.mode,I)local L=
-setmetatable({name=F.name or F.Name or'Rayfield Window',subheading=F.subtitle or F.Subtitle,layout=H,size=J,scale=K,
-fixedScale=I,instances={},connections={},icon=F.icon or F.Icon,showName=F.showName or F.ShowName or'Rayfield',showIcon=F
-.showIcon or F.ShowIcon or ai.icons.rayfield,showIconOnly=F.showIconOnly or F.ShowIconOnly or false,profileText=F.
-profile or F.Profile,themeProperties={},_scaledSurfaces={},actions={},localeProperties={},tabs={},tabSections={},tags={}
-,selectedTab=nil,theme=E(F.theme or F.Theme),themeName=C(F.theme or F.Theme)or'Default',controls={},configuration=(
-function()local L=F.configuration or F.Configuration if not L then return{}end return{autoSave=L.autoSave or L.AutoSave,
-autoLoad=L.autoLoad or L.AutoLoad,fileName=L.fileName or L.FileName,customFolder=L.customFolder or L.CustomFolder}end)()
-},d)L.Flags=setmetatable({},{__index=function(M,N)local O=L.controls[N]return O and O.value end,__newindex=function(M,N,
-O)local P=L.controls[N]if not P then ak.warn("Rayfield: no flag '"..tostring(N).."' to set")return end P:Set(O)end,
-__iter=function()local M return function()local N M,N=next(L.controls,M)if M then return M,N.value end return nil end
-end})L.settings={toggleKeybind=Enum.KeyCode.K,mouseOverride=true,keepOnScreen=true,welcomeToast=true,haptics=true,
-showProfile=true,theme=nil}L.screenGui=L:Create('ScreenGui',{Name=b.httpService:GenerateGUID(false),IgnoreGuiInset=true,
-ResetOnSpawn=false,Enabled=true,DisplayOrder=ai.displayOrder.window,ZIndexBehavior=Enum.ZIndexBehavior.Global,Parent=b.
-guiContainer})L.main=L:Create('Frame',{BackgroundColor3=Color3.fromRGB(255,255,255),Name=L.name,ZIndex=1,AnchorPoint=
-Vector2.new(0.5,0.5),Position=UDim2.new(0.5,0,0.5,0),Size=UDim2.fromOffset((L.size.X.Offset-50),0),
-BackgroundTransparency=1,Visible=false,Parent=L.screenGui})L.uiScale=L:Create('UIScale',{Scale=L.scale,Parent=L.main})L.
-drag=ac(ab.Parent.drag).new(L)L.windowCorner=L:Create('UICorner',{Parent=L.main},{CornerRadius='CornerRoundness'})L.
-windowStroke=L:Create('UIStroke',{Transparency=1,Parent=L.main},{Color='SurfaceStroke'})L.windowGradient=L:Create(
-'UIGradient',{Rotation=270,Offset=Vector2.new(0,-0.1),Parent=L.main},{Color={'WindowColor',ag.toColorSequence}})L.
-bottomFade=L:Create('Frame',{BackgroundColor3=Color3.fromRGB(255,255,255),BorderSizePixel=0,AnchorPoint=Vector2.new(1,1)
-,Position=UDim2.fromScale(1,1),Size=L.layout.fadeSize,ZIndex=ai.zIndex.bottomFade,BackgroundTransparency=1,Parent=L.main
-})L.bottomFadeCorner=L:_roundCorners(L.bottomFade,L.layout.fadeCorners)L.bottomFadeGradient=L:Create('UIGradient',{
-Rotation=270,Offset=Vector2.new(0,0.2),Transparency=L.layout.fadeTransparency,Parent=L.bottomFade},{Color={'WindowColor'
-,function(M)return ColorSequence.new(ag.toColorSequence(M).Keypoints[1].Value)end}})L.topbar=L:Create('Frame',{
-BackgroundTransparency=1,Size=UDim2.new(1,0,0,L.layout.topbarHeight),Active=true,Parent=L.main})L.topContainer=L:Create(
+EasingDirection.Out,0,false,0.35)function ae._setShown(ao,ap,aq)local ar=ao.window if ap then ar:_revealCommon(ao,aq)ar:
+_reveal(ao.indicator,{BackgroundColor3=ao.value and ar.theme.AccentColor or ar.theme.ToggleKnobOff,
+BackgroundTransparency=ao.value and 0 or ar.theme.ToggleKnobOffTransparency},aq,am)ar:_reveal(ao.indicatorStroke,{Color=
+ao.value and ar.theme.AccentStroke or Color3.fromRGB(255,255,255),Transparency=ao.value and 0 or 0.7},aq,am)ar:_reveal(
+ao.indicatorGlow,{Transparency=ao.value and ar.theme.AccentGlow or 1},aq,an)ar:_reveal(ao.overlay,{
+BackgroundTransparency=0},aq,am)ar:_reveal(ao.containerStroke,{Transparency=0.85},aq,am)ar:_reveal(ao.functionContainer,
+{BackgroundTransparency=ar.theme.ToggleTrackTransparency},aq,am)else ar:_hideCommon(ao,aq)ar:_reveal(ao.indicator,{
+BackgroundTransparency=1},aq,am)ar:_reveal(ao.indicatorStroke,{Transparency=1},aq,am)ar:_reveal(ao.indicatorGlow,{
+Transparency=1},aq,an)ar:_reveal(ao.overlay,{BackgroundTransparency=1},aq,am)ar:_reveal(ao.containerStroke,{Transparency
+=1},aq,am)ar:_reveal(ao.functionContainer,{BackgroundTransparency=1},aq,am)end end function ae._refreshTheme(ao)local ap
+,aq,ar=ao.window.theme,TweenInfo.new(0.5,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),ag.tweenService ar:Create(ao.
+functionContainer,aq,{BackgroundTransparency=ap.ToggleTrackTransparency}):Play()ar:Create(ao.indicator,aq,{
+BackgroundColor3=ao.value and ap.AccentColor or ap.ToggleKnobOff,BackgroundTransparency=ao.value and 0 or ap.
+ToggleKnobOffTransparency}):Play()ar:Create(ao.indicatorStroke,aq,{Color=ao.value and ap.AccentStroke or Color3.fromRGB(
+255,255,255)}):Play()if ao.indicatorGlow then ar:Create(ao.indicatorGlow,aq,{Transparency=ao.value and ap.AccentGlow or
+1}):Play()end end function ae._minWidth(ao)local ap=90 if ao.icon then ap+=21 end ap+=ah.textWidth(ao.window.theme.Font,
+16,ak.resolve(ao.name))return ap end ai(ae)aj(ae)function ae.Set(ao,ap,aq)local ar=ao.value~=ap ao.value=ap if ar then
+ao:_animateIndicator()end if not aq then ao.window:_runGuarded(ao,ao.callback,ao.value)ao.window:_persist(ao)end end
+return ae end)()end,[33]=function()local aa,ab,ac=a(33)local ad return(function(...)local ae=ab.Parent.Parent.utility
+local af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at=ac(ae.image),ac(ae.functions),ac(ae.persistence),ac(ae.constants),ac(
+ae.locale),ac(ae.log),ac(ae.HapticEngine),ac(ae.windowSizing),ac(ae.layouts),ac(ab.Parent.chrome),ac(ab.Parent.search),
+ac(ab.Parent.sidebar),ac(ae.variables),ab.Parent.Parent.themes,{}at.__index=at local au,av,b,c,d=TweenInfo.new(0.4,Enum.
+EasingStyle.Exponential,Enum.EasingDirection.Out),UDim2.fromOffset(185,50),UDim2.fromOffset(50,50),UDim2.new(0.5,0,0,20)
+,UDim2.new(0.5,0,0,12)local e,f,g,h,i,j,k,l,m=UDim2.new(0.5,0,0,c.Y.Offset+av.Y.Offset+12),TweenInfo.new(0.2,Enum.
+EasingStyle.Quint,Enum.EasingDirection.Out),320,41,0.55,0.55,0.04,8,2 local function n(o,p):(UDim2,number)local q=ar.
+workspace.CurrentCamera local r=q and q.ViewportSize local s=p or am.scaleFor(r,o)return am.fit(if r then r/s else nil,o
+),s end local o,p={'TopLeftRadius','TopRightRadius','BottomLeftRadius','BottomRightRadius'},(function()return(pcall(
+function()local o=Instance.new'UICorner'o.TopLeftRadius=UDim.new(0,1)o:Destroy()end))end)()local function q(r)return if
+r then an.sidebar else an.top end local r={WindowColor=true,ElementGradient=true,ElementStrokeGradient=true,
+TabBackground=true,TabStroke=true,SliderProgress=true}local function s(t,u)if r[t]and typeof(u)=='Color3'then return
+ColorSequence.new(u)end return u end local function t(u)return if typeof(u)=='ColorSequence'then u.Keypoints[1].Value
+else u end local function u(v,w)local x=v._toastsTop if not x then return end local y=if v._collapsedShown then e else d
+if not w or x.Position==y then x.Position=y return end ar.tweenService:Create(x,f,{Position=y}):Play()end local function
+v(w,x)local y=0.299*w.R+0.587*w.G+0.114*w.B local z=if y>0.5 then Color3.new(0,0,0)else Color3.new(1,1,1)return w:Lerp(z
+,x)end local function w(x,y)if y.ElementGradient then local z=t(x.ElementGradient)if y.ElementStroke==nil then x.
+ElementStroke=v(z,0.28)end if y.ElementStrokeGradient==nil then x.ElementStrokeGradient=ColorSequence.new(v(z,0.4))end
+if y.ElementStrokeHover==nil then x.ElementStrokeHover=v(z,0.52)end end if y.TabBackground and y.TabStroke==nil then x.
+TabStroke=ColorSequence.new(v(t(x.TabBackground),0.4))end end local function x(y)if typeof(y)~='string'then return nil
+end for z,A in ai.builtInThemes do if string.lower(A)==string.lower(y)then return A end end return nil end
+local function y(z)if typeof(z)=='table'then return z elseif typeof(z)=='string'then local A=as:FindFirstChild(string.
+lower(z))if A then return ac(A)end ak.warn("Rayfield: unknown theme '"..z.."', using default")elseif z~=nil then ak.warn
+[[Rayfield: invalid theme (expected a built-in name or a theme table), using default]]end return ac(as.default)end
+local function z(A)local B,C=table.clone(ac(as.default)),y(A)for D,E in C do B[D]=s(D,E)end if typeof(A)=='table'then w(
+B,C)end local D=if typeof(A)=='table'then A else nil if not(D and(D.Font or D.font))then B.Font=ar.brandFont(Enum.
+FontWeight.Medium)end if not(D and(D.TitleFont or D.titleFont))then B.TitleFont=ar.brandFont(Enum.FontWeight.SemiBold)
+end return B end function at.new(A)A=if typeof(A)=='table'then A else{}if A.translations or A.Translations then aj.
+register(A.translations or A.Translations)end if A.translator or A.Translator then aj.translator=A.translator or A.
+Translator end aj.setActive(A.locale or A.Locale or aj.detect())local B=A.fallbackFont or A.FallbackFont if B then ar.
+setFallbackFont(B)end local C,D=q(A.sidebarLayout or A.SidebarLayout),A.scale or A.Scale if D~=nil and(typeof(D)~=
+'number'or D<=0)then ak.warn[[Rayfield: scale must be a number above 0, using automatic scaling]]D=nil end local E,F=n(C
+.mode,D)local G=setmetatable({name=A.name or A.Name or'Rayfield Window',subheading=A.subtitle or A.Subtitle,layout=C,
+size=E,scale=F,fixedScale=D,instances={},connections={},icon=A.icon or A.Icon,showName=A.showName or A.ShowName or
+'Rayfield',showIcon=A.showIcon or A.ShowIcon or ai.icons.rayfield,showIconOnly=A.showIconOnly or A.ShowIconOnly or false
+,profileText=A.profile or A.Profile,themeProperties={},_scaledSurfaces={},actions={},localeProperties={},tabs={},
+tabSections={},tags={},selectedTab=nil,theme=z(A.theme or A.Theme),themeName=x(A.theme or A.Theme)or'Default',controls={
+},configuration=(function()local G=A.configuration or A.Configuration if not G then return{}end return{autoSave=G.
+autoSave or G.AutoSave,autoLoad=G.autoLoad or G.AutoLoad,fileName=G.fileName or G.FileName,customFolder=G.customFolder
+or G.CustomFolder}end)()},at)G.Flags=setmetatable({},{__index=function(H,I)local J=G.controls[I]return J and J.value end
+,__newindex=function(H,I,J)local K=G.controls[I]if not K then ak.warn("Rayfield: no flag '"..tostring(I).."' to set")
+return end K:Set(J)end,__iter=function()local H return function()local I H,I=next(G.controls,H)if H then return H,I.
+value end return nil end end})G.settings={toggleKeybind=Enum.KeyCode.K,mouseOverride=true,keepOnScreen=true,welcomeToast
+=true,haptics=true,showProfile=true,theme=nil}G.screenGui=G:Create('ScreenGui',{Name=ar.httpService:GenerateGUID(false),
+IgnoreGuiInset=true,ResetOnSpawn=false,Enabled=true,DisplayOrder=ai.displayOrder.window,ZIndexBehavior=Enum.
+ZIndexBehavior.Global,Parent=ar.guiContainer})G.main=G:Create('Frame',{BackgroundColor3=Color3.fromRGB(255,255,255),Name
+=G.name,ZIndex=1,AnchorPoint=Vector2.new(0.5,0.5),Position=UDim2.new(0.5,0,0.5,0),Size=UDim2.fromOffset((G.size.X.Offset
+-50),0),BackgroundTransparency=1,Visible=false,Parent=G.screenGui})G.uiScale=G:Create('UIScale',{Scale=G.scale,Parent=G.
+main})G.drag=ac(ab.Parent.drag).new(G)G.windowCorner=G:Create('UICorner',{Parent=G.main},{CornerRadius='CornerRoundness'
+})G.windowStroke=G:Create('UIStroke',{Transparency=1,Parent=G.main},{Color='SurfaceStroke'})G.windowGradient=G:Create(
+'UIGradient',{Rotation=270,Offset=Vector2.new(0,-0.1),Parent=G.main},{Color={'WindowColor',ag.toColorSequence}})G.
+bottomFade=G:Create('Frame',{BackgroundColor3=Color3.fromRGB(255,255,255),BorderSizePixel=0,AnchorPoint=Vector2.new(1,1)
+,Position=UDim2.fromScale(1,1),Size=G.layout.fadeSize,ZIndex=ai.zIndex.bottomFade,BackgroundTransparency=1,Parent=G.main
+})G.bottomFadeCorner=G:_roundCorners(G.bottomFade,G.layout.fadeCorners)G.bottomFadeGradient=G:Create('UIGradient',{
+Rotation=270,Offset=Vector2.new(0,0.2),Transparency=G.layout.fadeTransparency,Parent=G.bottomFade},{Color={'WindowColor'
+,function(H)return ColorSequence.new(ag.toColorSequence(H).Keypoints[1].Value)end}})G.topbar=G:Create('Frame',{
+BackgroundTransparency=1,Size=UDim2.new(1,0,0,G.layout.topbarHeight),Active=true,Parent=G.main})G.topContainer=G:Create(
 'Frame',{Size=UDim2.new(0,300,0,24),Position=UDim2.new(0,25,0.5,0),AutomaticSize=Enum.AutomaticSize.Y,AnchorPoint=
-Vector2.new(0,0.5),BackgroundTransparency=1,Parent=L.topbar})L.topContainerLayout=L:Create('UIListLayout',{Padding=UDim.
+Vector2.new(0,0.5),BackgroundTransparency=1,Parent=G.topbar})G.topContainerLayout=G:Create('UIListLayout',{Padding=UDim.
 new(0,8),FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment
-=Enum.HorizontalAlignment.Left,SortOrder=Enum.SortOrder.LayoutOrder,Parent=L.topContainer})L.titleContainer=L:Create(
+=Enum.HorizontalAlignment.Left,SortOrder=Enum.SortOrder.LayoutOrder,Parent=G.topContainer})G.titleContainer=G:Create(
 'Frame',{Size=UDim2.fromOffset(50,24),Position=UDim2.new(0,25,0.5,0),AutomaticSize=Enum.AutomaticSize.XY,AnchorPoint=
-Vector2.new(0,0.5),BackgroundTransparency=1,LayoutOrder=1,Parent=L.topContainer})L.titleContainerLayout=L:Create(
+Vector2.new(0,0.5),BackgroundTransparency=1,LayoutOrder=1,Parent=G.topContainer})G.titleContainerLayout=G:Create(
 'UIListLayout',{Padding=UDim.new(0,3),FillDirection=Enum.FillDirection.Vertical,VerticalAlignment=Enum.VerticalAlignment
-.Center,SortOrder=Enum.SortOrder.LayoutOrder,Parent=L.titleContainer})if L.name then L.title=L:Create('TextLabel',{Text=
-aj.t(L.name),FontFace=b.brandFont(Enum.FontWeight.Medium),Size=UDim2.fromOffset(50,20),AutomaticSize=Enum.AutomaticSize.
-X,BackgroundTransparency=1,TextSize=20,TextXAlignment=Enum.TextXAlignment.Left,TextWrapped=true,TextTransparency=1,
-Parent=L.titleContainer},{FontFace='Font',TextColor3='TitlingColor'})end if L.icon then L.topbarIcon=L:Create(
-'ImageLabel',{Image=L.icon,BackgroundTransparency=1,Size=UDim2.fromOffset(32,32),ImageTransparency=1,Parent=L.
-topContainer},{ImageColor3='TitlingColor'})end if L.subheading then L.subtitle=L:Create('TextLabel',{Text=aj.t(L.
+.Center,SortOrder=Enum.SortOrder.LayoutOrder,Parent=G.titleContainer})if G.name then G.title=G:Create('TextLabel',{Text=
+aj.t(G.name),FontFace=ar.brandFont(Enum.FontWeight.Medium),Size=UDim2.fromOffset(50,20),AutomaticSize=Enum.AutomaticSize
+.X,BackgroundTransparency=1,TextSize=20,TextXAlignment=Enum.TextXAlignment.Left,TextWrapped=true,TextTransparency=1,
+Parent=G.titleContainer},{FontFace='Font',TextColor3='TitlingColor'})end if G.icon then G.topbarIcon=G:Create(
+'ImageLabel',{Image=G.icon,BackgroundTransparency=1,Size=UDim2.fromOffset(32,32),ImageTransparency=1,Parent=G.
+topContainer},{ImageColor3='TitlingColor'})end if G.subheading then G.subtitle=G:Create('TextLabel',{Text=aj.t(G.
 subheading),Size=UDim2.fromOffset(50,12),AutomaticSize=Enum.AutomaticSize.X,BackgroundTransparency=1,TextSize=12,
-TextXAlignment=Enum.TextXAlignment.Left,TextWrapped=true,TextTransparency=1,Parent=L.titleContainer},{TextColor3=
-'TitlingColor',FontFace='Font'})end L.tagContainer=L:Create('Frame',{AnchorPoint=Vector2.new(0,0.5),Position=UDim2.new(0
+TextXAlignment=Enum.TextXAlignment.Left,TextWrapped=true,TextTransparency=1,Parent=G.titleContainer},{TextColor3=
+'TitlingColor',FontFace='Font'})end G.tagContainer=G:Create('Frame',{AnchorPoint=Vector2.new(0,0.5),Position=UDim2.new(0
 ,25,0.5,0),Size=UDim2.fromOffset(50,24),AutomaticSize=Enum.AutomaticSize.XY,BackgroundTransparency=1,LayoutOrder=2,
-Visible=false,Parent=L.topContainer})L.tagContainerLayout=L:Create('UIListLayout',{Padding=UDim.new(0,5),FillDirection=
+Visible=false,Parent=G.topContainer})G.tagContainerLayout=G:Create('UIListLayout',{Padding=UDim.new(0,5),FillDirection=
 Enum.FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,
-Parent=L.tagContainer})L.windowShadow=L:CreateGlow(L.main,'ShadowColor',20,1)L.elements=L:Create('Frame',{Size=UDim2.
-new(1,0,1,-L.layout.chromeHeight),Position=UDim2.fromScale(1,1),AnchorPoint=Vector2.new(1,1),BackgroundColor3=Color3.
-fromRGB(255,255,255),BorderSizePixel=0,BackgroundTransparency=1,ClipsDescendants=true,Parent=L.main})if L.layout.mode==
-'sidebar'then L.elementsCorner=L:_roundCorners(L.elements,L.layout.cardCorners)L.elementsStroke=L:Create('UIStroke',{
-ApplyStrokeMode=Enum.ApplyStrokeMode.Border,Transparency=1,Parent=L.elements},{Color='SurfaceStroke'})L:Create(
-'UIGradient',{Rotation=L.layout.cardStrokeRotation,Transparency=L.layout.cardStrokeTransparency,Parent=L.elementsStroke}
-)end L.elementsLayout=L:Create('UIPageLayout',{Padding=UDim.new(0,0),FillDirection=L.layout.pageDirection,
+Parent=G.tagContainer})G.windowShadow=G:CreateGlow(G.main,'ShadowColor',20,1)G.elements=G:Create('Frame',{Size=UDim2.
+new(1,0,1,-G.layout.chromeHeight),Position=UDim2.fromScale(1,1),AnchorPoint=Vector2.new(1,1),BackgroundColor3=Color3.
+fromRGB(255,255,255),BorderSizePixel=0,BackgroundTransparency=1,ClipsDescendants=true,Parent=G.main})if G.layout.mode==
+'sidebar'then G.elementsCorner=G:_roundCorners(G.elements,G.layout.cardCorners)G.elementsStroke=G:Create('UIStroke',{
+ApplyStrokeMode=Enum.ApplyStrokeMode.Border,Transparency=1,Parent=G.elements},{Color='SurfaceStroke'})G:Create(
+'UIGradient',{Rotation=G.layout.cardStrokeRotation,Transparency=G.layout.cardStrokeTransparency,Parent=G.elementsStroke}
+)end G.elementsLayout=G:Create('UIPageLayout',{Padding=UDim.new(0,0),FillDirection=G.layout.pageDirection,
 VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum.HorizontalAlignment.Center,SortOrder=Enum.
 SortOrder.LayoutOrder,ScrollWheelInputEnabled=false,GamepadInputEnabled=false,TouchInputEnabled=false,EasingStyle=Enum.
-EasingStyle.Exponential,TweenTime=0.4,Parent=L.elements})if L.layout.mode=='sidebar'then aq.build(L,L.layout)aq.
-applyWidth(L,an.railWidthFor(L.layout,L.size.X.Offset))else L.tabList=L:Create('ScrollingFrame',{Name='Tabs',Active=true
-,Size=UDim2.new(1,0,0,L.layout.tabStripHeight),Position=UDim2.new(0.5,0,0,L.layout.tabStripTop),AnchorPoint=Vector2.new(
+EasingStyle.Exponential,TweenTime=0.4,Parent=G.elements})if G.layout.mode=='sidebar'then aq.build(G,G.layout)aq.
+applyWidth(G,an.railWidthFor(G.layout,G.size.X.Offset))else G.tabList=G:Create('ScrollingFrame',{Name='Tabs',Active=true
+,Size=UDim2.new(1,0,0,G.layout.tabStripHeight),Position=UDim2.new(0.5,0,0,G.layout.tabStripTop),AnchorPoint=Vector2.new(
 0.5,0),BackgroundTransparency=1,AutomaticCanvasSize=Enum.AutomaticSize.X,CanvasSize=UDim2.new(0,0,0,0),
-ScrollBarThickness=0,ScrollBarImageTransparency=1,ScrollingDirection=Enum.ScrollingDirection.X,Parent=L.main})L.
-tabListLayout=L:Create('UIListLayout',{Padding=UDim.new(0,7),FillDirection=Enum.FillDirection.Horizontal,
+ScrollBarThickness=0,ScrollBarImageTransparency=1,ScrollingDirection=Enum.ScrollingDirection.X,Parent=G.main})G.
+tabListLayout=G:Create('UIListLayout',{Padding=UDim.new(0,7),FillDirection=Enum.FillDirection.Horizontal,
 VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum.HorizontalAlignment.Left,SortOrder=Enum.
-SortOrder.LayoutOrder,Parent=L.tabList})L:Create('UIPadding',{PaddingLeft=UDim.new(0,22),PaddingRight=UDim.new(0,10),
-Parent=L.tabList})end L.actionContainer=L:Create('Frame',{AnchorPoint=Vector2.new(1,0.5),AutomaticSize=Enum.
-AutomaticSize.X,Size=UDim2.fromOffset(0,24),Position=UDim2.new(1,-20,0.5,0),BackgroundTransparency=1,Parent=L.topbar})L.
-actionsListLayout=L:Create('UIListLayout',{Padding=UDim.new(0,5),FillDirection=Enum.FillDirection.Horizontal,
+SortOrder.LayoutOrder,Parent=G.tabList})G:Create('UIPadding',{PaddingLeft=UDim.new(0,22),PaddingRight=UDim.new(0,10),
+Parent=G.tabList})end G.actionContainer=G:Create('Frame',{AnchorPoint=Vector2.new(1,0.5),AutomaticSize=Enum.
+AutomaticSize.X,Size=UDim2.fromOffset(0,24),Position=UDim2.new(1,-20,0.5,0),BackgroundTransparency=1,Parent=G.topbar})G.
+actionsListLayout=G:Create('UIListLayout',{Padding=UDim.new(0,5),FillDirection=Enum.FillDirection.Horizontal,
 VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalAlignment=Enum.HorizontalAlignment.Right,SortOrder=Enum.
-SortOrder.LayoutOrder,Parent=L.actionContainer})L.rfSettings=L:CreateTab{name='Rayfield Settings',customOrder=1000,
-neglectSelector=true,forgetState=true}ac(ab.Parent.action).new(L,{name='Close',icon=ai.icons.close,order=1,callback=
-function()L:ToggleHide()end})L.minimiseAction=ac(ab.Parent.action).new(L,{name='Minimise',icon=ai.icons.minimise,order=2
-,callback=function()L:ToggleMinimise()end})L.settingsAction=ac(ab.Parent.action).new(L,{name='Settings',icon=ai.icons.
-settings,order=3,linkedTab=L.rfSettings,callback=function()L.rfSettings:Select()end})ap.build(L)L:_applyRailWidth()L.
-unloaded=false L.minimised=false L.hidden=true L.animating=false L._revealing=false L.hasShownOnce=false L.
-_collapsedShown=false L:LoadSettings()if L.settings.theme then L:ChangeTheme(L.settings.theme)end if L.layout.mode==
-'sidebar'then aq.reflowProfile(L)aq.setSubtitle(L,L.profileText)end al.setContainer(L.screenGui)al.setEnabled(L.settings
-.haptics)ao.buildCollapsedFace(L)L:_bindKeybind()L:_bindMouseOverride()L:_bindTopbarDrag()L:_watchViewport()L:
-_buildSettingsUI()L:_syncLiveAnimation()return L end function d._syncLiveAnimation(F)if not F.theme.LiveAnimation then F
-._liveAnimating=false return end if F._liveAnimating then return end F._liveAnimating=true F._liveGeneration=(F.
-_liveGeneration or 0)+1 local G=F._liveGeneration task.spawn(function()local H,I=true,TweenInfo.new(10,Enum.EasingStyle.
-Quint,Enum.EasingDirection.Out)while F._liveGeneration==G and F._liveAnimating and not F.unloaded do local J=b.
-tweenService:Create(F.windowGradient,I,{Offset=Vector2.new(if H then 0.4 else-0.2,0),Rotation=(if H then 220 else 280)})
-F._liveTween=J J:Play()J.Completed:Wait()H=not H end if F._liveGeneration==G then F._liveAnimating=false F._liveTween=
-nil end end)end function d._builtInThemeName(F)return F.themeName end function d.ChangeTheme(F,G)F.themeName=C(G)local H
-=if typeof(G)=='table'then G else E(G)for I,J in H do F.theme[I]=x(I,J)end if typeof(G)=='table'then B(F.theme,H)end for
-I,J in F.themeProperties do for K,L in J do local M=if typeof(L)=='table'then L[2](F.theme[L[1] ])else F.theme[L]if
-typeof(M)=='Color3'or typeof(M)=='number'then b.tweenService:Create(I,TweenInfo.new(0.5,Enum.EasingStyle.Quint,Enum.
-EasingDirection.Out),{[K]=M}):Play()else I[K]=M end end end if F.hidden then F._themeRefreshPending=true else F:
-_refreshElementThemes()end F:_syncLiveAnimation()end function d._refreshElementThemes(F)for G,H in F.tabs do for I,J in
-H.elements do if J._refreshTheme then J:_refreshTheme()end end end end function d.CreateTab(F,G)assert(not F.unloaded,
-'Cannot create a tab on an unloaded window.')local H=ac(ab.Parent.tab).new(F,G)table.insert(F.tabs,H)if not H.
-neglectSelector then local I=true for J,K in F.tabs do if K~=H and not K.neglectSelector then I=false break end end if I
-then H:Select(true)end if not F.hidden and not F.minimised then H.topbarItem.Visible=true H:_applyVisual(if F.
-selectedTab==H then'selected'else'unselected',TweenInfo.new(0.4,Enum.EasingStyle.Quint,Enum.EasingDirection.Out))end end
-return H end function d.CreateSection(F,G)assert(not F.unloaded,'Cannot create a section on an unloaded window.')local H
-=ac(ab.Parent.tabSection).new(F,G)table.insert(F.tabSections,H)if not H.inert and not F.hidden and not F.minimised then
-H:_setVisible(true)H:_setShown(true,TweenInfo.new(0.4,Enum.EasingStyle.Quint,Enum.EasingDirection.Out))end return H end
-function d._setTabSectionsShown(F,G,H)for I,J in F.tabSections do J:_setShown(G,H)end end function d.
-_setTabSectionsVisible(F,G)for H,I in F.tabSections do I:_setVisible(G)end end function d.CreateTag(F,G)assert(not F.
-unloaded,'Cannot create a tag on an unloaded window.')local H=ac(ab.Parent.tag).new(F,G)table.insert(F.tags,H)return H
-end function d._registerControl(F,G)if not G.flag or G.flag==''or G.forgetState then return end local H=G.flag if F.
-controls[H]then local I=2 while F.controls[H..I]do I+=1 end H=H..I ak.warn("Rayfield: duplicate config flag '"..G.flag..
-"', saving this one as '"..H.."'. Set a unique flag to keep it stable across sessions.")end G.flag=H F.controls[H]=G
-return H end function d._restoreLate(F,G)if not F._loadedConfig or not G.flag or G.forgetState then return end local H=F
-._loading F._loading=true ah.applyTo(G,F._loadedConfig[G.flag])F._loading=H end function d._persist(F,G)if G.flag and
-not G.forgetState and F.configuration.autoSave and not F._loading then task.spawn(F.Save,F)end end function d.
-_unregisterControl(F,G)if G.flag and F.controls[G.flag]==G then F.controls[G.flag]=nil end end function d._keybindUsing(
-F,G,H)if typeof(G)~='EnumItem'or G==Enum.KeyCode.Unknown then return nil end for I,J in F.tabs do for K,L in J.elements
-do if L~=H and L.__type=='Keybind'and L.value==G then return L end end end return nil end function d.Notify(F,G)if F.
-unloaded then return end if not F.notifications then F.notifications=F:Create('Frame',{Name='Notifications',Size=UDim2.
-new(0,300,0,800),Position=UDim2.new(1,-20,1,-20),AnchorPoint=Vector2.new(1,1),BackgroundTransparency=1,Parent=F.
-screenGui})F:_scaleSurface(F.notifications)F:Create('UIListLayout',{FillDirection=Enum.FillDirection.Vertical,
+SortOrder.LayoutOrder,Parent=G.actionContainer})G.rfSettings=G:CreateTab{name='Rayfield Settings',customOrder=1000,
+neglectSelector=true,forgetState=true}ac(ab.Parent.action).new(G,{name='Close',icon=ai.icons.close,order=1,callback=
+function()G:ToggleHide()end})G.minimiseAction=ac(ab.Parent.action).new(G,{name='Minimise',icon=ai.icons.minimise,order=2
+,callback=function()G:ToggleMinimise()end})G.settingsAction=ac(ab.Parent.action).new(G,{name='Settings',icon=ai.icons.
+settings,order=3,linkedTab=G.rfSettings,callback=function()G.rfSettings:Select()end})ap.build(G)G:_applyRailWidth()G.
+unloaded=false G.minimised=false G.hidden=true G.animating=false G._revealing=false G.hasShownOnce=false G.
+_collapsedShown=false G:LoadSettings()if G.settings.theme then G:ChangeTheme(G.settings.theme)end if G.layout.mode==
+'sidebar'then aq.reflowProfile(G)aq.setSubtitle(G,G.profileText)end al.setContainer(G.screenGui)al.setEnabled(G.settings
+.haptics)ao.buildCollapsedFace(G)G:_bindKeybind()G:_bindMouseOverride()G:_bindTopbarDrag()G:_watchViewport()G:
+_buildSettingsUI()G:_syncLiveAnimation()return G end function at._syncLiveAnimation(A)if not A.theme.LiveAnimation then
+A._liveAnimating=false return end if A._liveAnimating then return end A._liveAnimating=true A._liveGeneration=(A.
+_liveGeneration or 0)+1 local B=A._liveGeneration task.spawn(function()local C,D=true,TweenInfo.new(10,Enum.EasingStyle.
+Quint,Enum.EasingDirection.Out)while A._liveGeneration==B and A._liveAnimating and not A.unloaded do local E=ar.
+tweenService:Create(A.windowGradient,D,{Offset=Vector2.new(if C then 0.4 else-0.2,0),Rotation=(if C then 220 else 280)})
+A._liveTween=E E:Play()E.Completed:Wait()C=not C end if A._liveGeneration==B then A._liveAnimating=false A._liveTween=
+nil end end)end function at._builtInThemeName(A)return A.themeName end function at.ChangeTheme(A,B)A.themeName=x(B)local
+C=if typeof(B)=='table'then B else z(B)for D,E in C do A.theme[D]=s(D,E)end if typeof(B)=='table'then w(A.theme,C)end
+for D,E in A.themeProperties do for F,G in E do local H=if typeof(G)=='table'then G[2](A.theme[G[1] ])else A.theme[G]if
+typeof(H)=='Color3'or typeof(H)=='number'then ar.tweenService:Create(D,TweenInfo.new(0.5,Enum.EasingStyle.Quint,Enum.
+EasingDirection.Out),{[F]=H}):Play()else D[F]=H end end end if A.hidden then A._themeRefreshPending=true else A:
+_refreshElementThemes()end A:_syncLiveAnimation()end function at._refreshElementThemes(A)for B,C in A.tabs do for D,E in
+C.elements do if E._refreshTheme then E:_refreshTheme()end end end end function at.CreateTab(A,B)assert(not A.unloaded,
+'Cannot create a tab on an unloaded window.')local C=ac(ab.Parent.tab).new(A,B)table.insert(A.tabs,C)if not C.
+neglectSelector then local D=true for E,F in A.tabs do if F~=C and not F.neglectSelector then D=false break end end if D
+then C:Select(true)end if not A.hidden and not A.minimised then C.topbarItem.Visible=true C:_applyVisual(if A.
+selectedTab==C then'selected'else'unselected',TweenInfo.new(0.4,Enum.EasingStyle.Quint,Enum.EasingDirection.Out))end end
+return C end function at.CreateSection(A,B)assert(not A.unloaded,'Cannot create a section on an unloaded window.')local
+C=ac(ab.Parent.tabSection).new(A,B)table.insert(A.tabSections,C)if not C.inert and not A.hidden and not A.minimised then
+C:_setVisible(true)C:_setShown(true,TweenInfo.new(0.4,Enum.EasingStyle.Quint,Enum.EasingDirection.Out))end return C end
+function at._setTabSectionsShown(A,B,C)for D,E in A.tabSections do E:_setShown(B,C)end end function at.
+_setTabSectionsVisible(A,B)for C,D in A.tabSections do D:_setVisible(B)end end function at.CreateTag(A,B)assert(not A.
+unloaded,'Cannot create a tag on an unloaded window.')local C=ac(ab.Parent.tag).new(A,B)table.insert(A.tags,C)return C
+end function at._registerControl(A,B)if not B.flag or B.flag==''or B.forgetState then return end local C=B.flag if A.
+controls[C]then local D=2 while A.controls[C..D]do D+=1 end C=C..D ak.warn("Rayfield: duplicate config flag '"..B.flag..
+"', saving this one as '"..C.."'. Set a unique flag to keep it stable across sessions.")end B.flag=C A.controls[C]=B
+return C end function at._restoreLate(A,B)if not A._loadedConfig or not B.flag or B.forgetState then return end local C=
+A._loading A._loading=true ah.applyTo(B,A._loadedConfig[B.flag])A._loading=C end function at._persist(A,B)if B.flag and
+not B.forgetState and A.configuration.autoSave and not A._loading then task.spawn(A.Save,A)end end function at.
+_unregisterControl(A,B)if B.flag and A.controls[B.flag]==B then A.controls[B.flag]=nil end end function at._keybindUsing
+(A,B,C)if typeof(B)~='EnumItem'or B==Enum.KeyCode.Unknown then return nil end for D,E in A.tabs do for F,G in E.elements
+do if G~=C and G.__type=='Keybind'and G.value==B then return G end end end return nil end function at.Notify(A,B)if A.
+unloaded then return end if not A.notifications then A.notifications=A:Create('Frame',{Name='Notifications',Size=UDim2.
+new(0,300,0,800),Position=UDim2.new(1,-20,1,-20),AnchorPoint=Vector2.new(1,1),BackgroundTransparency=1,Parent=A.
+screenGui})A:_scaleSurface(A.notifications)A:Create('UIListLayout',{FillDirection=Enum.FillDirection.Vertical,
 VerticalAlignment=Enum.VerticalAlignment.Bottom,HorizontalAlignment=Enum.HorizontalAlignment.Center,SortOrder=Enum.
-SortOrder.LayoutOrder,Padding=UDim.new(0,0),Parent=F.notifications})end return ac(ab.Parent.notification).new(F,G)end
-function d.CreateNameplate(F,G)assert(not F.unloaded,'Cannot create nameplates on an unloaded window.')local H=ac(ab.
-Parent.nameplate).new(F,G)F._nameplates=F._nameplates or{}table.insert(F._nameplates,H)return H end function d.Toast(F,G
-)if F.unloaded then return end G=if typeof(G)=='table'then G else{}local H=G.position or G.Position or'Top'local I=
-typeof(H)~='string'or H:lower()~='bottom'G.position=if I then'Top'else'Bottom'local J=if I then'_toastsTop'else
-'_toastsBottom'local K=F[J]if not K then K=F:Create('Frame',{Name='Toasts',Size=UDim2.new(0,l,1,-24),Position=if I then
-i else UDim2.new(0.5,0,1,-12),AnchorPoint=if I then Vector2.new(0.5,0)else Vector2.new(0.5,1),BackgroundTransparency=1,
-ZIndex=ai.zIndex.toast,Parent=F.screenGui})F:Create('UIListLayout',{FillDirection=Enum.FillDirection.Vertical,
-VerticalAlignment=if I then Enum.VerticalAlignment.Top else Enum.VerticalAlignment.Bottom,HorizontalAlignment=Enum.
-HorizontalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,0),Parent=K})F[J]=K F:_scaleSurface(K
-)if I then z(F,false)end end return ac(ab.Parent.toast).new(F,G,K)end function d.Popup(F,G)if F.unloaded then return end
-return ac(ab.Parent.popup).new(F,G)end function d.Hide(F)if F.animating or F.hidden then return end if F._searching then
-ap.close(F,{showTabs=false,jumpTo=F.selectedTab and F.selectedTab.tabPage})end if F._recordingKeybind then F.
-_recordingKeybind:_stopRecording()end F.animating=true F._revealing=true F.hidden=true F.collapsedInteract.Visible=false
-if F.minimised then F.minimised=false F.minimiseAction:_setIcon(ai.icons.minimise)end F._restorePosition=F.main.Position
-local G,H=F:_collapsedRect()local I,J,K,L=TweenInfo.new(0.18,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),TweenInfo.
+SortOrder.LayoutOrder,Padding=UDim.new(0,0),Parent=A.notifications})end return ac(ab.Parent.notification).new(A,B)end
+function at.CreateNameplate(A,B)assert(not A.unloaded,'Cannot create nameplates on an unloaded window.')local C=ac(ab.
+Parent.nameplate).new(A,B)A._nameplates=A._nameplates or{}table.insert(A._nameplates,C)return C end function at.Toast(A,
+B)if A.unloaded then return end B=if typeof(B)=='table'then B else{}local C=B.position or B.Position or'Top'local D=
+typeof(C)~='string'or C:lower()~='bottom'B.position=if D then'Top'else'Bottom'local E=if D then'_toastsTop'else
+'_toastsBottom'local F=A[E]if not F then F=A:Create('Frame',{Name='Toasts',Size=UDim2.new(0,g,1,-24),Position=if D then
+d else UDim2.new(0.5,0,1,-12),AnchorPoint=if D then Vector2.new(0.5,0)else Vector2.new(0.5,1),BackgroundTransparency=1,
+ZIndex=ai.zIndex.toast,Parent=A.screenGui})A:Create('UIListLayout',{FillDirection=Enum.FillDirection.Vertical,
+VerticalAlignment=if D then Enum.VerticalAlignment.Top else Enum.VerticalAlignment.Bottom,HorizontalAlignment=Enum.
+HorizontalAlignment.Center,SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,0),Parent=F})A[E]=F A:_scaleSurface(F
+)if D then u(A,false)end end return ac(ab.Parent.toast).new(A,B,F)end function at.Popup(A,B)if A.unloaded then return
+end return ac(ab.Parent.popup).new(A,B)end function at.Hide(A)if A.animating or A.hidden then return end if A._searching
+then ap.close(A,{showTabs=false,jumpTo=A.selectedTab and A.selectedTab.tabPage})end if A._recordingKeybind then A.
+_recordingKeybind:_stopRecording()end A.animating=true A._revealing=true A.hidden=true A.collapsedInteract.Visible=false
+if A.minimised then A.minimised=false A.minimiseAction:_setIcon(ai.icons.minimise)end A._restorePosition=A.main.Position
+local B,C=A:_collapsedRect()local D,E,F,G=TweenInfo.new(0.18,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),TweenInfo.
 new(0.35,Enum.EasingStyle.Exponential,Enum.EasingDirection.InOut),TweenInfo.new(0.35,Enum.EasingStyle.Exponential,Enum.
-EasingDirection.InOut),TweenInfo.new(0.2,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)b.tweenService:Create(F.drag.
-dragCosmetic,I,{Size=UDim2.fromOffset(0,4),BackgroundTransparency=1}):Play()task.delay(0.18,function()if not F.hidden
-then return end F.drag.drag.Visible=false end)F:_fadeSurfaces(false,I)if F.title then b.tweenService:Create(F.title,I,{
-TextTransparency=1}):Play()end if F.subtitle then b.tweenService:Create(F.subtitle,I,{TextTransparency=1}):Play()end if
-F.topbarIcon then b.tweenService:Create(F.topbarIcon,I,{ImageTransparency=1}):Play()end for M,N in ipairs(F.
-actionContainer:GetChildren())do if N:IsA'Frame'then b.tweenService:Create(N.ImageLabel,I,{ImageTransparency=1}):Play()
-end end for M,N in F.tags do N:_setShown(false,I)end for M,N in pairs(F.tabs)do if not N.neglectSelector and N.
-topbarItem then N:_applyVisual('hidden',I)end end F:_setTabSectionsShown(false,I)F:_fadeSelectedElementsOut()local M=b.
-tweenService:Create(F.main,J,{Size=H,Position=G})M.Completed:Connect(function()if F.unloaded or not F.hidden then return
-end F._collapsedShown=true z(F,true)F.collapsedInteract.Visible=true F.animating=false F._revealing=false end)M:Play()b.
-tweenService:Create(F.windowCorner,K,{CornerRadius=UDim.new(1,0)}):Play()task.delay(0.18,function()if not F.hidden then
-return end F.topbar.Visible=false F:_setContentVisible(false)ao.setCollapsedShown(F,true,L)end)end function d.ToggleHide
-(F)if F.animating then return end if F.hidden then F:Show()else F:Hide()end end function d.ToggleMinimise(F)if F.
-animating or F.hidden then return end if F._searching then ap.close(F,{showTabs=true})end F.animating=true local G,H=
-TweenInfo.new(0.5,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.4,Enum.EasingStyle.Exponential,
-Enum.EasingDirection.Out)if F.minimised then F.minimised=false F.minimiseAction:_setIcon(ai.icons.minimise)b.
-tweenService:Create(F.main,G,{Size=F.size}):Play()F:_fadeSurfaces(true,H)b.tweenService:Create(F.drag.drag,G,{Position=
-UDim2.new(F.main.Position.X.Scale,F.main.Position.X.Offset,F.main.Position.Y.Scale,F.main.Position.Y.Offset+F:_hang(F.
-size.Y.Offset))}):Play()task.delay(0.2,function()if F.minimised or F.hidden then return end F:_setContentVisible(true)
-for I,J in pairs(F.tabs)do if not J.neglectSelector and J.topbarItem then J.topbarItem.Visible=true J:_applyVisual(if F.
-selectedTab==J then'selected'else'unselected',H)end end F:_setTabSectionsVisible(true)F:_setTabSectionsShown(true,H)F:
-_revealElements(0.035,0.4)end)task.delay(0.5,function()F.animating=false end)else F.minimised=true F.minimiseAction:
-_setIcon(ai.icons.maximise)F:_fadeSelectedElementsOut()for I,J in pairs(F.tabs)do if not J.neglectSelector and J.
-topbarItem then J:_applyVisual('hidden',H)end end F:_setTabSectionsShown(false,H)task.delay(0.3,function()if not F.
-minimised then return end F:_setContentVisible(false)for I,J in pairs(F.tabs)do if not J.neglectSelector and J.
-topbarItem then J.topbarItem.Visible=false end end F:_setTabSectionsVisible(false)end)F:_fadeSurfaces(false,H)b.
-tweenService:Create(F.main,G,{Size=UDim2.fromOffset(F.size.X.Offset,F.layout.topbarHeight)}):Play()b.tweenService:
-Create(F.drag.drag,G,{Position=UDim2.new(F.main.Position.X.Scale,F.main.Position.X.Offset,F.main.Position.Y.Scale,F.main
-.Position.Y.Offset+F:_hang(F.layout.topbarHeight))}):Play()task.delay(0.5,function()F.animating=false end)end end
-function d._syncDragBar(F)local G=F.drag and F.drag.drag if not G then return end local H,I=F.main.Position,F:_hang(F.
-size.Y.Offset)G.Position=UDim2.new(H.X.Scale,H.X.Offset,H.Y.Scale,H.Y.Offset+I)end function d._clampedPosition(F,G:UDim2
-):UDim2 if not F.settings or not F.settings.keepOnScreen then return G end if G.X.Scale~=0 or G.Y.Scale~=0 then return G
-end local H,I,J,K=F.screenGui.AbsoluteSize,F.size.X.Offset*F.scale/2,F.size.Y.Offset*F.scale/2,8 local L,M=math.clamp(G.
-X.Offset,I+K,math.max(I+K,H.X-I-K)),math.clamp(G.Y.Offset,J+K,math.max(J+K,H.Y-J-K))if L==G.X.Offset and M==G.Y.Offset
-then return G end return UDim2.fromOffset(L,M)end function d._clampToScreen(F)F.main.Position=F:_clampedPosition(F.main.
-Position)end function d._applyWindowSize(F)if F.unloaded then return end local G,H=s(F.layout.mode,F.fixedScale)local I=
-G~=F.size or H~=F.scale F.size=G F.scale=H F.uiScale.Scale=H F:_rescaleSurfaces()for J,K in F.actions do K:_fit()end F:
-_applyRailWidth()if I then F:_layoutColumns()end if F.hidden or F.minimised or F.animating or F._revealing then F.
-_pendingResize=F._pendingResize or I return end if not I and not F._pendingResize then return end F._pendingResize=false
-F.main.Size=G F:_clampToScreen()F:_syncDragBar()end function d._layoutColumns(F)for G,H in F.tabs do H:_layoutColumns()
-end end function d._applyRailWidth(F)if F.layout.mode~='sidebar'then return end aq.applyWidth(F,an.railWidthFor(F.layout
-,F.size.X.Offset))end function d._watchViewport(F)local G,H:RBXScriptConnection?=false local function I()if G then
-return end G=true task.defer(function()G=false F:_applyWindowSize()end)end local function J()if H then F:Disconnect(H)H=
-nil end local K=b.workspace.CurrentCamera if K then H=F:Connect(K:GetPropertyChangedSignal'ViewportSize',I)end I()end F:
-Connect(b.workspace:GetPropertyChangedSignal'CurrentCamera',J)J()local K=0 F:Connect(b.runService.Heartbeat,function(L:
-number)K+=L if K<r then return end K=0 F:_applyWindowSize()end)end function d._bindKeybind(F)F:Connect(b.
-userInputService.InputBegan,function(G,H)if H or F._recordingKeybind then return end if G.KeyCode==F.settings.
-toggleKeybind or G.UserInputType==F.settings.toggleKeybind then F:ToggleHide()end end)end function d._bindMouseOverride(
-F)local G=b.userInputService local function H()return F.settings.mouseOverride and not F.hidden and not F.minimised end
-local function I()if not H()then return end if G:IsMouseButtonPressed(Enum.UserInputType.MouseButton2)then return end if
-G.MouseBehavior~=Enum.MouseBehavior.Default then G.MouseBehavior=Enum.MouseBehavior.Default end if not G.
-MouseIconEnabled then G.MouseIconEnabled=true end end F:Connect(G:GetPropertyChangedSignal'MouseBehavior',I)F:Connect(G:
-GetPropertyChangedSignal'MouseIconEnabled',I)F:Connect(G.InputEnded,function(J)if J.UserInputType==Enum.UserInputType.
-MouseButton2 then I()end end)F._freeMouse=I end function d._bindTopbarDrag(F)local G,H,I,J=b.userInputService,false,
-Vector2.zero,Vector2.zero if F.screenGui and F.screenGui.IgnoreGuiInset then J=b.guiService:GetGuiInset()end
-local function K()local L=G:GetMouseLocation()+I+J local M,N=L.X,L.Y if F.settings and F.settings.keepOnScreen then
-local O,P,Q=F.main.AbsoluteSize,F.screenGui.AbsoluteSize,8 local R,S=O.X/2,O.Y/2 M=math.clamp(M,R+Q,math.max(R+Q,P.X-R-Q
-))N=math.clamp(N,S+Q,math.max(S+Q,P.Y-S-Q))end return UDim2.fromOffset(M,N)end local function L(M,N)for O,P in{F.tabList
-,F.actionContainer}do local Q,R=P.AbsolutePosition,P.AbsoluteSize if M>=Q.X and M<=Q.X+R.X and N>=Q.Y and N<=Q.Y+R.Y
-then return true end end return false end F:Connect(F.topbar.InputBegan,function(M,N)if N then return end local O=M.
-UserInputType.Name if O~='MouseButton1'and O~='Touch'then return end if L(M.Position.X,M.Position.Y)then return end if
-not F:_interactive()then return end H=true if F.screenGui and F.screenGui.IgnoreGuiInset then J=b.guiService:
-GetGuiInset()end I=F.main.AbsolutePosition+F.main.AbsoluteSize*F.main.AnchorPoint-G:GetMouseLocation()end)F:Connect(G.
-InputEnded,function(M)local N=M.UserInputType.Name if N=='MouseButton1'or N=='Touch'then H=false end end)F:Connect(G.
-WindowFocusReleased,function()H=false end)F:Connect(b.runService.RenderStepped,function()if not H then return end if not
-F:_interactive()then H=false return end F.main.Position=K()if F.drag and F.drag.drag then local M=F.main.Position F.drag
-.drag.Position=UDim2.new(M.X.Scale,M.X.Offset,M.Y.Scale,M.Y.Offset+F:_hang(F.main.Size.Y.Offset))end end)end function d.
-_buildSettingsUI(F)F.rfSettings:CreateSection{name='General'}F.rfSettings:CreateKeybind{name='Toggle Keybind',icon=ai.
-icons.search,value=F.settings.toggleKeybind,isMenuToggle=true,onChanged=function(G)F.settings.toggleKeybind=G F:
-SaveSettings()end}F.rfSettings:CreateToggle{name='Unlock cursor while open',description=
-[[Unlocks the cursor while the menu is open so you can configure in FPS games that lock it.]],value=F.settings.
-mouseOverride,callback=function(G)F.settings.mouseOverride=G F:SaveSettings()end}F.rfSettings:CreateToggle{name=
-'Welcome toast',description=[[Shows a 'Signed in as' toast the first time you open the menu on a new account.]],value=F.
-settings.welcomeToast,callback=function(G)F.settings.welcomeToast=G F:SaveSettings()end}F.rfSettings:CreateToggle{name=
-'Haptics',description=[[A subtle tap as you interact, on devices that support haptics.]],value=F.settings.haptics,
-callback=function(G)F.settings.haptics=G al.setEnabled(G)F:SaveSettings()end}F.rfSettings:CreateSection{name='Window'}F.
+EasingDirection.InOut),TweenInfo.new(0.2,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)ar.tweenService:Create(A.drag.
+dragCosmetic,D,{Size=UDim2.fromOffset(0,4),BackgroundTransparency=1}):Play()task.delay(0.18,function()if not A.hidden
+then return end A.drag.drag.Visible=false end)A:_fadeSurfaces(false,D)if A.title then ar.tweenService:Create(A.title,D,{
+TextTransparency=1}):Play()end if A.subtitle then ar.tweenService:Create(A.subtitle,D,{TextTransparency=1}):Play()end if
+A.topbarIcon then ar.tweenService:Create(A.topbarIcon,D,{ImageTransparency=1}):Play()end for H,I in ipairs(A.
+actionContainer:GetChildren())do if I:IsA'Frame'then ar.tweenService:Create(I.ImageLabel,D,{ImageTransparency=1}):Play()
+end end for H,I in A.tags do I:_setShown(false,D)end for H,I in pairs(A.tabs)do if not I.neglectSelector and I.
+topbarItem then I:_applyVisual('hidden',D)end end A:_setTabSectionsShown(false,D)A:_fadeSelectedElementsOut()local H=ar.
+tweenService:Create(A.main,E,{Size=C,Position=B})H.Completed:Connect(function()if A.unloaded or not A.hidden then return
+end A._collapsedShown=true u(A,true)A.collapsedInteract.Visible=true A.animating=false A._revealing=false end)H:Play()ar
+.tweenService:Create(A.windowCorner,F,{CornerRadius=UDim.new(1,0)}):Play()task.delay(0.18,function()if not A.hidden then
+return end A.topbar.Visible=false A:_setContentVisible(false)ao.setCollapsedShown(A,true,G)end)end function at.
+ToggleHide(A)if A.animating then return end if A.hidden then A:Show()else A:Hide()end end function at.ToggleMinimise(A)
+if A.animating or A.hidden then return end if A._searching then ap.close(A,{showTabs=true})end A.animating=true local B,
+C=TweenInfo.new(0.5,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),TweenInfo.new(0.4,Enum.EasingStyle.
+Exponential,Enum.EasingDirection.Out)if A.minimised then A.minimised=false A.minimiseAction:_setIcon(ai.icons.minimise)
+ar.tweenService:Create(A.main,B,{Size=A.size}):Play()A:_fadeSurfaces(true,C)ar.tweenService:Create(A.drag.drag,B,{
+Position=UDim2.new(A.main.Position.X.Scale,A.main.Position.X.Offset,A.main.Position.Y.Scale,A.main.Position.Y.Offset+A:
+_hang(A.size.Y.Offset))}):Play()task.delay(0.2,function()if A.minimised or A.hidden then return end A:
+_setContentVisible(true)for D,E in pairs(A.tabs)do if not E.neglectSelector and E.topbarItem then E.topbarItem.Visible=
+true E:_applyVisual(if A.selectedTab==E then'selected'else'unselected',C)end end A:_setTabSectionsVisible(true)A:
+_setTabSectionsShown(true,C)A:_revealElements(0.035,0.4)end)task.delay(0.5,function()A.animating=false end)else A.
+minimised=true A.minimiseAction:_setIcon(ai.icons.maximise)A:_fadeSelectedElementsOut()for D,E in pairs(A.tabs)do if not
+E.neglectSelector and E.topbarItem then E:_applyVisual('hidden',C)end end A:_setTabSectionsShown(false,C)task.delay(0.3,
+function()if not A.minimised then return end A:_setContentVisible(false)for D,E in pairs(A.tabs)do if not E.
+neglectSelector and E.topbarItem then E.topbarItem.Visible=false end end A:_setTabSectionsVisible(false)end)A:
+_fadeSurfaces(false,C)ar.tweenService:Create(A.main,B,{Size=UDim2.fromOffset(A.size.X.Offset,A.layout.topbarHeight)}):
+Play()ar.tweenService:Create(A.drag.drag,B,{Position=UDim2.new(A.main.Position.X.Scale,A.main.Position.X.Offset,A.main.
+Position.Y.Scale,A.main.Position.Y.Offset+A:_hang(A.layout.topbarHeight))}):Play()task.delay(0.5,function()A.animating=
+false end)end end function at._syncDragBar(A)local B=A.drag and A.drag.drag if not B then return end local C,D=A.main.
+Position,A:_hang(A.size.Y.Offset)B.Position=UDim2.new(C.X.Scale,C.X.Offset,C.Y.Scale,C.Y.Offset+D)end function at.
+_clampedPosition(A,B:UDim2):UDim2 if not A.settings or not A.settings.keepOnScreen then return B end if B.X.Scale~=0 or
+B.Y.Scale~=0 then return B end local C,D,E,F=A.screenGui.AbsoluteSize,A.size.X.Offset*A.scale/2,A.size.Y.Offset*A.scale/
+2,8 local G,H=math.clamp(B.X.Offset,D+F,math.max(D+F,C.X-D-F)),math.clamp(B.Y.Offset,E+F,math.max(E+F,C.Y-E-F))if G==B.X
+.Offset and H==B.Y.Offset then return B end return UDim2.fromOffset(G,H)end function at._clampToScreen(A)A.main.Position
+=A:_clampedPosition(A.main.Position)end function at._applyWindowSize(A)if A.unloaded then return end local B,C=n(A.
+layout.mode,A.fixedScale)local D=B~=A.size or C~=A.scale A.size=B A.scale=C A.uiScale.Scale=C A:_rescaleSurfaces()for E,
+F in A.actions do F:_fit()end A:_applyRailWidth()if D then A:_layoutColumns()end if A.hidden or A.minimised or A.
+animating or A._revealing then A._pendingResize=A._pendingResize or D return end if not D and not A._pendingResize then
+return end A._pendingResize=false A.main.Size=B A:_clampToScreen()A:_syncDragBar()end function at._layoutColumns(A)for B
+,C in A.tabs do C:_layoutColumns()end end function at._applyRailWidth(A)if A.layout.mode~='sidebar'then return end aq.
+applyWidth(A,an.railWidthFor(A.layout,A.size.X.Offset))end function at._watchViewport(A)local B,C:RBXScriptConnection?=
+false local function D()if B then return end B=true task.defer(function()B=false A:_applyWindowSize()end)end
+local function E()if C then A:Disconnect(C)C=nil end local F=ar.workspace.CurrentCamera if F then C=A:Connect(F:
+GetPropertyChangedSignal'ViewportSize',D)end D()end A:Connect(ar.workspace:GetPropertyChangedSignal'CurrentCamera',E)E()
+local F=0 A:Connect(ar.runService.Heartbeat,function(G:number)F+=G if F<m then return end F=0 A:_applyWindowSize()end)
+end function at._bindKeybind(A)A:Connect(ar.userInputService.InputBegan,function(B,C)if C or A._recordingKeybind then
+return end if B.KeyCode==A.settings.toggleKeybind or B.UserInputType==A.settings.toggleKeybind then A:ToggleHide()end
+end)end function at._bindMouseOverride(A)local B=ar.userInputService local function C()return A.settings.mouseOverride
+and not A.hidden and not A.minimised end local function D()if not C()then return end if B:IsMouseButtonPressed(Enum.
+UserInputType.MouseButton2)then return end if B.MouseBehavior~=Enum.MouseBehavior.Default then B.MouseBehavior=Enum.
+MouseBehavior.Default end if not B.MouseIconEnabled then B.MouseIconEnabled=true end end A:Connect(B:
+GetPropertyChangedSignal'MouseBehavior',D)A:Connect(B:GetPropertyChangedSignal'MouseIconEnabled',D)A:Connect(B.
+InputEnded,function(E)if E.UserInputType==Enum.UserInputType.MouseButton2 then D()end end)A._freeMouse=D end function at
+._bindTopbarDrag(A)local B,C,D,E=ar.userInputService,false,Vector2.zero,Vector2.zero if A.screenGui and A.screenGui.
+IgnoreGuiInset then E=ar.guiService:GetGuiInset()end local function F()local G=B:GetMouseLocation()+D+E local H,I=G.X,G.
+Y if A.settings and A.settings.keepOnScreen then local J,K,L=A.main.AbsoluteSize,A.screenGui.AbsoluteSize,8 local M,N=J.
+X/2,J.Y/2 H=math.clamp(H,M+L,math.max(M+L,K.X-M-L))I=math.clamp(I,N+L,math.max(N+L,K.Y-N-L))end return UDim2.fromOffset(
+H,I)end local function G(H,I)for J,K in{A.tabList,A.actionContainer}do local L,M=K.AbsolutePosition,K.AbsoluteSize if H
+>=L.X and H<=L.X+M.X and I>=L.Y and I<=L.Y+M.Y then return true end end return false end A:Connect(A.topbar.InputBegan,
+function(H,I)if I then return end local J=H.UserInputType.Name if J~='MouseButton1'and J~='Touch'then return end if G(H.
+Position.X,H.Position.Y)then return end if not A:_interactive()then return end C=true if A.screenGui and A.screenGui.
+IgnoreGuiInset then E=ar.guiService:GetGuiInset()end D=A.main.AbsolutePosition+A.main.AbsoluteSize*A.main.AnchorPoint-B:
+GetMouseLocation()end)A:Connect(B.InputEnded,function(H)local I=H.UserInputType.Name if I=='MouseButton1'or I=='Touch'
+then C=false end end)A:Connect(B.WindowFocusReleased,function()C=false end)A:Connect(ar.runService.RenderStepped,
+function()if not C then return end if not A:_interactive()then C=false return end A.main.Position=F()if A.drag and A.
+drag.drag then local H=A.main.Position A.drag.drag.Position=UDim2.new(H.X.Scale,H.X.Offset,H.Y.Scale,H.Y.Offset+A:_hang(
+A.main.Size.Y.Offset))end end)end function at._buildSettingsUI(A)A.rfSettings:CreateSection{name='General'}A.rfSettings:
+CreateKeybind{name='Toggle Keybind',icon=ai.icons.search,value=A.settings.toggleKeybind,isMenuToggle=true,onChanged=
+function(B)A.settings.toggleKeybind=B A:SaveSettings()end}A.rfSettings:CreateToggle{name='Unlock cursor while open',
+description=[[Unlocks the cursor while the menu is open so you can configure in FPS games that lock it.]],value=A.
+settings.mouseOverride,callback=function(B)A.settings.mouseOverride=B A:SaveSettings()end}A.rfSettings:CreateToggle{name
+='Welcome toast',description=[[Shows a 'Signed in as' toast the first time you open the menu on a new account.]],value=A
+.settings.welcomeToast,callback=function(B)A.settings.welcomeToast=B A:SaveSettings()end}A.rfSettings:CreateToggle{name=
+'Haptics',description=[[A subtle tap as you interact, on devices that support haptics.]],value=A.settings.haptics,
+callback=function(B)A.settings.haptics=B al.setEnabled(B)A:SaveSettings()end}A.rfSettings:CreateSection{name='Window'}A.
 rfSettings:CreateDropdown{name='Theme',description=
-[[Changes the colours of this menu. Your choice is remembered next time.]],options=ai.builtInThemes,value=F.settings.
-theme or F:_builtInThemeName()or ai.builtInThemes[1],callback=function(G)if typeof(G)~='string'or G==''then return end F
-.settings.theme=G F:ChangeTheme(G)F:SaveSettings()end}if F.layout.mode=='sidebar'and F.profile then F.rfSettings:
+[[Changes the colours of this menu. Your choice is remembered next time.]],options=ai.builtInThemes,value=A.settings.
+theme or A:_builtInThemeName()or ai.builtInThemes[1],callback=function(B)if typeof(B)~='string'or B==''then return end A
+.settings.theme=B A:ChangeTheme(B)A:SaveSettings()end}if A.layout.mode=='sidebar'and A.profile then A.rfSettings:
 CreateToggle{name='Show profile',description=
 [[Shows your avatar and name at the base of the sidebar. Turn it off to keep them out of a stream or a screenshot.]],
-value=F.settings.showProfile,callback=function(G)aq.setProfileEnabled(F,G)F:SaveSettings()end}end F.rfSettings:
+value=A.settings.showProfile,callback=function(B)aq.setProfileEnabled(A,B)A:SaveSettings()end}end A.rfSettings:
 CreateToggle{name='Keep window on screen',description=
-[[Stops the window being dragged off the edge of the screen and lost.]],value=F.settings.keepOnScreen,callback=function(
-G)F.settings.keepOnScreen=G F:SaveSettings()end}F.rfSettings:CreateButton{name='Reset Window Position',callback=function
-()b.tweenService:Create(F.main,TweenInfo.new(0.5,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),{Position=UDim2.
-new(0.5,0,0.5,0)}):Play()b.tweenService:Create(F.drag.drag,TweenInfo.new(0.5,Enum.EasingStyle.Exponential,Enum.
-EasingDirection.Out),{Position=UDim2.new(0.5,0,0.5,F:_hang(F.size.Y.Offset))}):Play()end}if next(F.configuration)~=nil
-then F.rfSettings:CreateSection{name='Configurations'}local G,H,I=(F:ListConfigs()[1])local function J()local K=F:
-ListConfigs()H:Refresh(K)if G and not table.find(K,G)then G=K[1]end if G then H:Set(G,true)end end H=F.rfSettings:
-CreateDropdown{name='Saved Configurations',icon=ai.icons.config,options=F:ListConfigs(),value=G,placeholder=
-'No saved configurations',callback=function(K)G=K end}I=F.rfSettings:CreateInput{name='Configuration Name',description=
+[[Stops the window being dragged off the edge of the screen and lost.]],value=A.settings.keepOnScreen,callback=function(
+B)A.settings.keepOnScreen=B A:SaveSettings()end}A.rfSettings:CreateButton{name='Reset Window Position',callback=function
+()ar.tweenService:Create(A.main,TweenInfo.new(0.5,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),{Position=UDim2
+.new(0.5,0,0.5,0)}):Play()ar.tweenService:Create(A.drag.drag,TweenInfo.new(0.5,Enum.EasingStyle.Exponential,Enum.
+EasingDirection.Out),{Position=UDim2.new(0.5,0,0.5,A:_hang(A.size.Y.Offset))}):Play()end}if next(A.configuration)~=nil
+then A.rfSettings:CreateSection{name='Configurations'}local B,C,D=(A:ListConfigs()[1])local function E()local F=A:
+ListConfigs()C:Refresh(F)if B and not table.find(F,B)then B=F[1]end if B then C:Set(B,true)end end C=A.rfSettings:
+CreateDropdown{name='Saved Configurations',icon=ai.icons.config,options=A:ListConfigs(),value=B,placeholder=
+'No saved configurations',callback=function(F)B=F end}D=A.rfSettings:CreateInput{name='Configuration Name',description=
 [[Name a new configuration, or leave blank to overwrite the selected one.]],placeholder='e.g. PvP Loadout',clearOnFocus=
-false}local K=F.rfSettings:CreateGroup()K:CreateButton{name='Save',icon=ai.icons.config,callback=function()local L=I.
-value if L==''then L=G end if not L or L==''then F:Toast{title=aj.resolve'Name your configuration first'}return end if F
-:Save(L)then I:Set''G=L J()F:Toast{title=aj.resolve'Saved configuration',subtitle=L,icon=ai.icons.config}else F:Toast{
-title=aj.resolve"Couldn't save configuration",subtitle=L}end end}K:CreateButton{name='Load',callback=function()if not G
-or G==''then F:Toast{title=aj.resolve'Pick a configuration to load'}return end if F:_applyNamedConfig(G)then F:Toast{
-title=aj.resolve'Loaded configuration',subtitle=G}else F:Toast{title=aj.resolve"Couldn't load configuration",subtitle=G}
-end end}K:CreateButton{name='Delete',callback=function()local L=G if not L or L==''then F:Toast{title=aj.resolve
-'Pick a configuration to delete'}return end if F:DeleteConfig(L)then J()F:Toast{title=aj.resolve'Deleted configuration',
-subtitle=L}else F:Toast{title=aj.resolve"Couldn't delete configuration",subtitle=L}end end}end end function d.SetProfile
-(F,G)F.profileText=G aq.setSubtitle(F,G)end function d.SaveSettings(F)return ah.saveSettings(F)end function d.
-LoadSettings(F)return ah.loadSettings(F)end function d._roundCorners(F,G,H)if not H or not u then return F:Create(
-'UICorner',{Parent=G},{CornerRadius='CornerRoundness'})end local I,J={Parent=G},{}for K,L in t do I[L]=UDim.new(0,0)end
-for K,L in H do I[L]=nil J[L]='CornerRoundness'end return F:Create('UICorner',I,J)end function d._setElementLocked(F,G,H
-,I)H=H==true local J=G.locked==true if J==H and not(H and I)then return end G.locked=H if not G.lockScrim then F:
-_buildLockScrim(G)end local K=TweenInfo.new(0.25,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)if H then G.lockScrim.
-Visible=true end b.tweenService:Create(G.lockScrim,K,{BackgroundTransparency=if H then n else 1}):Play()if not H then
-task.delay(K.Time,function()if not G.locked and G.lockScrim then G.lockScrim.Visible=false end end)end local L=G.
-descriptor if not L then return end if H then G._descriptionBefore=G._descriptionBefore or L.titleLabel.Text L.
-titleLabel.Text=aj.resolve(I or'This element is locked.')elseif G._descriptionBefore then L.titleLabel.Text=G.
-_descriptionBefore G._descriptionBefore=nil end b.tweenService:Create(L.titleLabel,K,{TextTransparency=if H then o else
-0.7}):Play()end function d._buildLockScrim(F,G)G.lockScrim=F:Create('TextButton',{Name='ElementLock',Active=true,
+false}local F=A.rfSettings:CreateGroup()F:CreateButton{name='Save',icon=ai.icons.config,callback=function()local G=D.
+value if G==''then G=B end if not G or G==''then A:Toast{title=aj.resolve'Name your configuration first'}return end if A
+:Save(G)then D:Set''B=G E()A:Toast{title=aj.resolve'Saved configuration',subtitle=G,icon=ai.icons.config}else A:Toast{
+title=aj.resolve"Couldn't save configuration",subtitle=G}end end}F:CreateButton{name='Load',callback=function()if not B
+or B==''then A:Toast{title=aj.resolve'Pick a configuration to load'}return end if A:_applyNamedConfig(B)then A:Toast{
+title=aj.resolve'Loaded configuration',subtitle=B}else A:Toast{title=aj.resolve"Couldn't load configuration",subtitle=B}
+end end}F:CreateButton{name='Delete',callback=function()local G=B if not G or G==''then A:Toast{title=aj.resolve
+'Pick a configuration to delete'}return end if A:DeleteConfig(G)then E()A:Toast{title=aj.resolve'Deleted configuration',
+subtitle=G}else A:Toast{title=aj.resolve"Couldn't delete configuration",subtitle=G}end end}end end function at.
+SetProfile(A,B)A.profileText=B aq.setSubtitle(A,B)end function at.SaveSettings(A)return ah.saveSettings(A)end function
+at.LoadSettings(A)return ah.loadSettings(A)end function at._roundCorners(A,B,C)if not C or not p then return A:Create(
+'UICorner',{Parent=B},{CornerRadius='CornerRoundness'})end local D,E={Parent=B},{}for F,G in o do D[G]=UDim.new(0,0)end
+for F,G in C do D[G]=nil E[G]='CornerRoundness'end return A:Create('UICorner',D,E)end function at._setElementLocked(A,B,
+C,D)C=C==true local E=B.locked==true if E==C and not(C and D)then return end B.locked=C if not B.lockScrim then A:
+_buildLockScrim(B)end local F=TweenInfo.new(0.25,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)if C then B.lockScrim.
+Visible=true end ar.tweenService:Create(B.lockScrim,F,{BackgroundTransparency=if C then i else 1}):Play()if not C then
+task.delay(F.Time,function()if not B.locked and B.lockScrim then B.lockScrim.Visible=false end end)end local G=B.
+descriptor if not G then return end if C then B._descriptionBefore=B._descriptionBefore or G.titleLabel.Text G.
+titleLabel.Text=aj.resolve(D or'This element is locked.')elseif B._descriptionBefore then G.titleLabel.Text=B.
+_descriptionBefore B._descriptionBefore=nil end ar.tweenService:Create(G.titleLabel,F,{TextTransparency=if C then j else
+0.7}):Play()end function at._buildLockScrim(A,B)B.lockScrim=A:Create('TextButton',{Name='ElementLock',Active=true,
 AutoButtonColor=false,Size=UDim2.fromScale(1,1),BorderSizePixel=0,Text='',TextTransparency=1,ZIndex=ai.zIndex.
-elementLock,Visible=false,BackgroundTransparency=1,Parent=G.main},{BackgroundColor3={'WindowColor',y}})F:Create(
-'UICorner',{Parent=G.lockScrim},{CornerRadius='ElementCornerRadius'})end function d._setContentVisible(F,G)F.elements.
-Visible=G F.tabList.Visible=G if F.sidebar then F.sidebar.Visible=G end end function d._fadeSurfaces(F,G,H)local I={[F.
-windowShadow]={Transparency=if G then 0.6 else 1},[F.windowStroke]={Transparency=if G then 0.95 else 1},[F.bottomFade]={
-BackgroundTransparency=if G then 0 else 1}}if F.elementsStroke then I[F.elements]={BackgroundTransparency=if G then F.
-layout.cardTransparency else 1}I[F.elementsStroke]={Transparency=if G then 0 else 1}end for J,K in I do if H then b.
-tweenService:Create(J,H,K):Play()else for L,M in K do J[L]=M end end end aq.setProfileShown(F,G,H)end function d.
-_fadeSelectedElementsOut(F)if F.selectedTab then for G,H in ipairs(F.selectedTab.elements)do H:_setShown(false,true)end
-end end function d._revealElements(F,G,H)for I,J in pairs(F.tabs)do if J~=F.selectedTab then for K,L in ipairs(J.
-elements)do L:_setShown(true,false)end end end local I=F.selectedTab if not I then return end local J=I.tabPage local K=
-J.AbsolutePosition.Y local L,M,N=K+J.AbsoluteWindowSize.Y,table.clone(I.elements),{}for O,P in M do N[P]=O end table.
-sort(M,function(O,P)local Q,R=O.main.AbsolutePosition,P.main.AbsolutePosition if Q.Y~=R.Y then return Q.Y<R.Y end if Q.X
-~=R.X then return Q.X<R.X end return N[O]<N[P]end)local O,P=math.floor(H/G),0 for Q,R in M do local S=R.main.
-AbsolutePosition.Y local T=(S+R.main.AbsoluteSize.Y)>K and S<L if T then R:_setShown(true,true)P+=1 if P<=O then task.
-wait(G)end else R:_setShown(true,false)end end end function d.Show(F)if F.animating or not F.hidden then return end F.
-animating=true F._revealing=true if F.configuration.autoLoad and not F._autoLoaded then F._autoLoaded=true local G,H=
-pcall(F.Load,F)if not G then ak.warn('Rayfield: Failed to load configuration - '..tostring(H))end end F.hidden=false F.
-minimised=false if F._themeRefreshPending then F._themeRefreshPending=false F:_refreshElementThemes()end F.
-collapsedInteract.Visible=false if F._freeMouse then F._freeMouse()end if F.hasShownOnce then F:_quickRestore()else F.
-hasShownOnce=true F:_firstShow()end end function d._quickRestore(F)local G=F:_clampedPosition(F._restorePosition or
-UDim2.new(0.5,0,0.5,0))F._restorePosition=G local H,I,J=TweenInfo.new(0.35,Enum.EasingStyle.Exponential,Enum.
+elementLock,Visible=false,BackgroundTransparency=1,Parent=B.main},{BackgroundColor3={'WindowColor',t}})A:Create(
+'UICorner',{Parent=B.lockScrim},{CornerRadius='ElementCornerRadius'})end function at._setContentVisible(A,B)A.elements.
+Visible=B A.tabList.Visible=B if A.sidebar then A.sidebar.Visible=B end end function at._fadeSurfaces(A,B,C)local D={[A.
+windowShadow]={Transparency=if B then 0.6 else 1},[A.windowStroke]={Transparency=if B then 0.95 else 1},[A.bottomFade]={
+BackgroundTransparency=if B then 0 else 1}}if A.elementsStroke then D[A.elements]={BackgroundTransparency=if B then A.
+layout.cardTransparency else 1}D[A.elementsStroke]={Transparency=if B then 0 else 1}end for E,F in D do if C then ar.
+tweenService:Create(E,C,F):Play()else for G,H in F do E[G]=H end end end aq.setProfileShown(A,B,C)end function at.
+_fadeSelectedElementsOut(A)if A.selectedTab then for B,C in ipairs(A.selectedTab.elements)do C:_setShown(false,true)end
+end end function at._revealElements(A,B,C)for D,E in pairs(A.tabs)do if E~=A.selectedTab then for F,G in ipairs(E.
+elements)do G:_setShown(true,false)end end end local D=A.selectedTab if not D then return end local E=D.tabPage local F=
+E.AbsolutePosition.Y local G,H,I=F+E.AbsoluteWindowSize.Y,table.clone(D.elements),{}for J,K in H do I[K]=J end table.
+sort(H,function(J,K)local L,M=J.main.AbsolutePosition,K.main.AbsolutePosition if L.Y~=M.Y then return L.Y<M.Y end if L.X
+~=M.X then return L.X<M.X end return I[J]<I[K]end)local J,K=math.floor(C/B),0 for L,M in H do local N=M.main.
+AbsolutePosition.Y local O=(N+M.main.AbsoluteSize.Y)>F and N<G if O then M:_setShown(true,true)K+=1 if K<=J then task.
+wait(B)end else M:_setShown(true,false)end end end function at.Show(A)if A.animating or not A.hidden then return end A.
+animating=true A._revealing=true if A.configuration.autoLoad and not A._autoLoaded then A._autoLoaded=true local B,C=
+pcall(A.Load,A)if not B then ak.warn('Rayfield: Failed to load configuration - '..tostring(C))end end A.hidden=false A.
+minimised=false if A._themeRefreshPending then A._themeRefreshPending=false A:_refreshElementThemes()end A.
+collapsedInteract.Visible=false if A._freeMouse then A._freeMouse()end if A.hasShownOnce then A:_quickRestore()else A.
+hasShownOnce=true A:_firstShow()end end function at._quickRestore(A)local B=A:_clampedPosition(A._restorePosition or
+UDim2.new(0.5,0,0.5,0))A._restorePosition=B local C,D,E=TweenInfo.new(0.35,Enum.EasingStyle.Exponential,Enum.
 EasingDirection.InOut),TweenInfo.new(0.35,Enum.EasingStyle.Exponential,Enum.EasingDirection.InOut),TweenInfo.new(0.28,
-Enum.EasingStyle.Exponential,Enum.EasingDirection.Out)ao.setCollapsedShown(F,false,TweenInfo.new(0.15,Enum.EasingStyle.
-Quint,Enum.EasingDirection.Out))local K=b.tweenService:Create(F.main,H,{Size=F.size,Position=G})K.Completed:Connect(
-function()if F.hidden or F.unloaded then return end F._collapsedShown=false z(F,true)end)K:Play()b.tweenService:Create(F
-.windowCorner,I,{CornerRadius=F.theme.CornerRoundness}):Play()task.delay(0.22,function()F.topbar.Visible=true F:
-_setContentVisible(true)F:_fadeSurfaces(true,J)if F.topbarIcon then b.tweenService:Create(F.topbarIcon,J,{
-ImageTransparency=0}):Play()end if F.title then b.tweenService:Create(F.title,J,{TextTransparency=0}):Play()end if F.
-subtitle then b.tweenService:Create(F.subtitle,J,{TextTransparency=0.7}):Play()end for L,M in ipairs(F.actionContainer:
-GetChildren())do if M:IsA'Frame'then b.tweenService:Create(M.ImageLabel,J,{ImageTransparency=0.6}):Play()end end if F.
-settingsAction and F.selectedTab==F.rfSettings then b.tweenService:Create(F.settingsAction.iconLabel,J,{
-ImageTransparency=0.2}):Play()end for L,M in F.tags do M:_setShown(true,J)end for L,M in pairs(F.tabs)do if not M.
-neglectSelector and M.topbarItem then M.topbarItem.Visible=true M:_applyVisual(if F.selectedTab==M then'selected'else
-'unselected',J)end end F:_setTabSectionsVisible(true)F:_setTabSectionsShown(true,J)F:_revealElements(0.035,0.4)end)task.
-delay(0.22,function()F.drag.drag.Position=UDim2.new(G.X.Scale,G.X.Offset,G.Y.Scale,G.Y.Offset+F:_hang(F.size.Y.Offset))F
-.drag.dragCosmetic.Size=UDim2.fromOffset(0,4)F.drag.dragCosmetic.BackgroundTransparency=1 F.drag.drag.Visible=true b.
-tweenService:Create(F.drag.dragCosmetic,H,{Size=UDim2.fromOffset(100,4),BackgroundTransparency=0.7}):Play()end)task.
-delay(0.6,function()F.animating=false F._revealing=false end)end function d._firstShow(F)F:_setContentVisible(true)F.
-drag.drag.Visible=false F.main.Visible=true b.tweenService:Create(F.main,TweenInfo.new(1,Enum.EasingStyle.Exponential,
-Enum.EasingDirection.InOut),{BackgroundTransparency=0,Size=F.size}):Play()task.wait(0.85)F:_fadeSurfaces(true,TweenInfo.
-new(0.6,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out))task.wait(0.3)if F.icon then b.tweenService:Create(F.
+Enum.EasingStyle.Exponential,Enum.EasingDirection.Out)ao.setCollapsedShown(A,false,TweenInfo.new(0.15,Enum.EasingStyle.
+Quint,Enum.EasingDirection.Out))local F=ar.tweenService:Create(A.main,C,{Size=A.size,Position=B})F.Completed:Connect(
+function()if A.hidden or A.unloaded then return end A._collapsedShown=false u(A,true)end)F:Play()ar.tweenService:Create(
+A.windowCorner,D,{CornerRadius=A.theme.CornerRoundness}):Play()task.delay(0.22,function()A.topbar.Visible=true A:
+_setContentVisible(true)A:_fadeSurfaces(true,E)if A.topbarIcon then ar.tweenService:Create(A.topbarIcon,E,{
+ImageTransparency=0}):Play()end if A.title then ar.tweenService:Create(A.title,E,{TextTransparency=0}):Play()end if A.
+subtitle then ar.tweenService:Create(A.subtitle,E,{TextTransparency=0.7}):Play()end for G,H in ipairs(A.actionContainer:
+GetChildren())do if H:IsA'Frame'then ar.tweenService:Create(H.ImageLabel,E,{ImageTransparency=0.6}):Play()end end if A.
+settingsAction and A.selectedTab==A.rfSettings then ar.tweenService:Create(A.settingsAction.iconLabel,E,{
+ImageTransparency=0.2}):Play()end for G,H in A.tags do H:_setShown(true,E)end for G,H in pairs(A.tabs)do if not H.
+neglectSelector and H.topbarItem then H.topbarItem.Visible=true H:_applyVisual(if A.selectedTab==H then'selected'else
+'unselected',E)end end A:_setTabSectionsVisible(true)A:_setTabSectionsShown(true,E)A:_revealElements(0.035,0.4)end)task.
+delay(0.22,function()A.drag.drag.Position=UDim2.new(B.X.Scale,B.X.Offset,B.Y.Scale,B.Y.Offset+A:_hang(A.size.Y.Offset))A
+.drag.dragCosmetic.Size=UDim2.fromOffset(0,4)A.drag.dragCosmetic.BackgroundTransparency=1 A.drag.drag.Visible=true ar.
+tweenService:Create(A.drag.dragCosmetic,C,{Size=UDim2.fromOffset(100,4),BackgroundTransparency=0.7}):Play()end)task.
+delay(0.6,function()A.animating=false A._revealing=false end)end function at._firstShow(A)A:_setContentVisible(true)A.
+drag.drag.Visible=false A.main.Visible=true ar.tweenService:Create(A.main,TweenInfo.new(1,Enum.EasingStyle.Exponential,
+Enum.EasingDirection.InOut),{BackgroundTransparency=0,Size=A.size}):Play()task.wait(0.85)A:_fadeSurfaces(true,TweenInfo.
+new(0.6,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out))task.wait(0.3)if A.icon then ar.tweenService:Create(A.
 topbarIcon,TweenInfo.new(0.6,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),{ImageTransparency=0}):Play()end if
-F.title then b.tweenService:Create(F.title,TweenInfo.new(0.4,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),{
-TextTransparency=0}):Play()end task.wait(0.1)if F.subtitle then b.tweenService:Create(F.subtitle,TweenInfo.new(0.4,Enum.
-EasingStyle.Exponential,Enum.EasingDirection.Out),{TextTransparency=0.7}):Play()end for G,H in ipairs(F.actionContainer:
-GetChildren())do if H:IsA'Frame'then task.wait(0.02)b.tweenService:Create(H.ImageLabel,TweenInfo.new(0.4,Enum.
-EasingStyle.Exponential,Enum.EasingDirection.Out),{ImageTransparency=0.6}):Play()end end for G,H in F.tags do H:
+A.title then ar.tweenService:Create(A.title,TweenInfo.new(0.4,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),{
+TextTransparency=0}):Play()end task.wait(0.1)if A.subtitle then ar.tweenService:Create(A.subtitle,TweenInfo.new(0.4,Enum
+.EasingStyle.Exponential,Enum.EasingDirection.Out),{TextTransparency=0.7}):Play()end for B,C in ipairs(A.actionContainer
+:GetChildren())do if C:IsA'Frame'then task.wait(0.02)ar.tweenService:Create(C.ImageLabel,TweenInfo.new(0.4,Enum.
+EasingStyle.Exponential,Enum.EasingDirection.Out),{ImageTransparency=0.6}):Play()end end for B,C in A.tags do C:
 _setShown(true,TweenInfo.new(0.4,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out))end task.wait(0.2)task.spawn(
-function()local G=TweenInfo.new(0.4,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)F:_setTabSectionsVisible(true)F:
-_setTabSectionsShown(true,G)local H=0 for I,J in pairs(F.tabs)do if not J.neglectSelector then J.topbarItem.Visible=true
-J:_applyVisual(if F.selectedTab==J then'selected'else'unselected',G)J:_spinGradients()H+=1 if H<=q then task.wait(p)end
-end end end)F:_revealElements(0.03,2)task.wait(1)F:_syncDragBar()F.drag.drag.Visible=true b.tweenService:Create(F.drag.
+function()local B=TweenInfo.new(0.4,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)A:_setTabSectionsVisible(true)A:
+_setTabSectionsShown(true,B)local C=0 for D,E in pairs(A.tabs)do if not E.neglectSelector then E.topbarItem.Visible=true
+E:_applyVisual(if A.selectedTab==E then'selected'else'unselected',B)E:_spinGradients()C+=1 if C<=l then task.wait(k)end
+end end end)A:_revealElements(0.03,2)task.wait(1)A:_syncDragBar()A.drag.drag.Visible=true ar.tweenService:Create(A.drag.
 dragCosmetic,TweenInfo.new(0.6,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),{BackgroundTransparency=0.7}):
-Play()b.tweenService:Create(F.drag.dragCosmetic,TweenInfo.new(1,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),{
-Size=UDim2.fromOffset(100,4)}):Play()F.animating=false F._revealing=false local G=b.localPlayer if G and F.settings.
-welcomeToast and ao.isNewUser()then F:Toast{title=G.DisplayName,subtitle=aj.resolve'Signed in as',subtitleAbove=true,
-avatar=G.UserId,minWidth=220}end end function d.GetPath(F)return ah.getPath(F)end function d.Save(F,G)if G~=nil and(
-type(G)~='string'or G=='')then return false end return ah.save(F,G)end function d.Load(F,G)if G~=nil and(type(G)~=
-'string'or G=='')then return false end return ah.load(F,G)end function d._applyNamedConfig(F,G)if not F:Load(G)then
-return false end local H,I=ah.getPath(F)F._loadedConfigPath=I F:Save()return true end function d.ListConfigs(F)return ah
-.list(F)end function d.DeleteConfig(F,G)return ah.delete(F,G)end function d.Get(F,G)local H=F.controls[G]return H and H.
-value end function d.Set(F,G,H)local I=F.controls[G]if not I then return false end I:Set(H)return true end function d.
-_jumpTo(F,G)if G then F.elementsLayout:JumpTo(G)end end function d.Navigate(F,G)if G==nil then return end local H for I,
-J in F.tabs do if J==G or J.name==G or J.tabPage==G then H=J break end end if not H then return end H:Select()end
-function d.Create(F,G,H,I)assert(typeof(G)=='string','Invalid argument #1 (string expected)')local J=Instance.new(G)if I
-and F.theme then for K,L in I do J[K]=(if typeof(L)=='table'then L[2](F.theme[L[1] ])else F.theme[L])end F.
-themeProperties[J]=I end if H then for K,L in H do if aj.isToken(L)then F:_bindLocale(J,K,aj.sourceOf(L))else af.assign(
-J,K,L)end end end table.insert(F.instances,J)return J end function d._bindLocale(F,G,H,I)G[H]=aj.resolve(I)local J=F.
-localeProperties[G]if not J then J={}F.localeProperties[G]=J end J[H]=I end function d.SetLocale(F,G)aj.setActive(G)for
-H,I in F.localeProperties do for J,K in I do H[J]=aj.resolve(K)end end end function d.SetTranslator(F,G)aj.translator=G
-end function d.RegisterTranslations(F,G)aj.register(G)F:SetLocale(aj.current)end function d.CreateGlow(F,G,H,I,J)local K
-={BlurRadius=UDim.new(0,I),Transparency=J,ZIndex=-1,Parent=G}if typeof(H)=='string'then return F:Create('UIShadow',K,{
-Color={H,function(L)return if typeof(L)=='ColorSequence'then L.Keypoints[1].Value else L end}})end K.Color=H return F:
-Create('UIShadow',K)end function d._flashResult(F,G,H)local I=G.box if not I then return end local J,K,L,M,N,O=G.glow,G.
-boxStroke,H and ai.accent.on or F.theme.ErrorColor,H and ai.accent.onStroke or F.theme.ErrorStrokeColor,TweenInfo.new(
-0.1,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),TweenInfo.new(0.45,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
-b.tweenService:Create(I,N,{BackgroundColor3=L}):Play()if K then b.tweenService:Create(K,N,{Color=M,Transparency=0.4}):
-Play()end if J then b.tweenService:Create(J,N,{Color=M,Transparency=0.6}):Play()end G._flashToken=(G._flashToken or 0)+1
-local P=G._flashToken task.delay(0.22,function()if G._flashToken~=P then return end b.tweenService:Create(I,O,{
-BackgroundColor3=F.theme.FieldBackground}):Play()if K then b.tweenService:Create(K,O,{Color=F.theme.SurfaceStroke,
-Transparency=0.85}):Play()end if J then b.tweenService:Create(J,O,{Color=F.theme.FieldGlow,Transparency=G._glowIdle or 1
-}):Play()end end)end function d.CreateHoverOverlay(F,G)local H=F:Create('Frame',{BackgroundColor3=Color3.fromRGB(255,255
-,255),BackgroundTransparency=1,Size=UDim2.fromScale(1,1),BorderSizePixel=0,ZIndex=1,Parent=G})F:Create('UICorner',{
-Parent=H},{CornerRadius='ElementCornerRadius'})return H end function d._wireElementHover(F,G)local H,I=TweenInfo.new(
-0.25,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),F.theme F:ConnectFor(G,G.main.MouseEnter,function()if not F:
-_interactive()then return end b.tweenService:Create(G.stroke,H,{Transparency=I.ElementStrokeHoverTransparency,Color=I.
-ElementStrokeHover}):Play()b.tweenService:Create(G.title,H,{TextColor3=I.ElementTextHoverColor}):Play()if G.hoverOverlay
-then b.tweenService:Create(G.hoverOverlay,H,{BackgroundTransparency=0.97}):Play()end end)F:ConnectFor(G,G.main.
-MouseLeave,function()b.tweenService:Create(G.stroke,H,{Transparency=I.ElementStrokeTransparency,Color=I.ElementStroke}):
-Play()b.tweenService:Create(G.title,H,{TextColor3=I.ContentColor}):Play()if G.hoverOverlay then b.tweenService:Create(G.
-hoverOverlay,H,{BackgroundTransparency=1}):Play()end end)end function d._runGuarded(F,G,H,...)if G.locked then return
-end local I=table.pack(...)task.spawn(function()local J,K=pcall(function()return H(table.unpack(I,1,I.n))end)if J or G.
-_errored then return end G._errored=true local L,M=G.flashTarget or G.main,TweenInfo.new(0.25,Enum.EasingStyle.Quint,
-Enum.EasingDirection.Out)b.tweenService:Create(L,M,{BackgroundColor3=F.theme.ErrorColor}):Play()b.tweenService:Create(G.
-stroke,M,{Color=F.theme.ErrorStrokeColor}):Play()if G.title then G.title.Text=aj.resolve
-'Error, log recorded in console.'end ak.warn(`Rayfield encountered an error, with the callback for a {G.__type} component named '{
-G.name}':`)ak.print(K)task.wait(1)if G.title then G.title.Text=aj.resolve(G.name)end b.tweenService:Create(L,TweenInfo.
-new(0.4,Enum.EasingStyle.Quint,Enum.EasingDirection.In),{BackgroundColor3=Color3.fromRGB(255,255,255)}):Play()b.
-tweenService:Create(G.stroke,TweenInfo.new(0.6,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Color=F.theme.
-ElementStroke}):Play()G._errored=false end)end function d.StyleElementBody(F,G)F:Create('UIGradient',{Rotation=270,
-Parent=G},{Color='ElementGradient'})F:Create('UICorner',{Parent=G},{CornerRadius='ElementCornerRadius'})return F:Create(
-'UIStroke',{Transparency=1,Parent=G},{Color='ElementStroke',Transparency='ElementStrokeTransparency'})end function d.
-_buildCompactRow(F,G,H,I)local J=F:Create('Frame',{Name=H,Size=UDim2.fromOffset(0,m),AutomaticSize=Enum.AutomaticSize.X,
-ClipsDescendants=true,BackgroundColor3=Color3.fromRGB(255,255,255),BorderSizePixel=0,BackgroundTransparency=1,Parent=G.
-tabPage},{BackgroundTransparency='ElementTransparency'})local K=F:StyleElementBody(J)F:Create('UIFlexItem',{FlexMode=
-Enum.UIFlexMode.Fill,Parent=J})F:Create('UIListLayout',{FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=
-Enum.VerticalAlignment.Center,HorizontalFlex=Enum.UIFlexAlignment.Fill,Parent=J})local L=F:Create('TextButton',{Text='',
-BackgroundColor3=Color3.fromRGB(255,255,255),BackgroundTransparency=1,AutomaticSize=Enum.AutomaticSize.X,Size=UDim2.
-fromOffset(0,m),BorderSizePixel=0,TextTransparency=1,ZIndex=I or 1,Parent=J})F:Create('UICorner',{Parent=L},{
-CornerRadius='ElementCornerRadius'})return J,K,L end function d.StyleElementPanel(F,G)F:Create('UIGradient',{Rotation=
-270,Parent=G},{Color='ElementGradient'})F:Create('UICorner',{Parent=G},{CornerRadius='ElementCornerRadius'})local H=F:
-Create('UIStroke',{Color=Color3.fromRGB(255,255,255),Transparency=1,Parent=G})F:Create('UIGradient',{Rotation=270,Parent
-=H},{Color='ElementStrokeGradient'})return H end function d._reveal(F,G,H,I,J)if not G then return end if I then b.
-tweenService:Create(G,J or e,H):Play()else for K,L in H do G[K]=L end end end function d._revealCommon(F,G,H)F:_reveal(G
-.stroke,{Transparency=F.theme.ElementStrokeTransparency},H)F:_reveal(G.title,{TextTransparency=0},H)F:_reveal(G.main,{
-BackgroundTransparency=F.theme.ElementTransparency or 0},H)if G.iconLabel then F:_reveal(G.iconLabel,{ImageTransparency=
-0},H)end if G.descriptor then F:_reveal(G.descriptor.titleLabel,{TextTransparency=0.7},H)end end function d._hideCommon(
-F,G,H)F:_reveal(G.stroke,{Transparency=1},H)F:_reveal(G.title,{TextTransparency=1},H)F:_reveal(G.main,{
-BackgroundTransparency=1},H)if G.iconLabel then F:_reveal(G.iconLabel,{ImageTransparency=1},H)end if G.descriptor then F
-:_reveal(G.descriptor.titleLabel,{TextTransparency=1},H)end end function d._collapsedRect(F)local G=if F.showIconOnly
-then g else f if F._collapsedPosition then return F._collapsedPosition,G end local H=UDim2.new(h.X.Scale,h.X.Offset,h.Y.
-Scale,h.Y.Offset+G.Y.Offset*F.scale/2)return H,G end function d._scaleSurface(F,G)local H=F:Create('UIScale',{Scale=F.
-scale,Parent=G})table.insert(F._scaledSurfaces,H)return H end function d._rescaleSurfaces(F)for G=#F._scaledSurfaces,1,-
-1 do local H=F._scaledSurfaces[G]if H.Parent then H.Scale=F.scale else table.remove(F._scaledSurfaces,G)end end end
-function d._hang(F,G:number):number return G*F.scale/2+15 end function d._interactive(F)return not F.animating and not F
-.hidden end function d._settled(F)return not F.hidden and not F._revealing end function d.Connect(F,G,H)local I=G:
-Connect(H)table.insert(F.connections,I)return I end function d.ConnectFor(F,G,H,I)local J=F:Connect(H,I)G.connections=G.
-connections or{}table.insert(G.connections,J)return J end function d.Disconnect(F,G)if not G then return end local H=
-table.find(F.connections,G)if H then table.remove(F.connections,H)end G:Disconnect()end function d.DestroySubtree(F,G)if
-not G then return end local H={[G]=true}for I,J in G:GetDescendants()do H[J]=true end for I=#F.instances,1,-1 do local J
-=F.instances[I]if H[J]then table.remove(F.instances,I)F.themeProperties[J]=nil F.localeProperties[J]=nil end end G:
-Destroy()end function d.DisconnectMany(F,G,H)if not H or#H==0 then return end local I={}for J,K in H do I[K]=true K:
-Disconnect()end local function J(K)if not K then return end local L=0 for M=1,#K do local N=K[M]if not I[N]then L+=1 K[L
-]=N end end for M=#K,L+1,-1 do K[M]=nil end end J(F.connections)if G and G~=F then J(G.connections)end end function d.
-DestroySubtrees(F,G)if not G or#G==0 then return end local H={}for I,J in G do H[J]=true for K,L in J:GetDescendants()do
-H[L]=true end end local I=0 for J=1,#F.instances do local K=F.instances[J]if H[K]then F.themeProperties[K]=nil F.
-localeProperties[K]=nil else I+=1 F.instances[I]=K end end for J=#F.instances,I+1,-1 do F.instances[J]=nil end for J,K
-in G do K:Destroy()end end function d.Unload(F)F.unloaded=true for G,H in F._nameplates or{}do H._alive=false end al.
-teardown()al.releaseContainer(F.screenGui)if F._liveTween then F._liveTween:Cancel()F._liveTween=nil end for G=#F.
-connections,1,-1 do F.connections[G]:Disconnect()end for G=#F.instances,1,-1 do F.instances[G]:Destroy()end table.clear(
-F.connections)table.clear(F.instances)table.clear(F.themeProperties)table.clear(F.localeProperties)table.clear(F.
-controls)table.clear(F.tabs)table.clear(F._scaledSurfaces)end return d end)()end,[35]=function()local aa,ab,ac=a(35)
-local ad return(function(...)return{WindowColor=ColorSequence.new{ColorSequenceKeypoint.new(0,Color3.fromRGB(22,16,32)),
-ColorSequenceKeypoint.new(0.9999,Color3.fromRGB(30,22,46)),ColorSequenceKeypoint.new(1,Color3.fromRGB(38,28,56))},
-ShadowColor=Color3.fromRGB(12,6,22),ElementStroke=Color3.fromRGB(54,42,74),ElementGradient=ColorSequence.new{
-ColorSequenceKeypoint.new(0,Color3.fromRGB(32,24,48)),ColorSequenceKeypoint.new(0.9999,Color3.fromRGB(36,28,54)),
-ColorSequenceKeypoint.new(1,Color3.fromRGB(36,28,54))},ElementStrokeGradient=ColorSequence.new{ColorSequenceKeypoint.
-new(0,Color3.fromRGB(72,58,104)),ColorSequenceKeypoint.new(0.9999,Color3.fromRGB(88,72,124)),ColorSequenceKeypoint.new(1
-,Color3.fromRGB(72,58,104))},ElementStrokeHover=Color3.fromRGB(84,68,118),TabBackground=ColorSequence.new(Color3.
-fromRGB(54,42,80),Color3.fromRGB(34,26,52)),TabStroke=ColorSequence.new(Color3.fromRGB(88,70,128),Color3.fromRGB(54,42,
-80)),SliderBackground=Color3.fromRGB(46,36,68),SliderBackgroundHover=Color3.fromRGB(60,48,90),SliderProgress=
-ColorSequence.new(Color3.fromRGB(170,112,248),Color3.fromRGB(138,80,224)),AccentColor=Color3.fromRGB(168,110,246),
-AccentStroke=Color3.fromRGB(200,154,255),ToggleKnobOff=Color3.fromRGB(224,214,236),StatBackground=Color3.fromRGB(24,18,
-38),DropdownHighlight=Color3.fromRGB(168,110,246),NeutralButton=Color3.fromRGB(46,36,68),NeutralButtonHover=Color3.
-fromRGB(60,48,90),NeutralButtonStroke=Color3.fromRGB(140,116,190)}end)()end,[36]=function()local aa,ab,ac=a(36)local ad
-return(function(...)return{WindowColor=ColorSequence.new{ColorSequenceKeypoint.new(0,Color3.fromRGB(12,16,34)),
-ColorSequenceKeypoint.new(0.9999,Color3.fromRGB(20,26,50)),ColorSequenceKeypoint.new(1,Color3.fromRGB(28,36,66))},
-ShadowColor=Color3.fromRGB(6,8,20),ElementStroke=Color3.fromRGB(44,52,82),ElementGradient=ColorSequence.new{
-ColorSequenceKeypoint.new(0,Color3.fromRGB(26,32,58)),ColorSequenceKeypoint.new(0.9999,Color3.fromRGB(30,38,66)),
-ColorSequenceKeypoint.new(1,Color3.fromRGB(30,38,66))},ElementStrokeGradient=ColorSequence.new{ColorSequenceKeypoint.
-new(0,Color3.fromRGB(56,66,104)),ColorSequenceKeypoint.new(0.9999,Color3.fromRGB(70,82,124)),ColorSequenceKeypoint.new(1
-,Color3.fromRGB(56,66,104))},ElementStrokeHover=Color3.fromRGB(64,76,116),TabBackground=ColorSequence.new(Color3.
-fromRGB(48,58,92),Color3.fromRGB(30,38,64)),TabStroke=ColorSequence.new(Color3.fromRGB(78,92,140),Color3.fromRGB(48,58,
-92)),SliderBackground=Color3.fromRGB(40,48,78),SliderBackgroundHover=Color3.fromRGB(54,64,100),SliderProgress=
-ColorSequence.new(Color3.fromRGB(64,132,248),Color3.fromRGB(42,104,224)),AccentColor=Color3.fromRGB(48,120,240),
-AccentStroke=Color3.fromRGB(96,164,255),ToggleKnobOff=Color3.fromRGB(196,206,232),StatBackground=Color3.fromRGB(20,26,48
-),DropdownHighlight=Color3.fromRGB(48,120,240),NeutralButton=Color3.fromRGB(40,48,78),NeutralButtonHover=Color3.fromRGB(
-54,64,100),NeutralButtonStroke=Color3.fromRGB(120,138,195)}end)()end,[37]=function()local aa,ab,ac=a(37)local ad return(
-function(...)local ae=ac(ab.Parent.Parent.utility.variables)return{CornerRoundness=UDim.new(0,20),WindowColor=
-ColorSequence.new{ColorSequenceKeypoint.new(0,Color3.fromRGB(10,10,10)),ColorSequenceKeypoint.new(0.9999,Color3.fromRGB(
-25,25,25)),ColorSequenceKeypoint.new(1,Color3.fromRGB(35,35,35))},ShadowColor=Color3.fromRGB(20,20,20),ElementStroke=
-Color3.fromRGB(35,35,35),ElementGradient=ColorSequence.new{ColorSequenceKeypoint.new(0,Color3.fromRGB(30,30,30)),
-ColorSequenceKeypoint.new(0.9999,Color3.fromRGB(35,35,35)),ColorSequenceKeypoint.new(1,Color3.fromRGB(35,35,35))},
-ElementStrokeGradient=ColorSequence.new{ColorSequenceKeypoint.new(0,Color3.fromRGB(48,48,48)),ColorSequenceKeypoint.new(
-0.9999,Color3.fromRGB(58,58,58)),ColorSequenceKeypoint.new(1,Color3.fromRGB(48,48,48))},TabColor=Color3.fromRGB(255,255,
-255),TabBackground=ColorSequence.new(Color3.fromRGB(50,50,50),Color3.fromRGB(35,35,35)),TabStroke=ColorSequence.new(
+Play()ar.tweenService:Create(A.drag.dragCosmetic,TweenInfo.new(1,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out),
+{Size=UDim2.fromOffset(100,4)}):Play()A.animating=false A._revealing=false local B=ar.localPlayer if B and A.settings.
+welcomeToast and ao.isNewUser()then A:Toast{title=B.DisplayName,subtitle=aj.resolve'Signed in as',subtitleAbove=true,
+avatar=B.UserId,minWidth=220}end end function at.GetPath(A)return ah.getPath(A)end function at.Save(A,B)if B~=nil and(
+type(B)~='string'or B=='')then return false end return ah.save(A,B)end function at.Load(A,B)if B~=nil and(type(B)~=
+'string'or B=='')then return false end return ah.load(A,B)end function at._applyNamedConfig(A,B)if not A:Load(B)then
+return false end local C,D=ah.getPath(A)A._loadedConfigPath=D A:Save()return true end function at.ListConfigs(A)return
+ah.list(A)end function at.DeleteConfig(A,B)return ah.delete(A,B)end function at.Get(A,B)local C=A.controls[B]return C
+and C.value end function at.Set(A,B,C)local D=A.controls[B]if not D then return false end D:Set(C)return true end
+function at._jumpTo(A,B)if B then A.elementsLayout:JumpTo(B)end end function at.Navigate(A,B)if B==nil then return end
+local C for D,E in A.tabs do if E==B or E.name==B or E.tabPage==B then C=E break end end if not C then return end C:
+Select()end function at.Create(A,B,C,D)assert(typeof(B)=='string','Invalid argument #1 (string expected)')local E=
+Instance.new(B)if D and A.theme then for F,G in D do E[F]=(if typeof(G)=='table'then G[2](A.theme[G[1] ])else A.theme[G]
+)end A.themeProperties[E]=D end if C then for F,G in C do if aj.isToken(G)then A:_bindLocale(E,F,aj.sourceOf(G))else af.
+assign(E,F,G)end end end table.insert(A.instances,E)return E end function at._bindLocale(A,B,C,D)B[C]=aj.resolve(D)local
+E=A.localeProperties[B]if not E then E={}A.localeProperties[B]=E end E[C]=D end function at.SetLocale(A,B)aj.setActive(B
+)for C,D in A.localeProperties do for E,F in D do C[E]=aj.resolve(F)end end end function at.SetTranslator(A,B)aj.
+translator=B end function at.RegisterTranslations(A,B)aj.register(B)A:SetLocale(aj.current)end function at.CreateGlow(A,
+B,C,D,E)local F={BlurRadius=UDim.new(0,D),Transparency=E,ZIndex=-1,Parent=B}if typeof(C)=='string'then return A:Create(
+'UIShadow',F,{Color={C,function(G)return if typeof(G)=='ColorSequence'then G.Keypoints[1].Value else G end}})end F.Color
+=C return A:Create('UIShadow',F)end function at._flashResult(A,B,C)local D=B.box if not D then return end local E,F,G,H,
+I,J=B.glow,B.boxStroke,C and ai.accent.on or A.theme.ErrorColor,C and ai.accent.onStroke or A.theme.ErrorStrokeColor,
+TweenInfo.new(0.1,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),TweenInfo.new(0.45,Enum.EasingStyle.Quint,Enum.
+EasingDirection.Out)ar.tweenService:Create(D,I,{BackgroundColor3=G}):Play()if F then ar.tweenService:Create(F,I,{Color=H
+,Transparency=0.4}):Play()end if E then ar.tweenService:Create(E,I,{Color=H,Transparency=0.6}):Play()end B._flashToken=(
+B._flashToken or 0)+1 local K=B._flashToken task.delay(0.22,function()if B._flashToken~=K then return end ar.
+tweenService:Create(D,J,{BackgroundColor3=A.theme.FieldBackground}):Play()if F then ar.tweenService:Create(F,J,{Color=A.
+theme.SurfaceStroke,Transparency=0.85}):Play()end if E then ar.tweenService:Create(E,J,{Color=A.theme.FieldGlow,
+Transparency=B._glowIdle or 1}):Play()end end)end function at.CreateHoverOverlay(A,B)local C=A:Create('Frame',{
+BackgroundColor3=Color3.fromRGB(255,255,255),BackgroundTransparency=1,Size=UDim2.fromScale(1,1),BorderSizePixel=0,ZIndex
+=1,Parent=B})A:Create('UICorner',{Parent=C},{CornerRadius='ElementCornerRadius'})return C end function at.
+_wireElementHover(A,B)local C,D=TweenInfo.new(0.25,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),A.theme A:
+ConnectFor(B,B.main.MouseEnter,function()if not A:_interactive()then return end ar.tweenService:Create(B.stroke,C,{
+Transparency=D.ElementStrokeHoverTransparency,Color=D.ElementStrokeHover}):Play()ar.tweenService:Create(B.title,C,{
+TextColor3=D.ElementTextHoverColor}):Play()if B.hoverOverlay then ar.tweenService:Create(B.hoverOverlay,C,{
+BackgroundTransparency=0.97}):Play()end end)A:ConnectFor(B,B.main.MouseLeave,function()ar.tweenService:Create(B.stroke,C
+,{Transparency=D.ElementStrokeTransparency,Color=D.ElementStroke}):Play()ar.tweenService:Create(B.title,C,{TextColor3=D.
+ContentColor}):Play()if B.hoverOverlay then ar.tweenService:Create(B.hoverOverlay,C,{BackgroundTransparency=1}):Play()
+end end)end function at._runGuarded(A,B,C,...)if B.locked then return end local D=table.pack(...)task.spawn(function()
+local E,F=pcall(function()return C(table.unpack(D,1,D.n))end)if E or B._errored then return end B._errored=true local G,
+H=B.flashTarget or B.main,TweenInfo.new(0.25,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)ar.tweenService:Create(G,H,
+{BackgroundColor3=A.theme.ErrorColor}):Play()ar.tweenService:Create(B.stroke,H,{Color=A.theme.ErrorStrokeColor}):Play()
+if B.title then B.title.Text=aj.resolve'Error, log recorded in console.'end ak.warn(`Rayfield encountered an error, with the callback for a {
+B.__type} component named '{B.name}':`)ak.print(F)task.wait(1)if B.title then B.title.Text=aj.resolve(B.name)end ar.
+tweenService:Create(G,TweenInfo.new(0.4,Enum.EasingStyle.Quint,Enum.EasingDirection.In),{BackgroundColor3=Color3.
+fromRGB(255,255,255)}):Play()ar.tweenService:Create(B.stroke,TweenInfo.new(0.6,Enum.EasingStyle.Quint,Enum.
+EasingDirection.Out),{Color=A.theme.ElementStroke}):Play()B._errored=false end)end function at.StyleElementBody(A,B)A:
+Create('UIGradient',{Rotation=270,Parent=B},{Color='ElementGradient'})A:Create('UICorner',{Parent=B},{CornerRadius=
+'ElementCornerRadius'})return A:Create('UIStroke',{Transparency=1,Parent=B},{Color='ElementStroke',Transparency=
+'ElementStrokeTransparency'})end function at._buildCompactRow(A,B,C,D)local E=A:Create('Frame',{Name=C,Size=UDim2.
+fromOffset(0,h),AutomaticSize=Enum.AutomaticSize.X,ClipsDescendants=true,BackgroundColor3=Color3.fromRGB(255,255,255),
+BorderSizePixel=0,BackgroundTransparency=1,Parent=B.tabPage},{BackgroundTransparency='ElementTransparency'})local F=A:
+StyleElementBody(E)A:Create('UIFlexItem',{FlexMode=Enum.UIFlexMode.Fill,Parent=E})A:Create('UIListLayout',{FillDirection
+=Enum.FillDirection.Horizontal,VerticalAlignment=Enum.VerticalAlignment.Center,HorizontalFlex=Enum.UIFlexAlignment.Fill,
+Parent=E})local G=A:Create('TextButton',{Text='',BackgroundColor3=Color3.fromRGB(255,255,255),BackgroundTransparency=1,
+AutomaticSize=Enum.AutomaticSize.X,Size=UDim2.fromOffset(0,h),BorderSizePixel=0,TextTransparency=1,ZIndex=D or 1,Parent=
+E})A:Create('UICorner',{Parent=G},{CornerRadius='ElementCornerRadius'})return E,F,G end function at.StyleElementPanel(A,
+B)A:Create('UIGradient',{Rotation=270,Parent=B},{Color='ElementGradient'})A:Create('UICorner',{Parent=B},{CornerRadius=
+'ElementCornerRadius'})local C=A:Create('UIStroke',{Color=Color3.fromRGB(255,255,255),Transparency=1,Parent=B})A:Create(
+'UIGradient',{Rotation=270,Parent=C},{Color='ElementStrokeGradient'})return C end function at._reveal(A,B,C,D,E)if not B
+then return end if D then ar.tweenService:Create(B,E or au,C):Play()else for F,G in C do B[F]=G end end end function at.
+_revealCommon(A,B,C)A:_reveal(B.stroke,{Transparency=A.theme.ElementStrokeTransparency},C)A:_reveal(B.title,{
+TextTransparency=0},C)A:_reveal(B.main,{BackgroundTransparency=A.theme.ElementTransparency or 0},C)if B.iconLabel then A
+:_reveal(B.iconLabel,{ImageTransparency=0},C)end if B.descriptor then A:_reveal(B.descriptor.titleLabel,{
+TextTransparency=0.7},C)end end function at._hideCommon(A,B,C)A:_reveal(B.stroke,{Transparency=1},C)A:_reveal(B.title,{
+TextTransparency=1},C)A:_reveal(B.main,{BackgroundTransparency=1},C)if B.iconLabel then A:_reveal(B.iconLabel,{
+ImageTransparency=1},C)end if B.descriptor then A:_reveal(B.descriptor.titleLabel,{TextTransparency=1},C)end end
+function at._collapsedRect(A)local B=if A.showIconOnly then b else av if A._collapsedPosition then return A.
+_collapsedPosition,B end local C=UDim2.new(c.X.Scale,c.X.Offset,c.Y.Scale,c.Y.Offset+B.Y.Offset*A.scale/2)return C,B end
+function at._scaleSurface(A,B)local C=A:Create('UIScale',{Scale=A.scale,Parent=B})table.insert(A._scaledSurfaces,C)
+return C end function at._rescaleSurfaces(A)for B=#A._scaledSurfaces,1,-1 do local C=A._scaledSurfaces[B]if C.Parent
+then C.Scale=A.scale else table.remove(A._scaledSurfaces,B)end end end function at._hang(A,B:number):number return B*A.
+scale/2+15 end function at._interactive(A)return not A.animating and not A.hidden end function at._settled(A)return not
+A.hidden and not A._revealing end function at.Connect(A,B,C)local D=B:Connect(C)table.insert(A.connections,D)return D
+end function at.ConnectFor(A,B,C,D)local E=A:Connect(C,D)B.connections=B.connections or{}table.insert(B.connections,E)
+return E end function at.Disconnect(A,B)if not B then return end local C=table.find(A.connections,B)if C then table.
+remove(A.connections,C)end B:Disconnect()end function at.DestroySubtree(A,B)if not B then return end local C={[B]=true}
+for D,E in B:GetDescendants()do C[E]=true end for D=#A.instances,1,-1 do local E=A.instances[D]if C[E]then table.remove(
+A.instances,D)A.themeProperties[E]=nil A.localeProperties[E]=nil end end B:Destroy()end function at.DisconnectMany(A,B,C
+)if not C or#C==0 then return end local D={}for E,F in C do D[F]=true F:Disconnect()end local function E(F)if not F then
+return end local G=0 for H=1,#F do local I=F[H]if not D[I]then G+=1 F[G]=I end end for H=#F,G+1,-1 do F[H]=nil end end
+E(A.connections)if B and B~=A then E(B.connections)end end function at.DestroySubtrees(A,B)if not B or#B==0 then return
+end local C={}for D,E in B do C[E]=true for F,G in E:GetDescendants()do C[G]=true end end local D=0 for E=1,#A.instances
+do local F=A.instances[E]if C[F]then A.themeProperties[F]=nil A.localeProperties[F]=nil else D+=1 A.instances[D]=F end
+end for E=#A.instances,D+1,-1 do A.instances[E]=nil end for E,F in B do F:Destroy()end end function at.Unload(A)A.
+unloaded=true for B,C in A._nameplates or{}do C._alive=false end al.teardown()al.releaseContainer(A.screenGui)if A.
+_liveTween then A._liveTween:Cancel()A._liveTween=nil end for B=#A.connections,1,-1 do A.connections[B]:Disconnect()end
+for B=#A.instances,1,-1 do A.instances[B]:Destroy()end table.clear(A.connections)table.clear(A.instances)table.clear(A.
+themeProperties)table.clear(A.localeProperties)table.clear(A.controls)table.clear(A.tabs)table.clear(A._scaledSurfaces)
+end return at end)()end,[35]=function()local aa,ab,ac=a(35)local ad return(function(...)return{WindowColor=ColorSequence
+.new{ColorSequenceKeypoint.new(0,Color3.fromRGB(22,16,32)),ColorSequenceKeypoint.new(0.9999,Color3.fromRGB(30,22,46)),
+ColorSequenceKeypoint.new(1,Color3.fromRGB(38,28,56))},ShadowColor=Color3.fromRGB(12,6,22),ElementStroke=Color3.fromRGB(
+54,42,74),ElementGradient=ColorSequence.new{ColorSequenceKeypoint.new(0,Color3.fromRGB(32,24,48)),ColorSequenceKeypoint.
+new(0.9999,Color3.fromRGB(36,28,54)),ColorSequenceKeypoint.new(1,Color3.fromRGB(36,28,54))},ElementStrokeGradient=
+ColorSequence.new{ColorSequenceKeypoint.new(0,Color3.fromRGB(72,58,104)),ColorSequenceKeypoint.new(0.9999,Color3.
+fromRGB(88,72,124)),ColorSequenceKeypoint.new(1,Color3.fromRGB(72,58,104))},ElementStrokeHover=Color3.fromRGB(84,68,118)
+,TabBackground=ColorSequence.new(Color3.fromRGB(54,42,80),Color3.fromRGB(34,26,52)),TabStroke=ColorSequence.new(Color3.
+fromRGB(88,70,128),Color3.fromRGB(54,42,80)),SliderBackground=Color3.fromRGB(46,36,68),SliderBackgroundHover=Color3.
+fromRGB(60,48,90),SliderProgress=ColorSequence.new(Color3.fromRGB(170,112,248),Color3.fromRGB(138,80,224)),AccentColor=
+Color3.fromRGB(168,110,246),AccentStroke=Color3.fromRGB(200,154,255),ToggleKnobOff=Color3.fromRGB(224,214,236),
+StatBackground=Color3.fromRGB(24,18,38),DropdownHighlight=Color3.fromRGB(168,110,246),NeutralButton=Color3.fromRGB(46,36
+,68),NeutralButtonHover=Color3.fromRGB(60,48,90),NeutralButtonStroke=Color3.fromRGB(140,116,190)}end)()end,[36]=function
+()local aa,ab,ac=a(36)local ad return(function(...)return{WindowColor=ColorSequence.new{ColorSequenceKeypoint.new(0,
+Color3.fromRGB(12,16,34)),ColorSequenceKeypoint.new(0.9999,Color3.fromRGB(20,26,50)),ColorSequenceKeypoint.new(1,Color3.
+fromRGB(28,36,66))},ShadowColor=Color3.fromRGB(6,8,20),ElementStroke=Color3.fromRGB(44,52,82),ElementGradient=
+ColorSequence.new{ColorSequenceKeypoint.new(0,Color3.fromRGB(26,32,58)),ColorSequenceKeypoint.new(0.9999,Color3.fromRGB(
+30,38,66)),ColorSequenceKeypoint.new(1,Color3.fromRGB(30,38,66))},ElementStrokeGradient=ColorSequence.new{
+ColorSequenceKeypoint.new(0,Color3.fromRGB(56,66,104)),ColorSequenceKeypoint.new(0.9999,Color3.fromRGB(70,82,124)),
+ColorSequenceKeypoint.new(1,Color3.fromRGB(56,66,104))},ElementStrokeHover=Color3.fromRGB(64,76,116),TabBackground=
+ColorSequence.new(Color3.fromRGB(48,58,92),Color3.fromRGB(30,38,64)),TabStroke=ColorSequence.new(Color3.fromRGB(78,92,
+140),Color3.fromRGB(48,58,92)),SliderBackground=Color3.fromRGB(40,48,78),SliderBackgroundHover=Color3.fromRGB(54,64,100)
+,SliderProgress=ColorSequence.new(Color3.fromRGB(64,132,248),Color3.fromRGB(42,104,224)),AccentColor=Color3.fromRGB(48,
+120,240),AccentStroke=Color3.fromRGB(96,164,255),ToggleKnobOff=Color3.fromRGB(196,206,232),StatBackground=Color3.
+fromRGB(20,26,48),DropdownHighlight=Color3.fromRGB(48,120,240),NeutralButton=Color3.fromRGB(40,48,78),NeutralButtonHover
+=Color3.fromRGB(54,64,100),NeutralButtonStroke=Color3.fromRGB(120,138,195)}end)()end,[37]=function()local aa,ab,ac=a(37)
+local ad return(function(...)local ae=ac(ab.Parent.Parent.utility.variables)return{CornerRoundness=UDim.new(0,20),
+WindowColor=ColorSequence.new{ColorSequenceKeypoint.new(0,Color3.fromRGB(10,10,10)),ColorSequenceKeypoint.new(0.9999,
+Color3.fromRGB(25,25,25)),ColorSequenceKeypoint.new(1,Color3.fromRGB(35,35,35))},ShadowColor=Color3.fromRGB(20,20,20),
+ElementStroke=Color3.fromRGB(35,35,35),ElementGradient=ColorSequence.new{ColorSequenceKeypoint.new(0,Color3.fromRGB(30,
+30,30)),ColorSequenceKeypoint.new(0.9999,Color3.fromRGB(35,35,35)),ColorSequenceKeypoint.new(1,Color3.fromRGB(35,35,35))
+},ElementStrokeGradient=ColorSequence.new{ColorSequenceKeypoint.new(0,Color3.fromRGB(48,48,48)),ColorSequenceKeypoint.
+new(0.9999,Color3.fromRGB(58,58,58)),ColorSequenceKeypoint.new(1,Color3.fromRGB(48,48,48))},TabColor=Color3.fromRGB(255,
+255,255),TabBackground=ColorSequence.new(Color3.fromRGB(50,50,50),Color3.fromRGB(35,35,35)),TabStroke=ColorSequence.new(
 Color3.fromRGB(95,95,95),Color3.fromRGB(50,50,50)),SliderBackground=Color3.fromRGB(47,47,47),SliderBackgroundHover=
 Color3.fromRGB(60,60,60),SliderProgress=ColorSequence.new(Color3.fromRGB(0,170,127),Color3.fromRGB(0,134,98)),
 SliderStroke=Color3.fromRGB(255,255,255),ActionColor=Color3.fromRGB(255,255,255),TitleFont=ae.brandFont(Enum.FontWeight.
@@ -2588,333 +2636,349 @@ string?,key:string?,transport:ChatTransport?,height:number?,pollInterval:number?
 placeholder:string?,emojis:{string}?,onMessage:((message:ChatMessage)->())?}export type NameplateStyle={size:Vector2?,
 lift:number?,maxDistance:number?,cornerRadius:number?,accent:Color3?,accentDeep:Color3?,cardColor:Color3?,
 cardTransparency:number?,veilColor:Color3?,veilStrength:number?,titleColor:Color3?,subtitleColor:Color3?,badgeTextColor:
-Color3?,logo:(string|number|boolean)?,logoTint:Color3?,logoScale:number?,backdrop:(string|number|boolean)?,backdropTint:
-Color3?,backdropTransparency:number?,glowImage:(string|number|boolean)?,titleFont:Font?,subtitleFont:Font?,entrance:(
-'unfold'|'fade'|'none')?,logoSway:number?,logoSpin:number?,halo:boolean?,sparkles:number?,sparkleColor:Color3?,
-titleShine:boolean?,sweep:boolean?,sweepEvery:number?,border:boolean?,borderThickness:number?,borderSpeed:number?,glow:
-boolean?,bob:boolean?,bobHeight:number?,bobSpeed:number?}export type NameplateProps={title:string?,subtitle:(string|((
-player:Player)->string))?,badge:string?,preset:('Omnity'|'Midnight'|'Mono')?,style:NameplateStyle?,endpoint:string?,key:
-string?,transport:ChatTransport?,showSelf:boolean?,hideDefaultName:boolean?,checkInInterval:number?,autoCheckIn:boolean?
-,accent:Color3?,logo:(string|number|boolean)?,backdrop:(string|number|boolean)?,maxDistance:number?,lift:number?}export
-type Nameplate={SetEnabled:(self:Nameplate,enabled:boolean)->(),SetTitle:(self:Nameplate,title:string)->(),SetStyle:(
-self:Nameplate,style:NameplateStyle|string,preset:string?)->(),Add:(self:Nameplate,player:Player,badge:string?)->(),
-Remove:(self:Nameplate,player:Player)->(),CheckIn:(self:Nameplate)->boolean,Destroy:(self:Nameplate)->()}export type
-NotifyProps={title:string?,content:string?,icon:(string|number)?,duration:number?}export type ToastProps={title:string?,
-subtitle:string?,subtitleAbove:boolean?,icon:(string|number)?,avatar:number?,minWidth:number?,duration:number?,position:
-'Top'|'Bottom'?}export type PopupBox={title:string?,description:string?,icon:(string|number)?}export type PopupOption={
-text:string?,style:string?,callback:(()->())?}export type PopupProps={title:string?,subtitle:string?,icon:(string|number
-)?,content:string?,boxes:{PopupBox}?,options:{PopupOption}?,dismissable:boolean?}export type Moveable={MoveTo:(self:any,
-index:number)->(),MoveToTop:(self:any)->(),MoveToBottom:(self:any)->(),MoveUp:(self:any)->(),MoveDown:(self:any)->()}
-export type Lockable={Lock:(self:any,reason:string?)->(),Unlock:(self:any)->(),IsLocked:(self:any)->boolean}export type
-Button=Moveable&Lockable&{}export type Toggle=Moveable&Lockable&{value:boolean,Set:(self:Toggle,value:boolean,
-skipCallback:boolean?)->()}export type Slider=Moveable&Lockable&{value:number,Set:(self:Slider,value:number,skipCallback
-:boolean?)->()}export type Dropdown=Moveable&Lockable&{value:{string},Set:(self:Dropdown,value:string|{string},
-skipCallback:boolean?)->(),Refresh:(self:Dropdown,options:{string})->(),Add:(self:Dropdown,option:string)->(),Remove:(
-self:Dropdown,option:string)->()}export type Input=Moveable&Lockable&{value:string,Set:(self:Input,value:string,
-skipCallback:boolean?)->()}export type Keybind=Moveable&Lockable&{value:EnumItem,Set:(self:Keybind,value:EnumItem|string
-,skipChanged:boolean?)->()}export type ColorPicker=Moveable&Lockable&{value:Color3,alpha:number,Set:(self:ColorPicker,
-value:Color3|string,skipCallback:boolean?)->(),SetAlpha:(self:ColorPicker,alpha:number,skipCallback:boolean?)->()}export
-type Stat=Moveable&{value:number,Set:(self:Stat,value:number)->(),ResetBaseline:(self:Stat,value:number?)->()}export
-type Progress=Moveable&{value:number,Set:(self:Progress,value:number)->(),Get:(self:Progress)->number,GetPercentage:(
-self:Progress)->number,SetRange:(self:Progress,min:number,max:number)->(),SetText:(self:Progress,text:string?)->(),
-SetIndeterminate:(self:Progress,state:boolean)->(),Remove:(self:Progress)->()}export type Chat=Moveable&{Send:(self:Chat
-,text:string)->(boolean,string?),Refresh:(self:Chat)->boolean,SetChannel:(self:Chat,channel:string,endpoint:string?)->()
-,Clear:(self:Chat)->(),Remove:(self:Chat)->()}export type Console=Moveable&{Set:(self:Console,text:string)->(),Append:(
-self:Console,line:string)->(),Clear:(self:Console)->(),Get:(self:Console)->string,Copy:(self:Console)->boolean,SetHeight
-:(self:Console,height:number)->(),Remove:(self:Console)->()}export type Section=Moveable&{}export type TabSection={
-Remove:(self:TabSection)->()}export type Text=Moveable&{name:string,text:string,Set:(self:Text,text:string)->(),SetTitle
-:(self:Text,title:string)->()}export type Divider=Moveable&{text:string,Set:(self:Divider,text:string?)->()}export type
-Tag={Set:(self:Tag,props:TagProps)->(),SetColor:(self:Tag,color:Color3)->(),SetText:(self:Tag,text:string?)->(),SetIcon:
-(self:Tag,icon:(string|number)?)->(),Remove:(self:Tag)->()}export type Popup={Close:(self:Popup)->()}export type Group=
-Moveable&{CreateButton:(self:Group,props:ButtonProps)->Button,CreateToggle:(self:Group,props:ToggleProps)->Toggle,
-CreateSwitch:(self:Group,props:ToggleProps)->Toggle,CreateStat:(self:Group,props:StatProps)->Stat,CreateSlider:(self:
-Group,props:SliderProps)->Slider,CreateDropdown:(self:Group,props:DropdownProps)->Dropdown?,CreateSection:(self:Group,
-props:SectionProps)->Section?,CreateText:(self:Group,props:TextProps)->Text?,CreateDivider:(self:Group,props:
-DividerProps?)->Divider?,CreateGroup:(self:Group,props:GroupProps?)->Group}export type Column={CreateButton:(self:Column
-,props:ButtonProps)->Button,CreateToggle:(self:Column,props:ToggleProps)->Toggle,CreateSwitch:(self:Column,props:
-ToggleProps)->Toggle,CreateSlider:(self:Column,props:SliderProps)->Slider,CreateDropdown:(self:Column,props:
-DropdownProps)->Dropdown,CreateInput:(self:Column,props:InputProps)->Input,CreateKeybind:(self:Column,props:KeybindProps
-)->Keybind,CreateColorPicker:(self:Column,props:ColorPickerProps)->ColorPicker,CreateStat:(self:Column,props:StatProps
-)->Stat,CreateProgress:(self:Column,props:ProgressProps)->Progress,CreateConsole:(self:Column,props:ConsoleProps)->
-Console,CreateChat:(self:Column,props:ChatProps)->Chat,CreateSection:(self:Column,props:SectionProps)->Section,
-CreateText:(self:Column,props:TextProps)->Text,CreateDivider:(self:Column,props:DividerProps?)->Divider,CreateGroup:(
-self:Column,props:GroupProps?)->Group}export type Tab={Left:Column,Right:Column,left:Column,right:Column,GetColumn:(self
-:Tab,side:ColumnSide?)->Column,Select:(self:Tab,noAnimation:boolean?)->(),Deselect:(self:Tab,noAnimation:boolean?)->(),
-Remove:(self:Tab)->(),CreateButton:(self:Tab,props:ButtonProps)->Button,CreateToggle:(self:Tab,props:ToggleProps)->
-Toggle,CreateSwitch:(self:Tab,props:ToggleProps)->Toggle,CreateSlider:(self:Tab,props:SliderProps)->Slider,
-CreateDropdown:(self:Tab,props:DropdownProps)->Dropdown,CreateInput:(self:Tab,props:InputProps)->Input,CreateKeybind:(
-self:Tab,props:KeybindProps)->Keybind,CreateColorPicker:(self:Tab,props:ColorPickerProps)->ColorPicker,CreateStat:(self:
-Tab,props:StatProps)->Stat,CreateProgress:(self:Tab,props:ProgressProps)->Progress,CreateConsole:(self:Tab,props:
-ConsoleProps)->Console,CreateChat:(self:Tab,props:ChatProps)->Chat,CreateSection:(self:Tab,props:SectionProps)->Section,
-CreateText:(self:Tab,props:TextProps)->Text,CreateDivider:(self:Tab,props:DividerProps?)->Divider,CreateGroup:(self:Tab,
-props:GroupProps?)->Group}export type Window={unloaded:boolean,Flags:{[string]:any},CreateTab:(self:Window,props:
-TabProps)->Tab,CreateSection:(self:Window,props:SectionProps)->TabSection,CreateTag:(self:Window,props:TagProps)->Tag,
-Notify:(self:Window,props:NotifyProps)->(),Toast:(self:Window,props:ToastProps)->(),CreateNameplate:(self:Window,props:
-NameplateProps?)->Nameplate,Popup:(self:Window,props:PopupProps)->Popup?,Show:(self:Window)->(),Hide:(self:Window)->(),
-ToggleHide:(self:Window)->(),ToggleMinimise:(self:Window)->(),Navigate:(self:Window,tab:string|Tab)->(),ChangeTheme:(
-self:Window,theme:Theme)->(),SetLocale:(self:Window,localeId:string)->(),SetTranslator:(self:Window,translator:
-Translator?)->(),RegisterTranslations:(self:Window,translations:Translations)->(),Save:(self:Window,name:string?)->
-boolean,Load:(self:Window,name:string?)->boolean,ListConfigs:(self:Window)->{string},DeleteConfig:(self:Window,name:
-string)->boolean,GetPath:(self:Window)->(string,string),Get:(self:Window,flag:string)->any,Set:(self:Window,flag:string,
-value:any)->boolean,Unload:(self:Window)->()}export type Rayfield={CreateWindow:(self:Rayfield,props:WindowProps)->
-Window}return{}end)()end,[43]=function()local aa,ab,ac=a(43)local ad return(function(...)local ae,af=ac(ab.Parent.
-variables),{}af.enabled=false type HapticTypes={click:Enum.HapticEffectType?,notify:Enum.HapticEffectType?}local ag:
-HapticTypes,ah,ai={},pcall(function()Instance.new'HapticEffect':Destroy()return{click=Enum.HapticEffectType.UIHover,
-notify=Enum.HapticEffectType.UIClick}end)if ah then ag=ai end local aj:{[Enum.HapticEffectType]:Instance},ak:Instance?={
-}function af.setContainer(al:Instance?)ak=al end function af.releaseContainer(al:Instance?)if al==nil or ak==al then ak=
-nil end end local function al():Instance if ak and ak.Parent then return ak end return ae.guiContainer end
-local function am(an:Enum.HapticEffectType):Instance?local ao=aj[an]if ao and ao.Parent then return ao end local ap,aq=
-pcall(Instance.new,'HapticEffect')if not ap then return nil end local b=aq::any b.Type=an local c=pcall(function()aq.
-Parent=al()end)if not c then aq:Destroy()return nil end aj[an]=aq return aq end local function an(ao:Enum.
-HapticEffectType?)if not ao or not af.enabled then return end local ap=am(ao)if ap then local aq=ap::any pcall(aq.Play,
-ap)end end function af.click()an(ag.click)end function af.notify()an(ag.notify)end function af.setEnabled(ao:boolean?)af
-.enabled=ao and true or false if not af.enabled then af.teardown()end end function af.teardown()for ao,ap in aj do
-pcall(ap.Destroy,ap)aj[ao]=nil end end return af end)()end,[44]=function()local aa,ab,ac=a(44)local ad return(function(
-...)local ae,af=ac(ab.Parent.network),ac(ab.Parent.log)export type AssetId=number|string export type AssetDownloadUrl=
-string export type CacheKey=AssetId export type ResolvedAsset=AssetId export type AssetRequestPayload={Url:string,Method
-:string}local ag={Enum={AssetDownloadUrl={RobloxDownloadUrl='https://assetdelivery.roblox.com/v1/asset/?id=%d'::
-AssetDownloadUrl,RoProxyDownloadUrl='https://assetdelivery.roproxy.com/v1/asset?id=%d'::AssetDownloadUrl}}}ag.__index=ag
-ag.__type='assetResolver'type AssetResolverState={contentCache:{[CacheKey]:string}?,contentCacheOrder:{CacheKey}?,
-contentDownloadUrl:AssetDownloadUrl,pendingRequests:{[CacheKey]:{thread}}}export type AssetResolver=AssetResolverState&{
-resolve:(self:AssetResolver,value:unknown)->ResolvedAsset?,getAssetContentFromUrl:(self:AssetResolver,url:string,
-cacheKey:CacheKey?,forced:boolean?)->string?,getAssetContentFromId:(self:AssetResolver,id:AssetId,forced:boolean?)->
-string?}local ah=8 function ag.new(ai:boolean?,aj:AssetDownloadUrl?):AssetResolver local ak:{[CacheKey]:string}?=if ai
-then{}else nil local al=setmetatable({contentCache=ak,contentCacheOrder=if ai then{}::{CacheKey}else nil,
-contentDownloadUrl=aj or ag.Enum.AssetDownloadUrl.RobloxDownloadUrl,pendingRequests={}}::AssetResolverState,ag)::any
-return al end function ag.resolve(ai:AssetResolver,aj:unknown):ResolvedAsset?if type(aj)=='number'then return aj end if
-type(aj)~='string'then return nil end if string.sub(aj,1,11)=='rbxasset://'or string.sub(aj,1,11)=='rbxthumb://'then
-return aj end local ak=tonumber(string.match(aj,'^rbxassetid://(%d+)$'))if ak then return ak end return nil end
-local function ai(aj:unknown):boolean if type(aj)~='table'then return false end local ak=aj::{Body:unknown,StatusCode:
-unknown,Success:unknown}local al=ak.Body if type(al)~='string'or#al==0 then return false end if type(ak.StatusCode)==
-'number'then local am=ak.StatusCode::number return am>=200 and am<300 end if type(ak.Success)=='boolean'then return ak.
-Success::boolean end return false end function ag.getAssetContentFromUrl(aj:AssetResolver,ak:string,al:CacheKey?,am:
-boolean?):string?local an=aj.contentCache if al~=nil and an and not am then local ao=an[al]if ao then return ao end end
-local ao=aj.pendingRequests if al~=nil then local ap=ao[al]if ap then table.insert(ap,coroutine.running())return
-coroutine.yield()end ao[al]={}end local ap,aq:string?=(ae.getRequestFn())if not ap then af.warn
-'No request function available to download asset content.'else local b,c=pcall(ap,{Url=ak,Method='GET'}::
-AssetRequestPayload)if b and ai(c)then local d=(c::{Body:string}).Body aq=d if al~=nil and an then local e=aj.
-contentCacheOrder if e and an[al]==nil then table.insert(e,al)local f=if#e>ah then table.remove(e,1)else nil if f~=nil
-then an[f]=nil end end an[al]=d end elseif not am then af.warn('Failed to download asset content for url: '..tostring(ak
-))end end if al~=nil then local b=ao[al]ao[al]=nil if b then for c,d in b do coroutine.resume(d,aq)end end end return aq
-end function ag.getAssetContentFromId(aj:AssetResolver,ak:AssetId,al:boolean?):string?local am=aj:resolve(ak)if not am
-or type(am)~='number'then af.warn('Invalid asset id: '..tostring(am))return nil end local an=string.format(aj.
-contentDownloadUrl,am)return aj:getAssetContentFromUrl(an,am,al)end return ag end)()end,[45]=function()local aa,ab,ac=a(
-45)local ad return(function(...)local ae={}function ae.contrastColor(af:Color3):Color3 local ag=0.299*af.R+0.587*af.G+
-0.114*af.B return if ag>0.5 then Color3.fromRGB(0,0,0)else Color3.fromRGB(255,255,255)end function ae.toColorSequence(af
-:Color3|ColorSequence):ColorSequence return if typeof(af)=='ColorSequence'then af else ColorSequence.new(af)end function
-ae.contrastText(af:Color3):Color3 local ag=0.299*af.R+0.587*af.G+0.114*af.B return if ag>0.6 then Color3.fromRGB(20,20,
-20)else Color3.fromRGB(255,255,255)end return ae end)()end,[46]=function()local aa,ab,ac=a(46)local ad return(function(
-...)local ae,af=ac(ab.Parent.layouts),{}export type Side='Left'|'Right'af.overlap=10 af.stackBelow=560 local ag=20
-function af.pageWidth(ah:number,ai:ae.Layout):number return math.max(ah-ae.railWidthFor(ai,ah)-ag,0)end function af.
-shouldStack(ah:number):boolean return ah>0 and ah<af.stackBelow end function af.resolveSide(ah:unknown):Side?if ah==nil
-then return'Left'end if ah==1 then return'Left'elseif ah==2 then return'Right'end if type(ah)~='string'then return nil
-end local ai=string.lower(ah)if ai=='left'or ai=='l'then return'Left'elseif ai=='right'or ai=='r'then return'Right'end
-return nil end return af end)()end,[47]=function()local aa,ab,ac=a(47)local ad return(function(...)local ae={}ae.
-fontAsset='rbxassetid://12187365364'ae.pillResizeInfo=TweenInfo.new(0.4,Enum.EasingStyle.Exponential,Enum.
-EasingDirection.Out)ae.icons={close=83277910885129,minimise=108115485663409,maximise=88738500661569,settings=
-129180860773723,search=100604009889706,chevron=88479147175134,check=125626312718314,dot=91452555903853,colorpicker=
-91452555903853,config=125823673784681,rayfield=80387863064905}ae.actionIconScale={[ae.icons.close]=1,[ae.icons.settings]
-=0.95,[ae.icons.search]=1.05,[ae.icons.minimise]=1.2,[ae.icons.maximise]=1.15}ae.builtInThemes={'Default','Amethyst',
-'Cobalt','Ember','Frost','Rose'}ae.pageScrollbar={thickness=3,transparency=0.6}ae.accent={on=Color3.fromRGB(23,153,110),
-onStroke=Color3.fromRGB(32,201,144)}ae.statAccents={positive={fill=ColorSequence.new(Color3.fromRGB(0,170,127),Color3.
-fromRGB(0,134,98)),stroke=ColorSequence.new(Color3.fromRGB(0,213,156),Color3.fromRGB(0,189,135))},negative={fill=
-ColorSequence.new(Color3.fromRGB(172,47,47),Color3.fromRGB(135,37,37)),stroke=ColorSequence.new(Color3.fromRGB(255,75,75
-),Color3.fromRGB(244,67,67))},neutral={fill=ColorSequence.new(Color3.fromRGB(0,170,127),Color3.fromRGB(0,134,98)),stroke
-=ColorSequence.new(Color3.fromRGB(0,213,156),Color3.fromRGB(0,189,135))}}ae.zIndex={elementLock=60,elementLockContent=65
-,bottomFade=100,notification=1500,drag=1000,toast=2000,toastContent=2001,restoreContent=100001,restoreInteract=100002}ae
-.displayOrder={window=99999,popup=100001}return ae end)()end,[48]=function()local aa,ab,ac=a(48)local ad return(function
-(...)local ae={}function ae.itemFromValue(af,ag)local ah,ai=pcall(function()return af:FromValue(ag)end)if ah and ai then
-return ai end local aj,ak=pcall(function()return af:GetEnumItems()end)if not aj then return nil end for al,am in ak do
-if am.Value==ag then return am end end return nil end return ae end)()end,[49]=function()local aa,ab,ac=a(49)local ad
-return(function(...)local ae,af=ac(ab.Parent.services),{}local ag=ae.getService'RunService':IsStudio()local ah=not ag
-and typeof(writefile)=='function'and typeof(readfile)=='function'and typeof(isfile)=='function'and typeof(isfolder)==
-'function'and typeof(makefolder)=='function'and typeof(listfiles)=='function'and typeof(delfile)=='function'and typeof(
-delfolder)=='function'if ah then function af.writefile(ai:string,aj:string)writefile(ai,aj)end function af.readfile(ai:
-string):string return readfile(ai)end if typeof(appendfile)=='function'then function af.appendfile(ai:string,aj:string)
-appendfile(ai,aj)end end function af.isfile(ai:string):boolean return isfile(ai)end function af.delfile(ai:string)
-delfile(ai)end function af.listfiles(ai:string):{string}return listfiles(ai)end function af.makefolder(ai:string)
-makefolder(ai)end function af.isfolder(ai:string):boolean return isfolder(ai)end function af.delfolder(ai:string)
-delfolder(ai)end elseif ag then local ai=Instance.new'Folder'ai.Name='Filesystem'ai.Parent=ae.getService
-'ReplicatedStorage'local function aj(ak:string):{string}local al={}for am in string.gmatch(ak,'[^/]+')do table.insert(al
-,am)end return al end local function ak(al:{string},am:boolean):Instance?local an:Instance=ai for ao=1,#al-1 do local ap
-=an:FindFirstChild(al[ao])if not ap then if not am then return nil end local aq=Instance.new'Folder'aq.Name=al[ao]aq.
-Parent=an ap=aq end an=ap::Instance end return an end local function al(am:Instance?):StringValue?if am and am:IsA
-'StringValue'then return am end return nil end function af.writefile(am:string,an:string)local ao=aj(am)assert(#ao>0,
-'Invalid path')local ap=ak(ao,true)assert(ap,'Invalid path')local aq=ao[#ao]local b=ap:FindFirstChild(aq)local c=al(b)if
-c then c.Value=an else if b then b:Destroy()end local d=Instance.new'StringValue'd.Name=aq d.Value=an d.Parent=ap end
-end function af.readfile(am:string):string local an=aj(am)assert(#an>0,'Invalid path')local ao=ak(an,false)assert(ao,
-'File not found: '..am)local ap=ao:FindFirstChild(an[#an])local aq=al(ap)assert(aq,'File not found: '..am)return aq.
-Value end function af.isfile(am:string):boolean local an=aj(am)if#an==0 then return false end local ao=ak(an,false)if
-not ao then return false end return al(ao:FindFirstChild(an[#an]))~=nil end function af.listfiles(am:string):{string}
-local an,ao:Instance=aj(am),ai for ap,aq in an do local b=ao:FindFirstChild(aq)if not b or not b:IsA'Folder'then error(
-'Folder not found: '..am)end ao=b end local ap:{string}={}for aq,b in ao:GetChildren()do table.insert(ap,am..'/'..b.Name
-)end return ap end function af.delfile(am:string)local an=aj(am)assert(#an>0,'Invalid path')local ao=ak(an,false)assert(
-ao,'File not found: '..am)local ap=ao:FindFirstChild(an[#an])local aq=al(ap)assert(aq,'File not found: '..am)aq:Destroy(
-)end function af.makefolder(am:string)local an=aj(am)if#an==0 then return end local ao:Instance=ai for ap,aq in an do
-local b=ao:FindFirstChild(aq)if not b then local c=Instance.new'Folder'c.Name=aq c.Parent=ao b=c end ao=b::Instance end
-end function af.isfolder(am:string):boolean local an=aj(am)if#an==0 then return false end local ao:Instance=ai for ap,aq
-in an do local b=ao:FindFirstChild(aq)if not b or not b:IsA'Folder'then return false end ao=b end return true end
-function af.delfolder(am:string)local an=aj(am)assert(#an>0,'Invalid path')local ao=ak(an,false)assert(ao,
-'Folder not found: '..am)local ap=ao:FindFirstChild(an[#an])assert(ap and ap:IsA'Folder','Folder not found: '..am)ap:
-Destroy()end end if af.writefile and not af.appendfile then function af.appendfile(ai:string,aj:string)local ak=if af.
-isfile(ai)then af.readfile(ai)else nil af.writefile(ai,if ak then ak..aj else aj)end end function af.ensureFolder(ai:
-string)if not af.isfolder(ai)then af.makefolder(ai)end end function af.ensureDir(ai:string)local aj=''for ak in string.
-gmatch(ai,'[^/]+')do aj=if aj==''then ak else aj..'/'..ak if not af.isfolder(aj)then af.makefolder(aj)end end end return
-af end)()end,[50]=function()local aa,ab,ac=a(50)local ad return(function(...)local ae,af,ag,ah=ac(ab.Parent.filesystem),
-ac(ab.Parent.path),'RayfieldColumns',{}ah.__index=ah export type FileSystemManager={root:string,assets:string,getPath:(
-self:FileSystemManager,subpath:string?)->string,getAssetsFolder:(self:FileSystemManager,subfolder:string?)->string,
-getRootFolder:(self:FileSystemManager)->string}function ah.new(ai:string?):FileSystemManager local aj=ai or ag local ak=
-setmetatable({root=aj,assets=aj..'/Assets'},ah)::any pcall(ae.ensureFolder,ak.root)pcall(ae.ensureFolder,ak.assets)
-return ak end function ah.getPath(ai,aj:string?):string return af.join(ai.root,aj)end function ah.getAssetsFolder(ai,aj:
-string?):string if aj then local ak=af.join(ai.assets,aj)pcall(ae.ensureFolder,ak)return ak end return ai.assets end
-function ah.getRootFolder(ai):string return ai.root end return ah end)()end,[51]=function()local aa,ab,ac=a(51)local ad
-return(function(...)local ae,af,ag={},2166136261,16777619 local function ah(ai:string):number local aj=af for ak=1,#ai
-do aj=bit32.bxor(aj,string.byte(ai,ak))local al=aj%65536 local am=(aj-al)/65536 aj=(((am*ag)%65536)*65536+al*ag)%
-4294967296 end return aj end function ae.deriveFlagFromName(ai:string):string local aj=ai:gsub('(%S+)',function(aj:
-string):string return aj:sub(1,1):upper()..aj:sub(2,-1)end):gsub('[^%w]','')if aj==''and ai~=''then return string.
-format('Flag%08x',ah(ai))end return aj end return ae end)()end,[52]=function()local aa,ab,ac=a(52)local ad return(
-function(...)local ae=ac(ab.Parent.services)local af,ag,ah,ai,aj,ak=ae.getService'HttpService',ae.getService'RunService'
-,ac(ab.Parent.filesystem),ac(ab.Parent.assetResolver),ac(ab.Parent.log),ac(ab.Parent.path)local function al(am:unknown):
-string?local an,ao=pcall(function()return af:JSONEncode(am)end)if an and type(ao)=='string'then return ao else aj.warn(
-'Failed to encode JSON:',ao)return nil end end local function am(an:string):unknown?local ao,ap=pcall(function()return
-af:JSONDecode(an)end)if ao then return ap else aj.warn('Failed to decode JSON:',ap)return nil end end local an={}an.
-__type='fontManager'export type FontFace={name:string,family:string,weight:number,style:string,assetId:string}export
-type FontManifest={name:string,faces:{FontFace}}export type CachedFont={customId:number|string,manifest:FontManifest,
-loadedFromDisk:boolean,variants:{[string]:Font}}export type FontCache={[number]:CachedFont}export type
-FontResolverOptions={fallbackFont:Font?,saveToDisk:boolean?,skipCache:boolean?}type FontManagerState={_debug:boolean,
-_pendingLoads:{[string]:{thread}},rootFolder:string,assetResolver:ai.AssetResolver,defaultOptions:FontResolverOptions,
-fontCache:FontCache?}export type FontManager=FontManagerState&{resolve:(self:FontManager,id:number|string)->Font?,
-loadFont:(self:FontManager,id:(number|string)?,fontWeight:Enum.FontWeight?,fontStyle:Enum.FontStyle?,saveToDisk:boolean?
-,skipCache:boolean?)->Font?,getFontFromId:(self:FontManager,id:number|string)->Font?}export type fontManager=FontManager
-local function ao(ap:unknown):FontManifest?local aq=ap::any if type(aq)~='table'or type(aq.name)~='string'or type(aq.
-faces)~='table'then return nil end aq.name=ak.sanitizeFile(aq.name)if#aq.name==0 or#aq.faces==0 then return nil end for
-b,c in aq.faces do if type(c)~='table'or type(c.name)~='string'or type(c.assetId)~='string'then return nil end c.name=ak
-.sanitizeFile(c.name)if#c.name==0 then return nil end end return aq::FontManifest end local ap={'\0\1\0\0','OTTO','true'
-,'ttcf','wOFF','wOF2'}local function aq(b:string):boolean for c,d in ap do if string.sub(b,1,#d)==d then return true end
-end return false end local b=getfenv()local function c(d:Enum.FontWeight,e:Enum.FontStyle):string return tostring(d)..
-'|'..tostring(e)end local function d(e:unknown):number?if type(e)=='number'then return e end if type(e)=='string'then
-return tonumber(e)end return nil end function an.__index(e:FontManagerState,f:unknown):unknown local g=(an::any)[f]if g
-~=nil then return g end local h=d(f)if not h then return nil end local i=e.fontCache if i then local j=i[h]if j then
-local k=c(Enum.FontWeight.Regular,Enum.FontStyle.Normal)local l=j.variants and j.variants[k]if l then return l end for m
-,n in pairs(j.variants or{})do return n end end end return nil end function an.new(e:string,f:boolean?,g:boolean?,h:ai.
-AssetDownloadUrl?,i:FontResolverOptions?):FontManager local j=i or{saveToDisk=true,skipCache=not g or false,fallbackFont
-=Font.fromEnum(Enum.Font.SourceSans)}local k=setmetatable({rootFolder=e,fontCache=if g then{}::FontCache else nil,
-assetResolver=ai.new(g,h),defaultOptions=j,_debug=f or ag:IsStudio()or false,_pendingLoads={}}::FontManagerState,an)::
-any pcall(ah.ensureFolder,e)return k end local function e(f:FontManager,g:number,h:Enum.FontWeight,i:Enum.FontStyle,j:
-string):Font?local k=f.rootFolder..'/'..g..'.json'if typeof(ah.isfile)~='function'then return f.defaultOptions.
-fallbackFont end local l,m:string?=false if ag:IsStudio()and f._debug then aj.warn
-[[Font manifest loading is not supported in Studio. Using default font manifest for testing.]]m=
+Color3?,logo:any?,logoTint:Color3?,logoScale:number?,backdrop:any?,backdropTint:Color3?,backdropTransparency:number?,
+glowImage:(string|number|boolean)?,titleFont:Font?,subtitleFont:Font?,titleTop:number?,titleSize:number?,subtitleSize:
+number?,entrance:('unfold'|'fade'|'none')?,logoSway:number?,logoSpin:number?,halo:boolean?,sparkles:number?,sparkleColor
+:Color3?,titleShine:boolean?,sweep:boolean?,sweepEvery:number?,border:boolean?,borderThickness:number?,
+borderTransparency:number?,borderSpeed:number?,glow:boolean?,bob:boolean?,bobHeight:number?,bobSpeed:number?}export type
+NameplateProps={title:string?,subtitle:(string|((player:Player)->string))?,badge:string?,preset:('Omnity'|'Midnight'|
+'Mono')?,style:NameplateStyle?,endpoint:string?,key:string?,transport:ChatTransport?,showSelf:boolean?,hideDefaultName:
+boolean?,checkInInterval:number?,autoCheckIn:boolean?,playerMedia:boolean?,accent:Color3?,logo:(string|number|boolean)?,
+backdrop:(string|number|boolean)?,maxDistance:number?,lift:number?}export type Nameplate={SetEnabled:(self:Nameplate,
+enabled:boolean)->(),SetTitle:(self:Nameplate,title:string)->(),SetStyle:(self:Nameplate,style:NameplateStyle|string,
+preset:string?)->(),SetMedia:(self:Nameplate,link:string,slot:('backdrop'|'logo')?)->(boolean,string?),ClearMedia:(self:
+Nameplate)->boolean,Add:(self:Nameplate,player:Player,badge:string?)->(),Remove:(self:Nameplate,player:Player)->(),
+CheckIn:(self:Nameplate)->boolean,Destroy:(self:Nameplate)->()}export type NotifyProps={title:string?,content:string?,
+icon:(string|number)?,duration:number?}export type ToastProps={title:string?,subtitle:string?,subtitleAbove:boolean?,
+icon:(string|number)?,avatar:number?,minWidth:number?,duration:number?,position:'Top'|'Bottom'?}export type PopupBox={
+title:string?,description:string?,icon:(string|number)?}export type PopupOption={text:string?,style:string?,callback:((
+)->())?}export type PopupProps={title:string?,subtitle:string?,icon:(string|number)?,content:string?,boxes:{PopupBox}?,
+options:{PopupOption}?,dismissable:boolean?}export type Moveable={MoveTo:(self:any,index:number)->(),MoveToTop:(self:any
+)->(),MoveToBottom:(self:any)->(),MoveUp:(self:any)->(),MoveDown:(self:any)->()}export type Lockable={Lock:(self:any,
+reason:string?)->(),Unlock:(self:any)->(),IsLocked:(self:any)->boolean}export type Button=Moveable&Lockable&{}export
+type Toggle=Moveable&Lockable&{value:boolean,Set:(self:Toggle,value:boolean,skipCallback:boolean?)->()}export type
+Slider=Moveable&Lockable&{value:number,Set:(self:Slider,value:number,skipCallback:boolean?)->()}export type Dropdown=
+Moveable&Lockable&{value:{string},Set:(self:Dropdown,value:string|{string},skipCallback:boolean?)->(),Refresh:(self:
+Dropdown,options:{string})->(),Add:(self:Dropdown,option:string)->(),Remove:(self:Dropdown,option:string)->()}export
+type Input=Moveable&Lockable&{value:string,Set:(self:Input,value:string,skipCallback:boolean?)->()}export type Keybind=
+Moveable&Lockable&{value:EnumItem,Set:(self:Keybind,value:EnumItem|string,skipChanged:boolean?)->()}export type
+ColorPicker=Moveable&Lockable&{value:Color3,alpha:number,Set:(self:ColorPicker,value:Color3|string,skipCallback:boolean?
+)->(),SetAlpha:(self:ColorPicker,alpha:number,skipCallback:boolean?)->()}export type Stat=Moveable&{value:number,Set:(
+self:Stat,value:number)->(),ResetBaseline:(self:Stat,value:number?)->()}export type Progress=Moveable&{value:number,Set:
+(self:Progress,value:number)->(),Get:(self:Progress)->number,GetPercentage:(self:Progress)->number,SetRange:(self:
+Progress,min:number,max:number)->(),SetText:(self:Progress,text:string?)->(),SetIndeterminate:(self:Progress,state:
+boolean)->(),Remove:(self:Progress)->()}export type Chat=Moveable&{Send:(self:Chat,text:string)->(boolean,string?),
+Refresh:(self:Chat)->boolean,SetChannel:(self:Chat,channel:string,endpoint:string?)->(),Clear:(self:Chat)->(),Remove:(
+self:Chat)->()}export type Console=Moveable&{Set:(self:Console,text:string)->(),Append:(self:Console,line:string)->(),
+Clear:(self:Console)->(),Get:(self:Console)->string,Copy:(self:Console)->boolean,SetHeight:(self:Console,height:number
+)->(),Remove:(self:Console)->()}export type Section=Moveable&{}export type TabSection={Remove:(self:TabSection)->()}
+export type Text=Moveable&{name:string,text:string,Set:(self:Text,text:string)->(),SetTitle:(self:Text,title:string)->()
+}export type Divider=Moveable&{text:string,Set:(self:Divider,text:string?)->()}export type Tag={Set:(self:Tag,props:
+TagProps)->(),SetColor:(self:Tag,color:Color3)->(),SetText:(self:Tag,text:string?)->(),SetIcon:(self:Tag,icon:(string|
+number)?)->(),Remove:(self:Tag)->()}export type Popup={Close:(self:Popup)->()}export type Group=Moveable&{CreateButton:(
+self:Group,props:ButtonProps)->Button,CreateToggle:(self:Group,props:ToggleProps)->Toggle,CreateSwitch:(self:Group,props
+:ToggleProps)->Toggle,CreateStat:(self:Group,props:StatProps)->Stat,CreateSlider:(self:Group,props:SliderProps)->Slider,
+CreateDropdown:(self:Group,props:DropdownProps)->Dropdown?,CreateSection:(self:Group,props:SectionProps)->Section?,
+CreateText:(self:Group,props:TextProps)->Text?,CreateDivider:(self:Group,props:DividerProps?)->Divider?,CreateGroup:(
+self:Group,props:GroupProps?)->Group}export type Column={CreateButton:(self:Column,props:ButtonProps)->Button,
+CreateToggle:(self:Column,props:ToggleProps)->Toggle,CreateSwitch:(self:Column,props:ToggleProps)->Toggle,CreateSlider:(
+self:Column,props:SliderProps)->Slider,CreateDropdown:(self:Column,props:DropdownProps)->Dropdown,CreateInput:(self:
+Column,props:InputProps)->Input,CreateKeybind:(self:Column,props:KeybindProps)->Keybind,CreateColorPicker:(self:Column,
+props:ColorPickerProps)->ColorPicker,CreateStat:(self:Column,props:StatProps)->Stat,CreateProgress:(self:Column,props:
+ProgressProps)->Progress,CreateConsole:(self:Column,props:ConsoleProps)->Console,CreateChat:(self:Column,props:ChatProps
+)->Chat,CreateSection:(self:Column,props:SectionProps)->Section,CreateText:(self:Column,props:TextProps)->Text,
+CreateDivider:(self:Column,props:DividerProps?)->Divider,CreateGroup:(self:Column,props:GroupProps?)->Group}export type
+Tab={Left:Column,Right:Column,left:Column,right:Column,GetColumn:(self:Tab,side:ColumnSide?)->Column,Select:(self:Tab,
+noAnimation:boolean?)->(),Deselect:(self:Tab,noAnimation:boolean?)->(),Remove:(self:Tab)->(),CreateButton:(self:Tab,
+props:ButtonProps)->Button,CreateToggle:(self:Tab,props:ToggleProps)->Toggle,CreateSwitch:(self:Tab,props:ToggleProps)->
+Toggle,CreateSlider:(self:Tab,props:SliderProps)->Slider,CreateDropdown:(self:Tab,props:DropdownProps)->Dropdown,
+CreateInput:(self:Tab,props:InputProps)->Input,CreateKeybind:(self:Tab,props:KeybindProps)->Keybind,CreateColorPicker:(
+self:Tab,props:ColorPickerProps)->ColorPicker,CreateStat:(self:Tab,props:StatProps)->Stat,CreateProgress:(self:Tab,props
+:ProgressProps)->Progress,CreateConsole:(self:Tab,props:ConsoleProps)->Console,CreateChat:(self:Tab,props:ChatProps)->
+Chat,CreateSection:(self:Tab,props:SectionProps)->Section,CreateText:(self:Tab,props:TextProps)->Text,CreateDivider:(
+self:Tab,props:DividerProps?)->Divider,CreateGroup:(self:Tab,props:GroupProps?)->Group}export type Window={unloaded:
+boolean,Flags:{[string]:any},CreateTab:(self:Window,props:TabProps)->Tab,CreateSection:(self:Window,props:SectionProps
+)->TabSection,CreateTag:(self:Window,props:TagProps)->Tag,Notify:(self:Window,props:NotifyProps)->(),Toast:(self:Window,
+props:ToastProps)->(),CreateNameplate:(self:Window,props:NameplateProps?)->Nameplate,Popup:(self:Window,props:PopupProps
+)->Popup?,Show:(self:Window)->(),Hide:(self:Window)->(),ToggleHide:(self:Window)->(),ToggleMinimise:(self:Window)->(),
+Navigate:(self:Window,tab:string|Tab)->(),ChangeTheme:(self:Window,theme:Theme)->(),SetLocale:(self:Window,localeId:
+string)->(),SetTranslator:(self:Window,translator:Translator?)->(),RegisterTranslations:(self:Window,translations:
+Translations)->(),Save:(self:Window,name:string?)->boolean,Load:(self:Window,name:string?)->boolean,ListConfigs:(self:
+Window)->{string},DeleteConfig:(self:Window,name:string)->boolean,GetPath:(self:Window)->(string,string),Get:(self:
+Window,flag:string)->any,Set:(self:Window,flag:string,value:any)->boolean,Unload:(self:Window)->()}export type Rayfield=
+{CreateWindow:(self:Rayfield,props:WindowProps)->Window}return{}end)()end,[43]=function()local aa,ab,ac=a(43)local ad
+return(function(...)local ae,af=ac(ab.Parent.variables),{}af.enabled=false type HapticTypes={click:Enum.HapticEffectType
+?,notify:Enum.HapticEffectType?}local ag:HapticTypes,ah,ai={},pcall(function()Instance.new'HapticEffect':Destroy()return
+{click=Enum.HapticEffectType.UIHover,notify=Enum.HapticEffectType.UIClick}end)if ah then ag=ai end local aj:{[Enum.
+HapticEffectType]:Instance},ak:Instance?={}function af.setContainer(al:Instance?)ak=al end function af.releaseContainer(
+al:Instance?)if al==nil or ak==al then ak=nil end end local function al():Instance if ak and ak.Parent then return ak
+end return ae.guiContainer end local function am(an:Enum.HapticEffectType):Instance?local ao=aj[an]if ao and ao.Parent
+then return ao end local ap,aq=pcall(Instance.new,'HapticEffect')if not ap then return nil end local ar=aq::any ar.Type=
+an local as=pcall(function()aq.Parent=al()end)if not as then aq:Destroy()return nil end aj[an]=aq return aq end
+local function an(ao:Enum.HapticEffectType?)if not ao or not af.enabled then return end local ap=am(ao)if ap then local
+aq=ap::any pcall(aq.Play,ap)end end function af.click()an(ag.click)end function af.notify()an(ag.notify)end function af.
+setEnabled(ao:boolean?)af.enabled=ao and true or false if not af.enabled then af.teardown()end end function af.teardown(
+)for ao,ap in aj do pcall(ap.Destroy,ap)aj[ao]=nil end end return af end)()end,[44]=function()local aa,ab,ac=a(44)local
+ad return(function(...)local ae={}function ae.isAnimated(af):boolean if not af then return false end if af.sheet then
+return(af.sheet.frames or 1)>1 and(af.sheet.fps or 0)>0 end return af.list~=nil and#af.list>1 and(af.fps or 0)>0 end
+function ae.apply(af,ag)if not ag then af.Image=''af.ImageRectSize=Vector2.zero af.ImageRectOffset=Vector2.zero return
+end if ag.list then af.Image=ag.list[1]or''af.ImageRectSize=Vector2.zero af.ImageRectOffset=Vector2.zero return end af.
+Image=ag.uri or''local ah=ag.sheet if ah then af.ImageRectSize=Vector2.new(ah.frameWidth,ah.frameHeight)af.
+ImageRectOffset=Vector2.zero else af.ImageRectSize=Vector2.zero af.ImageRectOffset=Vector2.zero end end function ae.
+frameAt(af,ag:number):number if not ae.isAnimated(af)then return 0 end local ah,ai=if af.sheet then af.sheet.frames else
+#af.list,if af.sheet then af.sheet.fps else af.fps return math.floor(ag*ai)%ah end function ae.step(af,ag,ah:number,ai)
+if not ae.isAnimated(ag)then return end local aj=ae.frameAt(ag,ah)if ai and ai.frame==aj then return end if ai then ai.
+frame=aj end if ag.sheet then local ak=ag.sheet local al,am=aj%ak.columns,aj//ak.columns af.ImageRectOffset=Vector2.new(
+al*ak.frameWidth,am*ak.frameHeight)else af.Image=ag.list[aj+1]end end return ae end)()end,[45]=function()local aa,ab,ac=
+a(45)local ad return(function(...)local ae,af=ac(ab.Parent.network),ac(ab.Parent.log)export type AssetId=number|string
+export type AssetDownloadUrl=string export type CacheKey=AssetId export type ResolvedAsset=AssetId export type
+AssetRequestPayload={Url:string,Method:string}local ag={Enum={AssetDownloadUrl={RobloxDownloadUrl=
+'https://assetdelivery.roblox.com/v1/asset/?id=%d'::AssetDownloadUrl,RoProxyDownloadUrl=
+'https://assetdelivery.roproxy.com/v1/asset?id=%d'::AssetDownloadUrl}}}ag.__index=ag ag.__type='assetResolver'type
+AssetResolverState={contentCache:{[CacheKey]:string}?,contentCacheOrder:{CacheKey}?,contentDownloadUrl:AssetDownloadUrl,
+pendingRequests:{[CacheKey]:{thread}}}export type AssetResolver=AssetResolverState&{resolve:(self:AssetResolver,value:
+unknown)->ResolvedAsset?,getAssetContentFromUrl:(self:AssetResolver,url:string,cacheKey:CacheKey?,forced:boolean?)->
+string?,getAssetContentFromId:(self:AssetResolver,id:AssetId,forced:boolean?)->string?}local ah=8 function ag.new(ai:
+boolean?,aj:AssetDownloadUrl?):AssetResolver local ak:{[CacheKey]:string}?=if ai then{}else nil local al=setmetatable({
+contentCache=ak,contentCacheOrder=if ai then{}::{CacheKey}else nil,contentDownloadUrl=aj or ag.Enum.AssetDownloadUrl.
+RobloxDownloadUrl,pendingRequests={}}::AssetResolverState,ag)::any return al end function ag.resolve(ai:AssetResolver,aj
+:unknown):ResolvedAsset?if type(aj)=='number'then return aj end if type(aj)~='string'then return nil end if string.sub(
+aj,1,11)=='rbxasset://'or string.sub(aj,1,11)=='rbxthumb://'then return aj end local ak=tonumber(string.match(aj,
+'^rbxassetid://(%d+)$'))if ak then return ak end return nil end local function ai(aj:unknown):boolean if type(aj)~=
+'table'then return false end local ak=aj::{Body:unknown,StatusCode:unknown,Success:unknown}local al=ak.Body if type(al)
+~='string'or#al==0 then return false end if type(ak.StatusCode)=='number'then local am=ak.StatusCode::number return am>=
+200 and am<300 end if type(ak.Success)=='boolean'then return ak.Success::boolean end return false end function ag.
+getAssetContentFromUrl(aj:AssetResolver,ak:string,al:CacheKey?,am:boolean?):string?local an=aj.contentCache if al~=nil
+and an and not am then local ao=an[al]if ao then return ao end end local ao=aj.pendingRequests if al~=nil then local ap=
+ao[al]if ap then table.insert(ap,coroutine.running())return coroutine.yield()end ao[al]={}end local ap,aq:string?=(ae.
+getRequestFn())if not ap then af.warn'No request function available to download asset content.'else local ar,as=pcall(ap
+,{Url=ak,Method='GET'}::AssetRequestPayload)if ar and ai(as)then local at=(as::{Body:string}).Body aq=at if al~=nil and
+an then local au=aj.contentCacheOrder if au and an[al]==nil then table.insert(au,al)local av=if#au>ah then table.remove(
+au,1)else nil if av~=nil then an[av]=nil end end an[al]=at end elseif not am then af.warn(
+'Failed to download asset content for url: '..tostring(ak))end end if al~=nil then local ar=ao[al]ao[al]=nil if ar then
+for as,at in ar do coroutine.resume(at,aq)end end end return aq end function ag.getAssetContentFromId(aj:AssetResolver,
+ak:AssetId,al:boolean?):string?local am=aj:resolve(ak)if not am or type(am)~='number'then af.warn('Invalid asset id: '..
+tostring(am))return nil end local an=string.format(aj.contentDownloadUrl,am)return aj:getAssetContentFromUrl(an,am,al)
+end return ag end)()end,[46]=function()local aa,ab,ac=a(46)local ad return(function(...)local ae={}function ae.
+contrastColor(af:Color3):Color3 local ag=0.299*af.R+0.587*af.G+0.114*af.B return if ag>0.5 then Color3.fromRGB(0,0,0)
+else Color3.fromRGB(255,255,255)end function ae.toColorSequence(af:Color3|ColorSequence):ColorSequence return if typeof(
+af)=='ColorSequence'then af else ColorSequence.new(af)end function ae.contrastText(af:Color3):Color3 local ag=0.299*af.R
++0.587*af.G+0.114*af.B return if ag>0.6 then Color3.fromRGB(20,20,20)else Color3.fromRGB(255,255,255)end return ae end)(
+)end,[47]=function()local aa,ab,ac=a(47)local ad return(function(...)local ae,af=ac(ab.Parent.layouts),{}export type
+Side='Left'|'Right'af.overlap=10 af.stackBelow=560 local ag=20 function af.pageWidth(ah:number,ai:ae.Layout):number
+return math.max(ah-ae.railWidthFor(ai,ah)-ag,0)end function af.shouldStack(ah:number):boolean return ah>0 and ah<af.
+stackBelow end function af.resolveSide(ah:unknown):Side?if ah==nil then return'Left'end if ah==1 then return'Left'elseif
+ah==2 then return'Right'end if type(ah)~='string'then return nil end local ai=string.lower(ah)if ai=='left'or ai=='l'
+then return'Left'elseif ai=='right'or ai=='r'then return'Right'end return nil end return af end)()end,[48]=function()
+local aa,ab,ac=a(48)local ad return(function(...)local ae={}ae.fontAsset='rbxassetid://12187365364'ae.pillResizeInfo=
+TweenInfo.new(0.4,Enum.EasingStyle.Exponential,Enum.EasingDirection.Out)ae.icons={close=83277910885129,minimise=
+108115485663409,maximise=88738500661569,settings=129180860773723,search=100604009889706,chevron=88479147175134,check=
+125626312718314,dot=91452555903853,colorpicker=91452555903853,config=125823673784681,rayfield=80387863064905}ae.
+actionIconScale={[ae.icons.close]=1,[ae.icons.settings]=0.95,[ae.icons.search]=1.05,[ae.icons.minimise]=1.2,[ae.icons.
+maximise]=1.15}ae.builtInThemes={'Default','Amethyst','Cobalt','Ember','Frost','Rose'}ae.pageScrollbar={thickness=3,
+transparency=0.6}ae.accent={on=Color3.fromRGB(23,153,110),onStroke=Color3.fromRGB(32,201,144)}ae.statAccents={positive={
+fill=ColorSequence.new(Color3.fromRGB(0,170,127),Color3.fromRGB(0,134,98)),stroke=ColorSequence.new(Color3.fromRGB(0,213
+,156),Color3.fromRGB(0,189,135))},negative={fill=ColorSequence.new(Color3.fromRGB(172,47,47),Color3.fromRGB(135,37,37)),
+stroke=ColorSequence.new(Color3.fromRGB(255,75,75),Color3.fromRGB(244,67,67))},neutral={fill=ColorSequence.new(Color3.
+fromRGB(0,170,127),Color3.fromRGB(0,134,98)),stroke=ColorSequence.new(Color3.fromRGB(0,213,156),Color3.fromRGB(0,189,135
+))}}ae.zIndex={elementLock=60,elementLockContent=65,bottomFade=100,notification=1500,drag=1000,toast=2000,toastContent=
+2001,restoreContent=100001,restoreInteract=100002}ae.displayOrder={window=99999,popup=100001}return ae end)()end,[49]=
+function()local aa,ab,ac=a(49)local ad return(function(...)local ae={}function ae.itemFromValue(af,ag)local ah,ai=pcall(
+function()return af:FromValue(ag)end)if ah and ai then return ai end local aj,ak=pcall(function()return af:GetEnumItems(
+)end)if not aj then return nil end for al,am in ak do if am.Value==ag then return am end end return nil end return ae
+end)()end,[50]=function()local aa,ab,ac=a(50)local ad return(function(...)local ae,af=ac(ab.Parent.services),{}local ag=
+ae.getService'RunService':IsStudio()local ah=not ag and typeof(writefile)=='function'and typeof(readfile)=='function'and
+typeof(isfile)=='function'and typeof(isfolder)=='function'and typeof(makefolder)=='function'and typeof(listfiles)==
+'function'and typeof(delfile)=='function'and typeof(delfolder)=='function'if ah then function af.writefile(ai:string,aj:
+string)writefile(ai,aj)end function af.readfile(ai:string):string return readfile(ai)end if typeof(appendfile)==
+'function'then function af.appendfile(ai:string,aj:string)appendfile(ai,aj)end end function af.isfile(ai:string):boolean
+return isfile(ai)end function af.delfile(ai:string)delfile(ai)end function af.listfiles(ai:string):{string}return
+listfiles(ai)end function af.makefolder(ai:string)makefolder(ai)end function af.isfolder(ai:string):boolean return
+isfolder(ai)end function af.delfolder(ai:string)delfolder(ai)end elseif ag then local ai=Instance.new'Folder'ai.Name=
+'Filesystem'ai.Parent=ae.getService'ReplicatedStorage'local function aj(ak:string):{string}local al={}for am in string.
+gmatch(ak,'[^/]+')do table.insert(al,am)end return al end local function ak(al:{string},am:boolean):Instance?local an:
+Instance=ai for ao=1,#al-1 do local ap=an:FindFirstChild(al[ao])if not ap then if not am then return nil end local aq=
+Instance.new'Folder'aq.Name=al[ao]aq.Parent=an ap=aq end an=ap::Instance end return an end local function al(am:Instance
+?):StringValue?if am and am:IsA'StringValue'then return am end return nil end function af.writefile(am:string,an:string)
+local ao=aj(am)assert(#ao>0,'Invalid path')local ap=ak(ao,true)assert(ap,'Invalid path')local aq=ao[#ao]local ar=ap:
+FindFirstChild(aq)local as=al(ar)if as then as.Value=an else if ar then ar:Destroy()end local at=Instance.new
+'StringValue'at.Name=aq at.Value=an at.Parent=ap end end function af.readfile(am:string):string local an=aj(am)assert(#
+an>0,'Invalid path')local ao=ak(an,false)assert(ao,'File not found: '..am)local ap=ao:FindFirstChild(an[#an])local aq=
+al(ap)assert(aq,'File not found: '..am)return aq.Value end function af.isfile(am:string):boolean local an=aj(am)if#an==0
+then return false end local ao=ak(an,false)if not ao then return false end return al(ao:FindFirstChild(an[#an]))~=nil
+end function af.listfiles(am:string):{string}local an,ao:Instance=aj(am),ai for ap,aq in an do local ar=ao:
+FindFirstChild(aq)if not ar or not ar:IsA'Folder'then error('Folder not found: '..am)end ao=ar end local ap:{string}={}
+for aq,ar in ao:GetChildren()do table.insert(ap,am..'/'..ar.Name)end return ap end function af.delfile(am:string)local
+an=aj(am)assert(#an>0,'Invalid path')local ao=ak(an,false)assert(ao,'File not found: '..am)local ap=ao:FindFirstChild(an
+[#an])local aq=al(ap)assert(aq,'File not found: '..am)aq:Destroy()end function af.makefolder(am:string)local an=aj(am)if
+#an==0 then return end local ao:Instance=ai for ap,aq in an do local ar=ao:FindFirstChild(aq)if not ar then local as=
+Instance.new'Folder'as.Name=aq as.Parent=ao ar=as end ao=ar::Instance end end function af.isfolder(am:string):boolean
+local an=aj(am)if#an==0 then return false end local ao:Instance=ai for ap,aq in an do local ar=ao:FindFirstChild(aq)if
+not ar or not ar:IsA'Folder'then return false end ao=ar end return true end function af.delfolder(am:string)local an=aj(
+am)assert(#an>0,'Invalid path')local ao=ak(an,false)assert(ao,'Folder not found: '..am)local ap=ao:FindFirstChild(an[#an
+])assert(ap and ap:IsA'Folder','Folder not found: '..am)ap:Destroy()end end if af.writefile and not af.appendfile then
+function af.appendfile(ai:string,aj:string)local ak=if af.isfile(ai)then af.readfile(ai)else nil af.writefile(ai,if ak
+then ak..aj else aj)end end function af.ensureFolder(ai:string)if not af.isfolder(ai)then af.makefolder(ai)end end
+function af.ensureDir(ai:string)local aj=''for ak in string.gmatch(ai,'[^/]+')do aj=if aj==''then ak else aj..'/'..ak if
+not af.isfolder(aj)then af.makefolder(aj)end end end return af end)()end,[51]=function()local aa,ab,ac=a(51)local ad
+return(function(...)local ae,af,ag,ah=ac(ab.Parent.filesystem),ac(ab.Parent.path),'RayfieldColumns',{}ah.__index=ah
+export type FileSystemManager={root:string,assets:string,getPath:(self:FileSystemManager,subpath:string?)->string,
+getAssetsFolder:(self:FileSystemManager,subfolder:string?)->string,getRootFolder:(self:FileSystemManager)->string}
+function ah.new(ai:string?):FileSystemManager local aj=ai or ag local ak=setmetatable({root=aj,assets=aj..'/Assets'},ah)
+::any pcall(ae.ensureFolder,ak.root)pcall(ae.ensureFolder,ak.assets)return ak end function ah.getPath(ai,aj:string?):
+string return af.join(ai.root,aj)end function ah.getAssetsFolder(ai,aj:string?):string if aj then local ak=af.join(ai.
+assets,aj)pcall(ae.ensureFolder,ak)return ak end return ai.assets end function ah.getRootFolder(ai):string return ai.
+root end return ah end)()end,[52]=function()local aa,ab,ac=a(52)local ad return(function(...)local ae,af,ag={},
+2166136261,16777619 local function ah(ai:string):number local aj=af for ak=1,#ai do aj=bit32.bxor(aj,string.byte(ai,ak))
+local al=aj%65536 local am=(aj-al)/65536 aj=(((am*ag)%65536)*65536+al*ag)%4294967296 end return aj end function ae.
+deriveFlagFromName(ai:string):string local aj=ai:gsub('(%S+)',function(aj:string):string return aj:sub(1,1):upper()..aj:
+sub(2,-1)end):gsub('[^%w]','')if aj==''and ai~=''then return string.format('Flag%08x',ah(ai))end return aj end return ae
+end)()end,[53]=function()local aa,ab,ac=a(53)local ad return(function(...)local ae=ac(ab.Parent.services)local af,ag,ah,
+ai,aj,ak=ae.getService'HttpService',ae.getService'RunService',ac(ab.Parent.filesystem),ac(ab.Parent.assetResolver),ac(ab
+.Parent.log),ac(ab.Parent.path)local function al(am:unknown):string?local an,ao=pcall(function()return af:JSONEncode(am)
+end)if an and type(ao)=='string'then return ao else aj.warn('Failed to encode JSON:',ao)return nil end end
+local function am(an:string):unknown?local ao,ap=pcall(function()return af:JSONDecode(an)end)if ao then return ap else
+aj.warn('Failed to decode JSON:',ap)return nil end end local an={}an.__type='fontManager'export type FontFace={name:
+string,family:string,weight:number,style:string,assetId:string}export type FontManifest={name:string,faces:{FontFace}}
+export type CachedFont={customId:number|string,manifest:FontManifest,loadedFromDisk:boolean,variants:{[string]:Font}}
+export type FontCache={[number]:CachedFont}export type FontResolverOptions={fallbackFont:Font?,saveToDisk:boolean?,
+skipCache:boolean?}type FontManagerState={_debug:boolean,_pendingLoads:{[string]:{thread}},rootFolder:string,
+assetResolver:ai.AssetResolver,defaultOptions:FontResolverOptions,fontCache:FontCache?}export type FontManager=
+FontManagerState&{resolve:(self:FontManager,id:number|string)->Font?,loadFont:(self:FontManager,id:(number|string)?,
+fontWeight:Enum.FontWeight?,fontStyle:Enum.FontStyle?,saveToDisk:boolean?,skipCache:boolean?)->Font?,getFontFromId:(self
+:FontManager,id:number|string)->Font?}export type fontManager=FontManager local function ao(ap:unknown):FontManifest?
+local aq=ap::any if type(aq)~='table'or type(aq.name)~='string'or type(aq.faces)~='table'then return nil end aq.name=ak.
+sanitizeFile(aq.name)if#aq.name==0 or#aq.faces==0 then return nil end for ar,as in aq.faces do if type(as)~='table'or
+type(as.name)~='string'or type(as.assetId)~='string'then return nil end as.name=ak.sanitizeFile(as.name)if#as.name==0
+then return nil end end return aq::FontManifest end local ap={'\0\1\0\0','OTTO','true','ttcf','wOFF','wOF2'}
+local function aq(ar:string):boolean for as,at in ap do if string.sub(ar,1,#at)==at then return true end end return
+false end local ar=getfenv()local function as(at:Enum.FontWeight,au:Enum.FontStyle):string return tostring(at)..'|'..
+tostring(au)end local function at(au:unknown):number?if type(au)=='number'then return au end if type(au)=='string'then
+return tonumber(au)end return nil end function an.__index(au:FontManagerState,av:unknown):unknown local b=(an::any)[av]
+if b~=nil then return b end local c=at(av)if not c then return nil end local d=au.fontCache if d then local e=d[c]if e
+then local f=as(Enum.FontWeight.Regular,Enum.FontStyle.Normal)local g=e.variants and e.variants[f]if g then return g end
+for h,i in pairs(e.variants or{})do return i end end end return nil end function an.new(au:string,av:boolean?,b:boolean?
+,c:ai.AssetDownloadUrl?,d:FontResolverOptions?):FontManager local e=d or{saveToDisk=true,skipCache=not b or false,
+fallbackFont=Font.fromEnum(Enum.Font.SourceSans)}local f=setmetatable({rootFolder=au,fontCache=if b then{}::FontCache
+else nil,assetResolver=ai.new(b,c),defaultOptions=e,_debug=av or ag:IsStudio()or false,_pendingLoads={}}::
+FontManagerState,an)::any pcall(ah.ensureFolder,au)return f end local function au(av:FontManager,b:number,c:Enum.
+FontWeight,d:Enum.FontStyle,e:string):Font?local f=av.rootFolder..'/'..b..'.json'if typeof(ah.isfile)~='function'then
+return av.defaultOptions.fallbackFont end local g,h:string?=false if ag:IsStudio()and av._debug then aj.warn
+[[Font manifest loading is not supported in Studio. Using default font manifest for testing.]]h=
 [[{"name":"Inter","faces":[{"name":"Thin","weight":100,"style":"normal","assetId":"rbxassetid://12187277209"},{"name":"Extra Light","weight":200,"style":"normal","assetId":"rbxassetid://12187293441"},{"name":"Light","weight":300,"style":"normal","assetId":"rbxassetid://12187268450"},{"name":"Regular","weight":400,"style":"normal","assetId":"rbxassetid://12187266066"},{"name":"Medium","weight":500,"style":"normal","assetId":"rbxassetid://12187336822"},{"name":"Semi Bold","weight":600,"style":"normal","assetId":"rbxassetid://12187254443"},{"name":"Bold","weight":700,"style":"normal","assetId":"rbxassetid://12187275575"},{"name":"Extra Bold","weight":800,"style":"normal","assetId":"rbxassetid://12187267750"},{"name":"Black","weight":900,"style":"normal","assetId":"rbxassetid://12187359223"}]}]]
-elseif ah.isfile(k)then local n,o=pcall(ah.readfile,k)m=n and o or nil else m=f.assetResolver:getAssetContentFromId(g,
-false)l=m~=nil end local n:FontManifest?if m then local o,p=pcall(am,m)if o and p then n=ao(p)else if f._debug then aj.
-warn('Failed to parse font manifest for font id: '..tostring(g)..'. Error: '..tostring(p))end end else return f.
-defaultOptions.fallbackFont end if not n then if f._debug then aj.warn('Font manifest is nil for font id: '..tostring(g)
-)end pcall(ah.delfile,k)return f.defaultOptions.fallbackFont end if l and m then pcall(ah.writefile,k,m)end local o,p=f.
-rootFolder..'/'..n.name,true if not pcall(ah.ensureFolder,o)then return f.defaultOptions.fallbackFont end for q,r in
-ipairs(n.faces)do local s=o..'/'..r.name:gsub(' ','-')..'.ttf'if ah.isfile(s)then local t,u=pcall(ah.readfile,s)if not t
-or type(u)~='string'or not aq(u)then pcall(ah.delfile,s)end end if not ah.isfile(s)then local t=f.assetResolver:resolve(
-r.assetId)local u=if t~=nil then f.assetResolver:getAssetContentFromId(t,false)else nil if not u or not aq(u)then p=
-false if f._debug then aj.warn('Font face content is missing or not a font for font id: '..tostring(g)..', face: '..r.
-name)end continue end pcall(ah.writefile,s,u)end local t,u=pcall(b.getcustomasset,s)if t and type(u)=='string'then n.
-faces[q].assetId=u if f._debug then aj.print('Loaded font face for id: '..tostring(g)..', face: '..r.name)end else p=
-false if f._debug then aj.warn('Failed to load font face for id: '..tostring(g)..', face: '..r.name)end end end if not p
-then return f.defaultOptions.fallbackFont end local q=al(n)if not q or not pcall(ah.writefile,o..'/manifest.json',q)then
-return f.defaultOptions.fallbackFont end local r,s=pcall(b.getcustomasset,o..'/manifest.json')if not r or not s then if
-f._debug then aj.warn('Failed to load font manifest for id: '..tostring(g))end return f.defaultOptions.fallbackFont end
-local t,u=pcall(Font.new,s::any,h,i)if not t or not u then if f._debug then aj.warn('Failed to load font for id: '..
-tostring(g))end return f.defaultOptions.fallbackFont end local v=f.fontCache if v then v[g]={customId=s,manifest=n,
-loadedFromDisk=true,variants={[j]=u}}if f._debug then aj.print('Cached font for id: '..tostring(g))end end return u end
-function an.loadFont(f:FontManager,g:(number|string)?,h:Enum.FontWeight?,i:Enum.FontStyle?,j:boolean?,k:boolean?):Font?
-if j==nil then j=f.defaultOptions.saveToDisk end if k==nil then k=f.defaultOptions.skipCache end local l,m=h or Enum.
-FontWeight.Regular,i or Enum.FontStyle.Normal local n,o=c(l,m),f.assetResolver:resolve(g)local p=d(o)if not p then aj.
-warn('Invalid font id: '..tostring(g))return f.defaultOptions.fallbackFont end local q=f.fontCache if q and not k then
-local r=q[p]if r then local s=r.variants and r.variants[n]if s then if f._debug then aj.print(
-'Loaded font from cache for id: '..tostring(p))end return s end local t,u=pcall(Font.new,r.customId::any,l,m)if t and u
-then r.variants=r.variants or{}r.variants[n]=u if f._debug then aj.print('Loaded font variant from cache for id: '..
-tostring(p))end return u else if f._debug then aj.warn('Failed to load font from cache for id: '..tostring(p))end q[p]=
-nil return f.defaultOptions.fallbackFont end end end if not j then if f._debug then aj.warn
-[[Font loading without saving to disk can be detected by Anti-cheats.]]end return f.defaultOptions.fallbackFont end
-local r,s=f._pendingLoads,tostring(p)..'|'..n local t=r[s]if t then table.insert(t,coroutine.running())return coroutine.
-yield()end r[s]={}local u,v=pcall(e,f,p,l,m,n)local w=if u then v else f.defaultOptions.fallbackFont t=r[s]r[s]=nil if t
-then for x,y in t do coroutine.resume(y,w)end end return w end function an.resolve(f:FontManager,g:number|string):Font?
-local h=d(g)if not h then return nil end local i=f.fontCache if i then local j=i[h]if j then if f._debug then aj.print(
-'Resolved font for id: '..tostring(h))end for k,l in pairs(j.variants or{})do return l end end end return nil end
-function an.getFontFromId(f:FontManager,g:number|string):Font?return f:resolve(g)end return an end)()end,[53]=function()
-local aa,ab,ac=a(53)local ad return(function(...)local ae,af,ag,ah={},ac(ab.Parent.textMetrics),ac(ab.Parent.colors),ac(
-ab.Parent.flagNames)ae.textWidth=af.textWidth ae.textHeight=af.textHeight ae.deriveFlagFromName=ah.deriveFlagFromName ae
-.contrastColor=ag.contrastColor ae.toColorSequence=ag.toColorSequence ae.contrastText=ag.contrastText return ae end)()
-end,[54]=function()local aa,ab,ac=a(54)local ad return(function(...)local ae,af=ac(ab.Parent.imageCache),ac(ab.Parent.
-variables)type AvatarCallback=ae.AvatarCallback type PreloadCallback=ae.PreloadCallback local ag={}ag.rewrites=ae.
-rewrites ag.onBlock=nil::((unknown)->())?type PendingProperties={[string]:boolean}ag.pending={}::{[number]:{[Instance]:
-PendingProperties}}local ah,ai:{[string]:boolean}=false,{Image=true,HoverImage=true,PressedImage=true}local function aj(
-ak:unknown):number?if type(ak)=='number'then return ak elseif type(ak)=='string'then return tonumber(string.match(ak,
-'^rbxassetid://(%d+)$'))end return nil end local function ak(al:unknown):string if ag.onBlock then ag.onBlock(al)end
-return''end function ag.preload(al:PreloadCallback?):(boolean,number)ah=false return ae.preload(function(am)ah=true
-table.clear(ag.pending)if al then al(am)end end)end function ag.avatar(al:number,am:AvatarCallback?):string if not af.
-secureMode then return`rbxthumb://type=AvatarHeadShot&id={al}&w=48&h=48`end return ae.avatar(al,am)end function ag.
-assign(al:Instance,am:string,an:unknown)local ao=al::any if not ai[am]then ao[am]=an return end ao[am]=ag.resolve(an)if
-af.secureMode and not ah then local ap=aj(an)if ap and not ag.rewrites[ap]then local aq=ag.pending[ap]if not aq then aq=
-setmetatable({},{__mode='k'})::any ag.pending[ap]=aq end local b=aq[al]if not b then b={}aq[al]=b end b[am]=true end end
-end ae.onCached=function(al:number)local am=ag.pending[al]if not am then return end local an=ag.rewrites[al]if an then
-for ao,ap in am do if ao.Parent then local aq=ao::any for b in ap do aq[b]=an end end end end ag.pending[al]=nil end
-function ag.resolve(al:unknown):string if al==nil or al==0 or al==''then return''end if type(al)=='string'then if string
-.sub(al,1,11)=='rbxasset://'then return al end if string.sub(al,1,11)=='rbxthumb://'then return if af.secureMode then
-ak(al)else al end end local am:number?if type(al)=='number'then am=al elseif type(al)=='string'then am=tonumber(string.
-match(al,'^rbxassetid://(%d+)$'))end local an=if am then ag.rewrites[am]else nil if an then return an end if af.
-secureMode then return ak(al)end if type(al)=='number'then return'rbxassetid://'..al end if type(al)=='string'then
-return al end return ak(al)end return ag end)()end,[55]=function()local aa,ab,ac=a(55)local ad return(function(...)local
-ae,af,ag,ah=ac(ab.Parent.filesystem),ac(ab.Parent.path),ac(ab.Parent.variables),ac(ab.Parent.constants)export type
-RewriteMap={[number]:string}export type CacheSettledCallback=(failed:number)->()export type PreloadCallback=
-CacheSettledCallback export type AvatarCallback=(uri:string)->()export type OnCachedCallback=(id:number)->()export type
-ThumbnailEntry={state:string?,imageUrl:string?}export type ThumbnailResponse={data:{ThumbnailEntry}?}local ai,aj,ak,al,
-am,an,ao,ap:{[number]:string}={},ag.fileSystemManager:getRootFolder(),ag.fileSystemManager:getAssetsFolder(),ag.
-assetResolver,[[https://raw.githubusercontent.com/aesthetic143147-arch/Rayfield-preview-Gen2/main/assets/]],48,
-[[https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=%d&size=%dx%d&format=Png&isCircular=false]],{}for aq,b
-in ah.icons do local c=b::number ap[c]=am..tostring(c)..'.png'end local aq=0 for b in ap do aq+=1 end ai.rewrites={}::
-RewriteMap ai.onCached=nil::OnCachedCallback?local b='\137PNG\r\n\26\n'local function c(d:string,e:string):string?if
-type(getfenv().getcustomasset)~='function'or typeof(ae.isfile)~='function'then return nil end if not ae.isfile(d)then
-pcall(ae.ensureFolder,aj)pcall(ae.ensureFolder,ak)local f=al:getAssetContentFromUrl(e,d,false)if not f or string.sub(f,1
-,8)~=b then return nil end if not pcall(ae.writefile,d,f)then return nil end end local f,g=pcall(getfenv().
-getcustomasset,d)return if f and type(g)=='string'then g else nil end local function d(e:number):string return af.join(
-ak,'avatar_'..tostring(e)..'.png')end local function e(f:string):string?local g,h=pcall(function()return ag.httpService:
-JSONDecode(f)end)if not g or type(h)~='table'then return nil end local i=(h::ThumbnailResponse).data if type(i)~='table'
-then return nil end local j=i[1]if type(j)~='table'then return nil end local k=j::ThumbnailEntry if k.state=='Completed'
-and type(k.imageUrl)=='string'then return k.imageUrl end return nil end local function f(g:number):string?local h:string
-?for i=1,4 do local j=al:getAssetContentFromUrl(string.format(ao,g,an,an),'avatar:'..tostring(g),i>1)if j then local k=
-e(j)if k then h=k break end end if i<4 then task.wait(0.3)end end if not h then return nil end return c(d(g),h)end local
-g:{[number]:{AvatarCallback}},h:{[number]:boolean}={},{}function ai.preload(i:PreloadCallback?):(boolean,number)local j=
-getfenv()if type(j.getcustomasset)~='function'or typeof(ae.isfile)~='function'then if i then task.defer(i,aq)end return
-false,aq end local k=ai.rewrites table.clear(k)local function l()if not i then return end local m=0 for n in ap do if
-not k[n]then m+=1 end end i(m)end local m,n,o=0,0,true for p,q in ap do local r,s:string?=(af.join(ak,tostring(p)..
-'.png'))if ae.isfile(r)then local t,u=pcall(j.getcustomasset,r)s=if t and type(u)=='string'then u else nil end if s then
-k[p]=s else n+=1 m+=1 task.spawn(function()local t=c(r,q)if t then k[p]=t if ai.onCached then pcall(ai.onCached,p)end
-end m-=1 if m==0 and not o then l()end end)end end o=false if m==0 then l()end return n==0,n end function ai.avatar(i:
-unknown,j:AvatarCallback?):string if type(i)~='number'then return''end if typeof(ae.isfile)~='function'then return''end
-local k=d(i)if ae.isfile(k)then local l,m=pcall(getfenv().getcustomasset,k)if l and type(m)=='string'then return m end
-end if h[i]then return''end local l=g[i]if l then if j then table.insert(l,j)end return''end if j then g[i]={j}task.
-spawn(function()local m,n=f(i),g[i]g[i]=nil if not m then h[i]=true return end if n then for o,p in n do pcall(p,m)end
-end end)end return''end function ai.remote(i:string):string?if not string.match(i,'^[%w%-_]+%.png$')then return nil end
-local j,k=pcall(c,af.join(ak,i),am..i)return if j then k else nil end return ai end)()end,[56]=function()local aa,ab,ac=
-a(56)local ad return(function(...)local ae,af={},64 local ag,ah,ai=af+7,38,3 export type Mode='top'|'sidebar'export type
-Layout={mode:Mode,topbarHeight:number,chromeHeight:number,pageDirection:Enum.FillDirection,fadeSize:UDim2,
-fadeTransparency:NumberSequence,fadeCorners:{string}?,tabStripTop:number?,tabStripHeight:number?,railWidth:number?,
-railCollapsedWidth:number?,railCollapseBelow:number?,rowHeight:number?,rowCornerRadius:number?,rowSpacing:number?,
-railPadding:number?,rowInset:number?,rowPadding:number?,rowContentSpacing:number?,rowIconSize:number?,footerHeight:
-number?,avatarSize:number?,cardTransparency:number?,cardStrokeRotation:number?,cardStrokeTransparency:NumberSequence?,
-cardCorners:{string}?}ae.top={mode='top'::Mode,topbarHeight=af,chromeHeight=ag+ah+ai,tabStripTop=ag,tabStripHeight=ah,
-pageDirection=Enum.FillDirection.Horizontal,fadeSize=UDim2.new(1,0,-9.3E-2,100),fadeTransparency=NumberSequence.new{
-NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(0.4414,0),NumberSequenceKeypoint.new(0.7007,0.631),
-NumberSequenceKeypoint.new(1,1)}}::Layout ae.sidebar={mode='sidebar'::Mode,topbarHeight=af,chromeHeight=af,railWidth=219
-,railCollapsedWidth=64,railCollapseBelow=589,rowHeight=38,rowCornerRadius=14,rowSpacing=4,railPadding=17,rowInset=15,
-rowPadding=10,rowContentSpacing=6,rowIconSize=20,footerHeight=60,avatarSize=34,pageDirection=Enum.FillDirection.Vertical
-,cardTransparency=0.98,cardStrokeRotation=55,cardCorners={'TopLeftRadius','BottomRightRadius'},cardStrokeTransparency=
+elseif ah.isfile(f)then local i,j=pcall(ah.readfile,f)h=i and j or nil else h=av.assetResolver:getAssetContentFromId(b,
+false)g=h~=nil end local i:FontManifest?if h then local j,k=pcall(am,h)if j and k then i=ao(k)else if av._debug then aj.
+warn('Failed to parse font manifest for font id: '..tostring(b)..'. Error: '..tostring(k))end end else return av.
+defaultOptions.fallbackFont end if not i then if av._debug then aj.warn('Font manifest is nil for font id: '..tostring(b
+))end pcall(ah.delfile,f)return av.defaultOptions.fallbackFont end if g and h then pcall(ah.writefile,f,h)end local j,k=
+av.rootFolder..'/'..i.name,true if not pcall(ah.ensureFolder,j)then return av.defaultOptions.fallbackFont end for l,m in
+ipairs(i.faces)do local n=j..'/'..m.name:gsub(' ','-')..'.ttf'if ah.isfile(n)then local o,p=pcall(ah.readfile,n)if not o
+or type(p)~='string'or not aq(p)then pcall(ah.delfile,n)end end if not ah.isfile(n)then local o=av.assetResolver:
+resolve(m.assetId)local p=if o~=nil then av.assetResolver:getAssetContentFromId(o,false)else nil if not p or not aq(p)
+then k=false if av._debug then aj.warn('Font face content is missing or not a font for font id: '..tostring(b)..
+', face: '..m.name)end continue end pcall(ah.writefile,n,p)end local o,p=pcall(ar.getcustomasset,n)if o and type(p)==
+'string'then i.faces[l].assetId=p if av._debug then aj.print('Loaded font face for id: '..tostring(b)..', face: '..m.
+name)end else k=false if av._debug then aj.warn('Failed to load font face for id: '..tostring(b)..', face: '..m.name)end
+end end if not k then return av.defaultOptions.fallbackFont end local l=al(i)if not l or not pcall(ah.writefile,j..
+'/manifest.json',l)then return av.defaultOptions.fallbackFont end local m,n=pcall(ar.getcustomasset,j..'/manifest.json')
+if not m or not n then if av._debug then aj.warn('Failed to load font manifest for id: '..tostring(b))end return av.
+defaultOptions.fallbackFont end local o,p=pcall(Font.new,n::any,c,d)if not o or not p then if av._debug then aj.warn(
+'Failed to load font for id: '..tostring(b))end return av.defaultOptions.fallbackFont end local q=av.fontCache if q then
+q[b]={customId=n,manifest=i,loadedFromDisk=true,variants={[e]=p}}if av._debug then aj.print('Cached font for id: '..
+tostring(b))end end return p end function an.loadFont(av:FontManager,b:(number|string)?,c:Enum.FontWeight?,d:Enum.
+FontStyle?,e:boolean?,f:boolean?):Font?if e==nil then e=av.defaultOptions.saveToDisk end if f==nil then f=av.
+defaultOptions.skipCache end local g,h=c or Enum.FontWeight.Regular,d or Enum.FontStyle.Normal local i,j=as(g,h),av.
+assetResolver:resolve(b)local k=at(j)if not k then aj.warn('Invalid font id: '..tostring(b))return av.defaultOptions.
+fallbackFont end local l=av.fontCache if l and not f then local m=l[k]if m then local n=m.variants and m.variants[i]if n
+then if av._debug then aj.print('Loaded font from cache for id: '..tostring(k))end return n end local o,p=pcall(Font.new
+,m.customId::any,g,h)if o and p then m.variants=m.variants or{}m.variants[i]=p if av._debug then aj.print(
+'Loaded font variant from cache for id: '..tostring(k))end return p else if av._debug then aj.warn(
+'Failed to load font from cache for id: '..tostring(k))end l[k]=nil return av.defaultOptions.fallbackFont end end end if
+not e then if av._debug then aj.warn[[Font loading without saving to disk can be detected by Anti-cheats.]]end return av
+.defaultOptions.fallbackFont end local m,n=av._pendingLoads,tostring(k)..'|'..i local o=m[n]if o then table.insert(o,
+coroutine.running())return coroutine.yield()end m[n]={}local p,q=pcall(au,av,k,g,h,i)local r=if p then q else av.
+defaultOptions.fallbackFont o=m[n]m[n]=nil if o then for s,t in o do coroutine.resume(t,r)end end return r end function
+an.resolve(av:FontManager,b:number|string):Font?local c=at(b)if not c then return nil end local d=av.fontCache if d then
+local e=d[c]if e then if av._debug then aj.print('Resolved font for id: '..tostring(c))end for f,g in pairs(e.variants
+or{})do return g end end end return nil end function an.getFontFromId(av:FontManager,b:number|string):Font?return av:
+resolve(b)end return an end)()end,[54]=function()local aa,ab,ac=a(54)local ad return(function(...)local ae,af,ag,ah={},
+ac(ab.Parent.textMetrics),ac(ab.Parent.colors),ac(ab.Parent.flagNames)ae.textWidth=af.textWidth ae.textHeight=af.
+textHeight ae.deriveFlagFromName=ah.deriveFlagFromName ae.contrastColor=ag.contrastColor ae.toColorSequence=ag.
+toColorSequence ae.contrastText=ag.contrastText return ae end)()end,[55]=function()local aa,ab,ac=a(55)local ad return(
+function(...)local ae,af=ac(ab.Parent.imageCache),ac(ab.Parent.variables)type AvatarCallback=ae.AvatarCallback type
+PreloadCallback=ae.PreloadCallback local ag={}ag.rewrites=ae.rewrites ag.onBlock=nil::((unknown)->())?type
+PendingProperties={[string]:boolean}ag.pending={}::{[number]:{[Instance]:PendingProperties}}local ah,ai:{[string]:
+boolean}=false,{Image=true,HoverImage=true,PressedImage=true}local function aj(ak:unknown):number?if type(ak)=='number'
+then return ak elseif type(ak)=='string'then return tonumber(string.match(ak,'^rbxassetid://(%d+)$'))end return nil end
+local function ak(al:unknown):string if ag.onBlock then ag.onBlock(al)end return''end function ag.preload(al:
+PreloadCallback?):(boolean,number)ah=false return ae.preload(function(am)ah=true table.clear(ag.pending)if al then al(am
+)end end)end function ag.avatar(al:number,am:AvatarCallback?):string if not af.secureMode then return`rbxthumb://type=AvatarHeadShot&id={
+al}&w=48&h=48`end return ae.avatar(al,am)end function ag.assign(al:Instance,am:string,an:unknown)local ao=al::any if not
+ai[am]then ao[am]=an return end ao[am]=ag.resolve(an)if af.secureMode and not ah then local ap=aj(an)if ap and not ag.
+rewrites[ap]then local aq=ag.pending[ap]if not aq then aq=setmetatable({},{__mode='k'})::any ag.pending[ap]=aq end local
+ar=aq[al]if not ar then ar={}aq[al]=ar end ar[am]=true end end end ae.onCached=function(al:number)local am=ag.pending[al
+]if not am then return end local an=ag.rewrites[al]if an then for ao,ap in am do if ao.Parent then local aq=ao::any for
+ar in ap do aq[ar]=an end end end end ag.pending[al]=nil end function ag.resolve(al:unknown):string if al==nil or al==0
+or al==''then return''end if type(al)=='string'then if string.sub(al,1,11)=='rbxasset://'then return al end if string.
+sub(al,1,11)=='rbxthumb://'then return if af.secureMode then ak(al)else al end end local am:number?if type(al)=='number'
+then am=al elseif type(al)=='string'then am=tonumber(string.match(al,'^rbxassetid://(%d+)$'))end local an=if am then ag.
+rewrites[am]else nil if an then return an end if af.secureMode then return ak(al)end if type(al)=='number'then return
+'rbxassetid://'..al end if type(al)=='string'then return al end return ak(al)end return ag end)()end,[56]=function()
+local aa,ab,ac=a(56)local ad return(function(...)local ae,af,ag,ah=ac(ab.Parent.filesystem),ac(ab.Parent.path),ac(ab.
+Parent.variables),ac(ab.Parent.constants)export type RewriteMap={[number]:string}export type CacheSettledCallback=(
+failed:number)->()export type PreloadCallback=CacheSettledCallback export type AvatarCallback=(uri:string)->()export
+type OnCachedCallback=(id:number)->()export type ThumbnailEntry={state:string?,imageUrl:string?}export type
+ThumbnailResponse={data:{ThumbnailEntry}?}local ai,aj,ak,al,am,an,ao,ap:{[number]:string}={},ag.fileSystemManager:
+getRootFolder(),ag.fileSystemManager:getAssetsFolder(),ag.assetResolver,
+[[https://raw.githubusercontent.com/aesthetic143147-arch/Rayfield-preview-Gen2/main/assets/]],48,
+[[https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=%d&size=%dx%d&format=Png&isCircular=false]],{}for aq,ar
+in ah.icons do local as=ar::number ap[as]=am..tostring(as)..'.png'end local aq=0 for ar in ap do aq+=1 end ai.rewrites={
+}::RewriteMap ai.onCached=nil::OnCachedCallback?local ar='\137PNG\r\n\26\n'local function as(at:string,au:string):string
+?if type(getfenv().getcustomasset)~='function'or typeof(ae.isfile)~='function'then return nil end if not ae.isfile(at)
+then pcall(ae.ensureFolder,aj)pcall(ae.ensureFolder,ak)local av=al:getAssetContentFromUrl(au,at,false)if not av or
+string.sub(av,1,8)~=ar then return nil end if not pcall(ae.writefile,at,av)then return nil end end local av,b=pcall(
+getfenv().getcustomasset,at)return if av and type(b)=='string'then b else nil end local function at(au:number):string
+return af.join(ak,'avatar_'..tostring(au)..'.png')end local function au(av:string):string?local b,c=pcall(function()
+return ag.httpService:JSONDecode(av)end)if not b or type(c)~='table'then return nil end local d=(c::ThumbnailResponse).
+data if type(d)~='table'then return nil end local e=d[1]if type(e)~='table'then return nil end local f=e::ThumbnailEntry
+if f.state=='Completed'and type(f.imageUrl)=='string'then return f.imageUrl end return nil end local function av(b:
+number):string?local c:string?for d=1,4 do local e=al:getAssetContentFromUrl(string.format(ao,b,an,an),'avatar:'..
+tostring(b),d>1)if e then local f=au(e)if f then c=f break end end if d<4 then task.wait(0.3)end end if not c then
+return nil end return as(at(b),c)end local b:{[number]:{AvatarCallback}},c:{[number]:boolean}={},{}function ai.preload(d
+:PreloadCallback?):(boolean,number)local e=getfenv()if type(e.getcustomasset)~='function'or typeof(ae.isfile)~=
+'function'then if d then task.defer(d,aq)end return false,aq end local f=ai.rewrites table.clear(f)local function g()if
+not d then return end local h=0 for i in ap do if not f[i]then h+=1 end end d(h)end local h,i,j=0,0,true for k,l in ap
+do local m,n:string?=(af.join(ak,tostring(k)..'.png'))if ae.isfile(m)then local o,p=pcall(e.getcustomasset,m)n=if o and
+type(p)=='string'then p else nil end if n then f[k]=n else i+=1 h+=1 task.spawn(function()local o=as(m,l)if o then f[k]=
+o if ai.onCached then pcall(ai.onCached,k)end end h-=1 if h==0 and not j then g()end end)end end j=false if h==0 then g(
+)end return i==0,i end function ai.avatar(d:unknown,e:AvatarCallback?):string if type(d)~='number'then return''end if
+typeof(ae.isfile)~='function'then return''end local f=at(d)if ae.isfile(f)then local g,h=pcall(getfenv().getcustomasset,
+f)if g and type(h)=='string'then return h end end if c[d]then return''end local g=b[d]if g then if e then table.insert(g
+,e)end return''end if e then b[d]={e}task.spawn(function()local h,i=av(d),b[d]b[d]=nil if not h then c[d]=true return
+end if i then for j,k in i do pcall(k,h)end end end)end return''end function ai.remote(d:string):string?if not string.
+match(d,'^[%w%-_]+%.png$')then return nil end local e,f=pcall(as,af.join(ak,d),am..d)return if e then f else nil end
+function ai.url(d:string,e:string):string?if not string.match(e,'^[%w%-_]+%.png$')then return nil end local f,g=pcall(as
+,af.join(ak,e),d)return if f then g else nil end return ai end)()end,[57]=function()local aa,ab,ac=a(57)local ad return(
+function(...)local ae,af={},64 local ag,ah,ai=af+7,38,3 export type Mode='top'|'sidebar'export type Layout={mode:Mode,
+topbarHeight:number,chromeHeight:number,pageDirection:Enum.FillDirection,fadeSize:UDim2,fadeTransparency:NumberSequence,
+fadeCorners:{string}?,tabStripTop:number?,tabStripHeight:number?,railWidth:number?,railCollapsedWidth:number?,
+railCollapseBelow:number?,rowHeight:number?,rowCornerRadius:number?,rowSpacing:number?,railPadding:number?,rowInset:
+number?,rowPadding:number?,rowContentSpacing:number?,rowIconSize:number?,footerHeight:number?,avatarSize:number?,
+cardTransparency:number?,cardStrokeRotation:number?,cardStrokeTransparency:NumberSequence?,cardCorners:{string}?}ae.top=
+{mode='top'::Mode,topbarHeight=af,chromeHeight=ag+ah+ai,tabStripTop=ag,tabStripHeight=ah,pageDirection=Enum.
+FillDirection.Horizontal,fadeSize=UDim2.new(1,0,-9.3E-2,100),fadeTransparency=NumberSequence.new{NumberSequenceKeypoint.
+new(0,0),NumberSequenceKeypoint.new(0.4414,0),NumberSequenceKeypoint.new(0.7007,0.631),NumberSequenceKeypoint.new(1,1)}}
+::Layout ae.sidebar={mode='sidebar'::Mode,topbarHeight=af,chromeHeight=af,railWidth=219,railCollapsedWidth=64,
+railCollapseBelow=589,rowHeight=38,rowCornerRadius=14,rowSpacing=4,railPadding=17,rowInset=15,rowPadding=10,
+rowContentSpacing=6,rowIconSize=20,footerHeight=60,avatarSize=34,pageDirection=Enum.FillDirection.Vertical,
+cardTransparency=0.98,cardStrokeRotation=55,cardCorners={'TopLeftRadius','BottomRightRadius'},cardStrokeTransparency=
 NumberSequence.new{NumberSequenceKeypoint.new(0,0.9),NumberSequenceKeypoint.new(0.128,0.95),NumberSequenceKeypoint.new(
 0.414,0.985),NumberSequenceKeypoint.new(1,1)},fadeSize=UDim2.new(1,0,0,55),fadeTransparency=NumberSequence.new{
 NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(0.377,0),NumberSequenceKeypoint.new(1,1)},fadeCorners={
 'BottomRightRadius'}}::Layout function ae.get(aj:unknown):Layout?if aj=='sidebar'then return ae.sidebar elseif aj=='top'
 then return ae.top end return nil end function ae.railWidthFor(aj:Layout,ak:number):number if aj.mode~='sidebar'then
 return 0 end local al=aj.railWidth::number if ak<(aj.railCollapseBelow::number)then return aj.railCollapsedWidth::number
-end return al end return ae end)()end,[57]=function()local aa,ab,ac=a(57)local ad return(function(...)local ae,af,ag=ac(
+end return al end return ae end)()end,[58]=function()local aa,ab,ac=a(58)local ad return(function(...)local ae,af,ag=ac(
 ab.Parent.variables),ac(ab.Parent.log),{}export type LocaleToken={[any]:string}export type Translator=(source:string,
 localeId:string)->string?export type TranslationTables={[string]:{[string]:string}}ag.strings={}::TranslationTables ag.
 current='en'ag.translator=nil::Translator?local ah={}local function ai(aj:string):string return string.match(aj,'^(%a+)'
@@ -2929,37 +2993,37 @@ ag.strings[ak]if not am then am={}ag.strings[ak]=am end for an,ao in al do if ty
 then am[an]=ao else af.warn(`Rayfield: skipping a '{ak}' translation, entries must be string to string.`)end end end end
 end function ag.setActive(aj:string?):string ag.current=if type(aj)=='string'and aj~=''then string.lower(aj)else'en'
 return ag.current end function ag.detect():string local aj=ae.localizationService.RobloxLocaleId if type(aj)=='string'
-and aj~=''then return string.lower(aj)end return'en'end return ag end)()end,[58]=function()local aa,ab,ac=a(58)local ad
+and aj~=''then return string.lower(aj)end return'en'end return ag end)()end,[59]=function()local aa,ab,ac=a(59)local ad
 return(function(...)local function ae<T>(af:T):T local ag=af::any function ag.Lock(ah,ai:string?)ah.window:
 _setElementLocked(ah,true,ai)end function ag.Unlock(ah)ah.window:_setElementLocked(ah,false)end function ag.IsLocked(ah)
-:boolean return ah.locked==true end return af end return ae end)()end,[59]=function()local aa,ab,ac=a(59)local ad return
+:boolean return ah.locked==true end return af end return ae end)()end,[60]=function()local aa,ab,ac=a(60)local ad return
 (function(...)local ae,af=ac(ab.Parent.runtime),{}type SuppressPredicate=()->boolean local function ag():boolean return
 ae.secureMode end local ah:SuppressPredicate,ai:SuppressPredicate?=ag function af.setSecureModeSource(aj:
 SuppressPredicate?)ah=if type(aj)=='function'then aj else ag end function af.setSuppressPredicate(aj:SuppressPredicate?)
 ai=if type(aj)=='function'then aj else nil end local function aj():boolean if ai and ai()then return true end return ah(
 )end function af.warn(...)if aj()then return end warn(...)end function af.print(...)if aj()then return end print(...)end
-return af end)()end,[60]=function()local aa,ab,ac=a(60)local ad return(function(...)local function ae<T>(af:T):T local
+return af end)()end,[61]=function()local aa,ab,ac=a(61)local ad return(function(...)local function ae<T>(af:T):T local
 ag=af::any function ag.MoveTo(ah,ai:number)ah.tab:_moveElement(ah,ai)end function ag.MoveToTop(ah)ah.tab:_moveElement(ah
 ,1)end function ag.MoveToBottom(ah)ah.tab:_moveElement(ah,#ah.tab.elements)end function ag.MoveUp(ah)local ai=table.
 find(ah.tab.elements,ah)if ai then ah.tab:_moveElement(ah,ai-1)end end function ag.MoveDown(ah)local ai=table.find(ah.
-tab.elements,ah)if ai then ah.tab:_moveElement(ah,ai+1)end end return af end return ae end)()end,[61]=function()local aa
-,ab,ac=a(61)local ad return(function(...)local ae={}ae.__index=ae export type RequestFn=(...any)->any function ae.
+tab.elements,ah)if ai then ah.tab:_moveElement(ah,ai+1)end end return af end return ae end)()end,[62]=function()local aa
+,ab,ac=a(62)local ad return(function(...)local ae={}ae.__index=ae export type RequestFn=(...any)->any function ae.
 getRequestFn(af:any?):RequestFn?af=af or getfenv()return af.request or af.http_request or(af.http and af.http.request)or
-(af.syn and af.syn.request)or(af.fluxus and af.fluxus.request)end return ae end)()end,[62]=function()local aa,ab,ac=a(62
+(af.syn and af.syn.request)or(af.fluxus and af.fluxus.request)end return ae end)()end,[63]=function()local aa,ab,ac=a(63
 )local ad return(function(...)local ae=ac(ab.Parent.variables)local af,ag=ae.textService,{}ag.__index=ag local ah=20
 local function ai(aj,ak,al)local am=Instance.new'GetTextBoundsParams'am.Text=al am.Font=aj am.Size=ak am.Width=math.huge
 local an,ao=pcall(af.GetTextBoundsAsync,af,am)return if an then ao else Vector2.new(ak*0.6,ak)end local aj={}
 local function ak(al,am)local an=tostring(al.Family)..'|'..tostring(al.Weight)..'|'..tostring(al.Style)..'|'..tostring(
-am)local ao=aj[an]if ao then return ao end local ap,aq={},0 for b=0,9 do local c=math.ceil(ai(al,am,tostring(b)).X)ap[b]
-=c if c>aq then aq=c end end ao={advance=ap,maxWidth=aq}aj[an]=ao return ao end function ag.new(al,am,an)an=an or{}local
-ao=setmetatable({window=al,container=am,textSize=an.textSize or 16,transparency=an.transparency or 1,duration=an.
-duration or 0.55,slots={},length=0},ag)ao.roll=TweenInfo.new(ao.duration,Enum.EasingStyle.Quint,Enum.EasingDirection.Out
-)ao.zIndex=math.max(am.ZIndex+1,6)ao.height=math.ceil(ao.textSize)local ap=ak(al.theme.Font,ao.textSize)ao.advance=ap.
-advance ao.maxWidth=ap.maxWidth al:Create('UIListLayout',{FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment=
-Enum.VerticalAlignment.Center,HorizontalAlignment=an.alignment or Enum.HorizontalAlignment.Left,SortOrder=Enum.SortOrder
-.LayoutOrder,Padding=UDim.new(0,0),Parent=am})return ao end function ag._reel(al,am)local an=al.slots[am]if an.reel then
-return an.reel end local ao=al.window:Create('Frame',{Name='Reel',Size=UDim2.fromOffset(al.maxWidth,al.height),
-BackgroundTransparency=1,BorderSizePixel=0,ClipsDescendants=true,ZIndex=al.zIndex,Parent=al.container})local ap=al.
+am)local ao=aj[an]if ao then return ao end local ap,aq={},0 for ar=0,9 do local as=math.ceil(ai(al,am,tostring(ar)).X)ap
+[ar]=as if as>aq then aq=as end end ao={advance=ap,maxWidth=aq}aj[an]=ao return ao end function ag.new(al,am,an)an=an or
+{}local ao=setmetatable({window=al,container=am,textSize=an.textSize or 16,transparency=an.transparency or 1,duration=an
+.duration or 0.55,slots={},length=0},ag)ao.roll=TweenInfo.new(ao.duration,Enum.EasingStyle.Quint,Enum.EasingDirection.
+Out)ao.zIndex=math.max(am.ZIndex+1,6)ao.height=math.ceil(ao.textSize)local ap=ak(al.theme.Font,ao.textSize)ao.advance=ap
+.advance ao.maxWidth=ap.maxWidth al:Create('UIListLayout',{FillDirection=Enum.FillDirection.Horizontal,VerticalAlignment
+=Enum.VerticalAlignment.Center,HorizontalAlignment=an.alignment or Enum.HorizontalAlignment.Left,SortOrder=Enum.
+SortOrder.LayoutOrder,Padding=UDim.new(0,0),Parent=am})return ao end function ag._reel(al,am)local an=al.slots[am]if an.
+reel then return an.reel end local ao=al.window:Create('Frame',{Name='Reel',Size=UDim2.fromOffset(al.maxWidth,al.height)
+,BackgroundTransparency=1,BorderSizePixel=0,ClipsDescendants=true,ZIndex=al.zIndex,Parent=al.container})local ap=al.
 window:Create('Frame',{Size=UDim2.fromOffset(al.maxWidth,al.height),AnchorPoint=Vector2.new(0.5,0),Position=UDim2.new(
 0.5,0,0,0),BackgroundTransparency=1,BorderSizePixel=0,ZIndex=al.zIndex,Parent=ao})for aq=0,ah-1 do al.window:Create(
 'TextLabel',{Text=tostring(aq%10),Position=UDim2.fromOffset(0,aq*al.height),Size=UDim2.fromOffset(al.maxWidth,al.height)
@@ -2974,52 +3038,53 @@ BackgroundTransparency=1,BorderSizePixel=0,TextSize=al.textSize,TextXAlignment=E
 Cancel()am.stripTween=nil end if am.sizeTween then am.sizeTween:Cancel()am.sizeTween=nil end end function ag._reelSnap(
 am,an,ao)al(an)an.cell.Size=UDim2.fromOffset(am.advance[ao],am.height)an.strip.Position=UDim2.new(0.5,0,0,-ao*am.height)
 an.digit=ao an.target=ao end function ag._reelRoll(am,an,ao,ap)if an.stripTween or an.sizeTween then am:_reelSnap(an,an.
-target)end local aq=an.digit if aq==ao then return end local b,c if ap then b=aq c=aq+(ao-aq)%10 else b=aq+10 c=b-(aq-ao
-)%10 end an.strip.Position=UDim2.new(0.5,0,0,-b*am.height)an.target=ao local d,e=ae.tweenService:Create(an.strip,am.roll
-,{Position=UDim2.new(0.5,0,0,-c*am.height)}),ae.tweenService:Create(an.cell,am.roll,{Size=UDim2.fromOffset(am.advance[ao
-],am.height)})an.stripTween=d an.sizeTween=e d.Completed:Connect(function(f)if f==Enum.PlaybackState.Completed and an.
-stripTween==d then am:_reelSnap(an,ao)end end)d:Play()e:Play()an.digit=ao end function ag._putDigit(am,an,ao,ap,aq)local
-b=am:_reel(an)local c=not b.cell.Visible b.cell.Visible=true b.cell.LayoutOrder=-an if am.slots[an].static then am.slots
-[an].static.Visible=false end if aq and not c then am:_reelRoll(b,ao,ap)else am:_reelSnap(b,ao)end end function ag.
-_putStatic(am,an,ao)local ap=am:_static(an)if not ap.Visible then ap.TextTransparency=am.transparency end ap.Text=ao ap.
-Visible=true ap.LayoutOrder=-an if am.slots[an].reel then am.slots[an].reel.cell.Visible=false end end function ag._hide
-(am,an)local ao=am.slots[an]if not ao then return end if ao.reel then ao.reel.cell.Visible=false end if ao.static then
-ao.static.Visible=false end end function ag._render(am,an,ao,ap)an=tostring(an)if an==am._lastText then return end am.
-_lastText=an local aq={}for b,c in utf8.codes(an)do table.insert(aq,utf8.char(c))end local b=#aq for c=0,math.max(b,am.
-length)-1 do am.slots[c]=am.slots[c]or{}if c<b then local d=aq[b-c]if d:match'%d'then am:_putDigit(c,tonumber(d),ap,ao)
-else am:_putStatic(c,d)end else am:_hide(c)end end am.length=b end function ag.to(am,an,ao)am:_render(an,true,ao)end
-function ag.snap(am,an)am:_render(an,false,true)end function ag.reveal(am,an,ao,ap)am.transparency=an for aq,b in am.
-slots do if b.static and b.static.Visible then am.window:_reveal(b.static,{TextTransparency=an},ao,ap)end if b.reel then
-for c,d in b.reel.strip:GetChildren()do if d:IsA'TextLabel'then am.window:_reveal(d,{TextTransparency=an},ao,ap)end end
-end end end return ag end)()end,[63]=function()local aa,ab,ac=a(63)local ad return(function(...)type OrderedElement={
-main:GuiObject,descriptor:{main:GuiObject}?}local function ae(af:OrderedElement,ag:number)af.main.LayoutOrder=ag if af.
-descriptor then af.descriptor.main.LayoutOrder=ag+1 end end return ae end)()end,[64]=function()local aa,ab,ac=a(64)local
-ad return(function(...)local ae={}function ae.join(af:string,ag:string?):string if not ag or ag==''then return af end
-return af..'/'..ag end local function af(ag:string):string local ah repeat ah=ag ag=ag:gsub('%.%.','')until ag==ah
-return ag end function ae.sanitizeFolder(ag:unknown):string local ah=tostring(ag):gsub('\\','/'):gsub('[:<>"|?*%c]','')
-ah=af(ah):gsub('/+','/')return(ah:gsub('^/+',''))end function ae.sanitizeFile(ag:unknown):string local ah=tostring(ag):
-gsub('[/\\]',''):gsub('[:<>"|?*%c]','')return af(ah)end function ae.basename(ag:unknown):string return tostring(ag):
-match'[^/\\]+$'or tostring(ag)end function ae.stripExtension(ag:unknown,ah:string?):string if ah and ah~=''then local ai
-=tostring(ag)if ai:sub(-#ah)==ah then return ai:sub(1,-#ah-1)end return ai end local ai=tostring(ag):match'^(.+)%.%w+$'
-return ai or tostring(ag)end return ae end)()end,[65]=function()local aa,ab,ac=a(65)local ad return(function(...)local
-ae,af,ag={},ac(ab.Parent.persistenceConfig),ac(ab.Parent.persistenceSettings)ae.getPath=af.getPath ae.save=af.save ae.
-load=af.load ae.applyTo=af.applyTo ae.list=af.list ae.delete=af.delete ae.getSettingsPath=ag.getSettingsPath ae.
-saveSettings=ag.saveSettings ae.loadSettings=ag.loadSettings return ae end)()end,[66]=function()local aa,ab,ac=a(66)
-local ad return(function(...)local ae,af,ag,ah,ai,aj,ak=ac(ab.Parent.variables),ac(ab.Parent.filesystem),ac(ab.Parent.
-log),ac(ab.Parent.path),ac(ab.Parent.persistencePaths),ac(ab.Parent.persistenceWrite),{}type PersistedControl={value:
-unknown,flag:string?,_canBeNil:boolean?,_serialize:((PersistedControl)->unknown)?,_deserialize:((PersistedControl,
-unknown)->())?,Set:(PersistedControl,unknown)->()}type ConfigWindow={controls:{[string]:PersistedControl},configuration:
-{fileName:string?,customFolder:string?},name:string,_loading:boolean?,_loadedConfig:{[string]:unknown}?,
-_loadedConfigPath:string?}function ak.getPath(al:ConfigWindow,am:unknown?):(string?,string?)return ai.getConfigPath(al,
-am)end function ak.save(al:ConfigWindow,am:unknown?):boolean local an,ao=ak.getPath(al,am)if not an or not ao then ag.
-warn("Rayfield: configuration name '"..tostring(am).."' has no usable characters")return false end if typeof(af.
-writefile)~='function'then return false end local ap:{[string]:unknown}={}for aq,b in al.controls do local c,d=pcall(
-function()local c=b._serialize if c then return c(b)end return b.value end)if c then ap[aq]=d else ag.warn(
-"Rayfield: Failed to serialize flag '"..tostring(aq).."' - "..tostring(d))end end local aq=al._loadedConfig if aq and al
-._loadedConfigPath==ao then for b,c in aq do if al.controls[b]==nil then ap[b]=c end end end local b,c=pcall(ae.
-httpService.JSONEncode,ae.httpService,ap)if not b then ag.warn('Rayfield: Failed to encode configuration - '..tostring(c
-))return false end local d,e=pcall(function()aj.write(an,ao,c)end)if not d then ag.warn(
-'Rayfield: Failed to save configuration - '..tostring(e))return false end if al._loadedConfigPath==nil or al.
+target)end local aq=an.digit if aq==ao then return end local ar,as if ap then ar=aq as=aq+(ao-aq)%10 else ar=aq+10 as=ar
+-(aq-ao)%10 end an.strip.Position=UDim2.new(0.5,0,0,-ar*am.height)an.target=ao local at,au=ae.tweenService:Create(an.
+strip,am.roll,{Position=UDim2.new(0.5,0,0,-as*am.height)}),ae.tweenService:Create(an.cell,am.roll,{Size=UDim2.
+fromOffset(am.advance[ao],am.height)})an.stripTween=at an.sizeTween=au at.Completed:Connect(function(av)if av==Enum.
+PlaybackState.Completed and an.stripTween==at then am:_reelSnap(an,ao)end end)at:Play()au:Play()an.digit=ao end function
+ag._putDigit(am,an,ao,ap,aq)local ar=am:_reel(an)local as=not ar.cell.Visible ar.cell.Visible=true ar.cell.LayoutOrder=-
+an if am.slots[an].static then am.slots[an].static.Visible=false end if aq and not as then am:_reelRoll(ar,ao,ap)else am
+:_reelSnap(ar,ao)end end function ag._putStatic(am,an,ao)local ap=am:_static(an)if not ap.Visible then ap.
+TextTransparency=am.transparency end ap.Text=ao ap.Visible=true ap.LayoutOrder=-an if am.slots[an].reel then am.slots[an
+].reel.cell.Visible=false end end function ag._hide(am,an)local ao=am.slots[an]if not ao then return end if ao.reel then
+ao.reel.cell.Visible=false end if ao.static then ao.static.Visible=false end end function ag._render(am,an,ao,ap)an=
+tostring(an)if an==am._lastText then return end am._lastText=an local aq={}for ar,as in utf8.codes(an)do table.insert(aq
+,utf8.char(as))end local ar=#aq for as=0,math.max(ar,am.length)-1 do am.slots[as]=am.slots[as]or{}if as<ar then local at
+=aq[ar-as]if at:match'%d'then am:_putDigit(as,tonumber(at),ap,ao)else am:_putStatic(as,at)end else am:_hide(as)end end
+am.length=ar end function ag.to(am,an,ao)am:_render(an,true,ao)end function ag.snap(am,an)am:_render(an,false,true)end
+function ag.reveal(am,an,ao,ap)am.transparency=an for aq,ar in am.slots do if ar.static and ar.static.Visible then am.
+window:_reveal(ar.static,{TextTransparency=an},ao,ap)end if ar.reel then for as,at in ar.reel.strip:GetChildren()do if
+at:IsA'TextLabel'then am.window:_reveal(at,{TextTransparency=an},ao,ap)end end end end end return ag end)()end,[64]=
+function()local aa,ab,ac=a(64)local ad return(function(...)type OrderedElement={main:GuiObject,descriptor:{main:
+GuiObject}?}local function ae(af:OrderedElement,ag:number)af.main.LayoutOrder=ag if af.descriptor then af.descriptor.
+main.LayoutOrder=ag+1 end end return ae end)()end,[65]=function()local aa,ab,ac=a(65)local ad return(function(...)local
+ae={}function ae.join(af:string,ag:string?):string if not ag or ag==''then return af end return af..'/'..ag end
+local function af(ag:string):string local ah repeat ah=ag ag=ag:gsub('%.%.','')until ag==ah return ag end function ae.
+sanitizeFolder(ag:unknown):string local ah=tostring(ag):gsub('\\','/'):gsub('[:<>"|?*%c]','')ah=af(ah):gsub('/+','/')
+return(ah:gsub('^/+',''))end function ae.sanitizeFile(ag:unknown):string local ah=tostring(ag):gsub('[/\\]',''):gsub(
+'[:<>"|?*%c]','')return af(ah)end function ae.basename(ag:unknown):string return tostring(ag):match'[^/\\]+$'or
+tostring(ag)end function ae.stripExtension(ag:unknown,ah:string?):string if ah and ah~=''then local ai=tostring(ag)if ai
+:sub(-#ah)==ah then return ai:sub(1,-#ah-1)end return ai end local ai=tostring(ag):match'^(.+)%.%w+$'return ai or
+tostring(ag)end return ae end)()end,[66]=function()local aa,ab,ac=a(66)local ad return(function(...)local ae,af,ag={},
+ac(ab.Parent.persistenceConfig),ac(ab.Parent.persistenceSettings)ae.getPath=af.getPath ae.save=af.save ae.load=af.load
+ae.applyTo=af.applyTo ae.list=af.list ae.delete=af.delete ae.getSettingsPath=ag.getSettingsPath ae.saveSettings=ag.
+saveSettings ae.loadSettings=ag.loadSettings return ae end)()end,[67]=function()local aa,ab,ac=a(67)local ad return(
+function(...)local ae,af,ag,ah,ai,aj,ak=ac(ab.Parent.variables),ac(ab.Parent.filesystem),ac(ab.Parent.log),ac(ab.Parent.
+path),ac(ab.Parent.persistencePaths),ac(ab.Parent.persistenceWrite),{}type PersistedControl={value:unknown,flag:string?,
+_canBeNil:boolean?,_serialize:((PersistedControl)->unknown)?,_deserialize:((PersistedControl,unknown)->())?,Set:(
+PersistedControl,unknown)->()}type ConfigWindow={controls:{[string]:PersistedControl},configuration:{fileName:string?,
+customFolder:string?},name:string,_loading:boolean?,_loadedConfig:{[string]:unknown}?,_loadedConfigPath:string?}function
+ak.getPath(al:ConfigWindow,am:unknown?):(string?,string?)return ai.getConfigPath(al,am)end function ak.save(al:
+ConfigWindow,am:unknown?):boolean local an,ao=ak.getPath(al,am)if not an or not ao then ag.warn(
+"Rayfield: configuration name '"..tostring(am).."' has no usable characters")return false end if typeof(af.writefile)~=
+'function'then return false end local ap:{[string]:unknown}={}for aq,ar in al.controls do local as,at=pcall(function()
+local as=ar._serialize if as then return as(ar)end return ar.value end)if as then ap[aq]=at else ag.warn(
+"Rayfield: Failed to serialize flag '"..tostring(aq).."' - "..tostring(at))end end local aq=al._loadedConfig if aq and
+al._loadedConfigPath==ao then for ar,as in aq do if al.controls[ar]==nil then ap[ar]=as end end end local ar,as=pcall(ae
+.httpService.JSONEncode,ae.httpService,ap)if not ar then ag.warn('Rayfield: Failed to encode configuration - '..
+tostring(as))return false end local at,au=pcall(function()aj.write(an,ao,as)end)if not at then ag.warn(
+'Rayfield: Failed to save configuration - '..tostring(au))return false end if al._loadedConfigPath==nil or al.
 _loadedConfigPath==ao then al._loadedConfig=ap al._loadedConfigPath=ao end return true end local function al(am:string):
 ({[string]:unknown}?,string?)if not af.isfile(am)then return nil,nil end local an,ao=pcall(af.readfile,am)if not an or
 type(ao)~='string'then ag.warn'Rayfield: Failed to read configuration file'return nil,nil end local ap,aq=pcall(ae.
@@ -3028,29 +3093,29 @@ unknown},ao end local function am(an:string):string local ao=ah.stripExtension(a
 ' (Incorrect Format).rfld',2 while aq<=100 and af.isfile(ap)do ap=ao..' (Incorrect Format '..aq..').rfld'aq+=1 end
 return ap end function ak.load(an:ConfigWindow,ao:unknown?):boolean local ap,aq=ak.getPath(an,ao)if not ap or not aq
 then ag.warn("Rayfield: configuration name '"..tostring(ao).."' has no usable characters")return false end if typeof(af.
-isfile)~='function'then return false end local b,c=al(aq)if not b and af.isfile(aq)then local d,e=al(aj.tempPathFor(aq))
-if d and e then b=d pcall(aj.write,ap,aq,e)end end if not b then if c then ag.warn
-[[Rayfield: Configuration file has an invalid format, backing up and resetting]]local d=am(aq)pcall(function()af.
-ensureDir(ap)af.writefile(d,c)af.delfile(aq)end)end return false end local d,e=b::{[string]:unknown},an._loading an.
-_loading=true local f,g=pcall(function()for f,g in an.controls do ak.applyTo(g,d[f])end end)an._loading=e if not f then
-ag.warn('Rayfield: Failed to apply configuration - '..tostring(g))end an._loadedConfig=d an._loadedConfigPath=aq return
-true end function ak.applyTo(an:PersistedControl,ao:unknown)if ao==nil and not an._canBeNil then return end local ap,aq=
-pcall(function()local ap=an._deserialize if ap then ap(an,ao)else an:Set(ao)end end)if not ap then ag.warn(
+isfile)~='function'then return false end local ar,as=al(aq)if not ar and af.isfile(aq)then local at,au=al(aj.
+tempPathFor(aq))if at and au then ar=at pcall(aj.write,ap,aq,au)end end if not ar then if as then ag.warn
+[[Rayfield: Configuration file has an invalid format, backing up and resetting]]local at=am(aq)pcall(function()af.
+ensureDir(ap)af.writefile(at,as)af.delfile(aq)end)end return false end local at,au=ar::{[string]:unknown},an._loading an
+._loading=true local av,b=pcall(function()for av,b in an.controls do ak.applyTo(b,at[av])end end)an._loading=au if not
+av then ag.warn('Rayfield: Failed to apply configuration - '..tostring(b))end an._loadedConfig=at an._loadedConfigPath=
+aq return true end function ak.applyTo(an:PersistedControl,ao:unknown)if ao==nil and not an._canBeNil then return end
+local ap,aq=pcall(function()local ap=an._deserialize if ap then ap(an,ao)else an:Set(ao)end end)if not ap then ag.warn(
 "Rayfield: Failed to restore flag '"..tostring(an.flag).."' - "..tostring(aq))end end function ak.list(an:ConfigWindow):
-{string}local ao,ap:{string}=ak.getPath(an),{}if not ao then return ap end local aq,b=pcall(af.listfiles,ao)if not aq or
-type(b)~='table'then return ap end for c,d in b do local e=ah.basename(d)if e:sub(-5)=='.rfld'then local f=ah.
-stripExtension(e,'.rfld')if f and f~=''and not f:find' %(Incorrect Format[^%)]*%)$'then table.insert(ap,f)end end end
-table.sort(ap)return ap end function ak.delete(an:ConfigWindow,ao:unknown):boolean if type(ao)~='string'or ao==''then
-return false end local ap,aq=ak.getPath(an,ao)if not aq then return false end if typeof(af.isfile)~='function'or not af.
-isfile(aq)then return false end pcall(af.delfile,aj.tempPathFor(aq))return(pcall(af.delfile,aq))end return ak end)()end,
-[67]=function()local aa,ab,ac=a(67)local ad return(function(...)local ae,af,ag=ac(ab.Parent.variables),ac(ab.Parent.path
-),{}type ConfigWindow={configuration:{fileName:string?,customFolder:string?},name:string}function ag.getConfigPath(ah:
-ConfigWindow,ai:unknown?):(string?,string?)local aj=ae.fileSystemManager:getPath'Configurations'if ah.configuration.
-customFolder then aj=af.join(aj,af.sanitizeFolder(ah.configuration.customFolder))end if ai~=nil then local ak=af.
-sanitizeFile(ai)if ak==''then return nil,nil end return aj,af.join(aj,ak..'.rfld')end local ak=af.sanitizeFile(ah.
+{string}local ao,ap:{string}=ak.getPath(an),{}if not ao then return ap end local aq,ar=pcall(af.listfiles,ao)if not aq
+or type(ar)~='table'then return ap end for as,at in ar do local au=ah.basename(at)if au:sub(-5)=='.rfld'then local av=ah
+.stripExtension(au,'.rfld')if av and av~=''and not av:find' %(Incorrect Format[^%)]*%)$'then table.insert(ap,av)end end
+end table.sort(ap)return ap end function ak.delete(an:ConfigWindow,ao:unknown):boolean if type(ao)~='string'or ao==''
+then return false end local ap,aq=ak.getPath(an,ao)if not aq then return false end if typeof(af.isfile)~='function'or
+not af.isfile(aq)then return false end pcall(af.delfile,aj.tempPathFor(aq))return(pcall(af.delfile,aq))end return ak end
+)()end,[68]=function()local aa,ab,ac=a(68)local ad return(function(...)local ae,af,ag=ac(ab.Parent.variables),ac(ab.
+Parent.path),{}type ConfigWindow={configuration:{fileName:string?,customFolder:string?},name:string}function ag.
+getConfigPath(ah:ConfigWindow,ai:unknown?):(string?,string?)local aj=ae.fileSystemManager:getPath'Configurations'if ah.
+configuration.customFolder then aj=af.join(aj,af.sanitizeFolder(ah.configuration.customFolder))end if ai~=nil then local
+ak=af.sanitizeFile(ai)if ak==''then return nil,nil end return aj,af.join(aj,ak..'.rfld')end local ak=af.sanitizeFile(ah.
 configuration.fileName or ah.name)if ak==''then ak=af.sanitizeFile(ah.name)end if ak==''then ak='Configuration'end
 return aj,af.join(aj,ak..'.rfld')end function ag.getSettingsPath():(string,string)local ah=ae.fileSystemManager:getPath
-'Settings'return ah,af.join(ah,'rayfield.rfld')end return ag end)()end,[68]=function()local aa,ab,ac=a(68)local ad
+'Settings'return ah,af.join(ah,'rayfield.rfld')end return ag end)()end,[69]=function()local aa,ab,ac=a(69)local ad
 return(function(...)local ae,af,ag,ah,ai,aj,ak=ac(ab.Parent.variables),ac(ab.Parent.filesystem),ac(ab.Parent.
 persistencePaths),ac(ab.Parent.persistenceWrite),ac(ab.Parent.enums),ac(ab.Parent.constants),{}type SettingsWindow={
 settings:{toggleKeybind:EnumItem,mouseOverride:boolean,keepOnScreen:boolean,welcomeToast:boolean,haptics:boolean,
@@ -3060,38 +3125,38 @@ getSettingsPath():(string,string)return ag.getSettingsPath()end function ak.save
 local am,an=ak.getSettingsPath()local ao:{[string]:unknown}={toggleKeybind={tostring(al.settings.toggleKeybind.EnumType)
 ,al.settings.toggleKeybind.Value}::{unknown},mouseOverride=al.settings.mouseOverride,keepOnScreen=al.settings.
 keepOnScreen,welcomeToast=al.settings.welcomeToast,haptics=al.settings.haptics,showProfile=al.settings.showProfile,theme
-=al.settings.theme}local ap,aq=pcall(ae.httpService.JSONEncode,ae.httpService,ao)if not ap then return false end local b
-=pcall(ah.write,am,an,aq)if not b then return false end return true end local function al(am:string):(DecodedSettings?,
-string?)local an=false pcall(function()an=af.isfile(am)end)if not an then return nil,nil end local ao,ap=pcall(af.
-readfile,am)if not ao or type(ap)~='string'then return nil,nil end local aq,b=pcall(ae.httpService.JSONDecode,ae.
-httpService,ap)if not aq or type(b)~='table'then return nil,ap end return b::DecodedSettings,ap end function ak.
-loadSettings(am:SettingsWindow):boolean local an,ao=ak.getSettingsPath()local ap=al(ao)if not ap then local aq,b=al(ah.
-tempPathFor(ao))if aq and b then ap=aq pcall(ah.write,an,ao,b)end end if not ap then return false end if ap.
-toggleKeybind then pcall(function()local aq=tostring(ap.toggleKeybind[1]):gsub('^Enum%.','')local b=(Enum::any)[aq]if b
-then local c=ai.itemFromValue(b,ap.toggleKeybind[2])if c then am.settings.toggleKeybind=c end end end)end if type(ap.
-mouseOverride)=='boolean'then am.settings.mouseOverride=ap.mouseOverride end if type(ap.keepOnScreen)=='boolean'then am.
-settings.keepOnScreen=ap.keepOnScreen end if type(ap.welcomeToast)=='boolean'then am.settings.welcomeToast=ap.
+=al.settings.theme}local ap,aq=pcall(ae.httpService.JSONEncode,ae.httpService,ao)if not ap then return false end local
+ar=pcall(ah.write,am,an,aq)if not ar then return false end return true end local function al(am:string):(DecodedSettings
+?,string?)local an=false pcall(function()an=af.isfile(am)end)if not an then return nil,nil end local ao,ap=pcall(af.
+readfile,am)if not ao or type(ap)~='string'then return nil,nil end local aq,ar=pcall(ae.httpService.JSONDecode,ae.
+httpService,ap)if not aq or type(ar)~='table'then return nil,ap end return ar::DecodedSettings,ap end function ak.
+loadSettings(am:SettingsWindow):boolean local an,ao=ak.getSettingsPath()local ap=al(ao)if not ap then local aq,ar=al(ah.
+tempPathFor(ao))if aq and ar then ap=aq pcall(ah.write,an,ao,ar)end end if not ap then return false end if ap.
+toggleKeybind then pcall(function()local aq=tostring(ap.toggleKeybind[1]):gsub('^Enum%.','')local ar=(Enum::any)[aq]if
+ar then local as=ai.itemFromValue(ar,ap.toggleKeybind[2])if as then am.settings.toggleKeybind=as end end end)end if
+type(ap.mouseOverride)=='boolean'then am.settings.mouseOverride=ap.mouseOverride end if type(ap.keepOnScreen)=='boolean'
+then am.settings.keepOnScreen=ap.keepOnScreen end if type(ap.welcomeToast)=='boolean'then am.settings.welcomeToast=ap.
 welcomeToast end if type(ap.haptics)=='boolean'then am.settings.haptics=ap.haptics end if type(ap.showProfile)==
 'boolean'then am.settings.showProfile=ap.showProfile end if type(ap.theme)=='string'and table.find(aj.builtInThemes,ap.
-theme)then am.settings.theme=ap.theme end return true end return ak end)()end,[69]=function()local aa,ab,ac=a(69)local
+theme)then am.settings.theme=ap.theme end return true end return ak end)()end,[70]=function()local aa,ab,ac=a(70)local
 ad return(function(...)local ae,af,ag=ac(ab.Parent.filesystem),{},'.saving'function af.tempPathFor(ah:string):string
 return ah..ag end function af.write(ah:string,ai:string,aj:string)local ak=af.tempPathFor(ai)ae.ensureDir(ah)ae.
 writefile(ak,aj)if ae.readfile(ak)~=aj then error'parked copy did not write cleanly'end ae.writefile(ai,aj)pcall(ae.
-delfile,ak)end return af end)()end,[70]=function()local aa,ab,ac=a(70)local ad return(function(...)local ae,af,ag=ac(ab.
+delfile,ak)end return af end)()end,[71]=function()local aa,ab,ac=a(71)local ad return(function(...)local ae,af,ag=ac(ab.
 Parent.variables),ac(ab.Parent.network),{}function ag.request(ah,ai:string,aj:string,ak:any?):(boolean,any)if ah.
 transport then local al,am,an=pcall(ah.transport,ai,aj,ak)if not al then return false,{error=tostring(am)}end return am,
 an end if type(ah.endpoint)~='string'then return false,{error='No relay address.'}end local al=af.getRequestFn()if not
 al then return false,{error="This executor can't make web requests."}end local am={['Content-Type']='application/json'}
 if ah.key then am['X-Chat-Key']=tostring(ah.key)end local an,ao=pcall(al,{Url=ah.endpoint..aj,Method=ai,Headers=am,Body=
 if ak~=nil then ae.httpService:JSONEncode(ak)else nil})if not an or type(ao)~='table'then return false,{error=
-'No response from the relay.'}end local ap if type(ao.Body)=='string'and ao.Body~=''then local aq,b=pcall(ae.httpService
-.JSONDecode,ae.httpService,ao.Body)ap=if aq then b else nil end local aq=tonumber(ao.StatusCode)or 0 return aq>=200 and
-aq<300,ap or{}end function ag.segment(ah):string local ai=tostring(ah):gsub('[^%w%-_%.~]',function(ai)return string.
-format('%%%02X',string.byte(ai))end)return ai end function ag.base(ah):string?if type(ah)~='string'then return nil end
-local ai=ah:gsub('/+$','')return ai end return ag end)()end,[71]=function()local aa,ab,ac=a(71)local ad return(function(
-...)local ae=ac(ab.Parent.services)export type RuntimeState={secureMode:boolean,coreGui:CoreGui,workspace:Workspace,
-runService:RunService,userInputService:UserInputService,guiService:GuiService,localPlayer:Player?,tweenService:
-TweenService,httpService:HttpService,textService:TextService,replicatedStorage:ReplicatedStorage,localizationService:
+'No response from the relay.'}end local ap if type(ao.Body)=='string'and ao.Body~=''then local aq,ar=pcall(ae.
+httpService.JSONDecode,ae.httpService,ao.Body)ap=if aq then ar else nil end local aq=tonumber(ao.StatusCode)or 0 return
+aq>=200 and aq<300,ap or{}end function ag.segment(ah):string local ai=tostring(ah):gsub('[^%w%-_%.~]',function(ai)return
+string.format('%%%02X',string.byte(ai))end)return ai end function ag.base(ah):string?if type(ah)~='string'then return
+nil end local ai=ah:gsub('/+$','')return ai end return ag end)()end,[72]=function()local aa,ab,ac=a(72)local ad return(
+function(...)local ae=ac(ab.Parent.services)export type RuntimeState={secureMode:boolean,coreGui:CoreGui,workspace:
+Workspace,runService:RunService,userInputService:UserInputService,guiService:GuiService,localPlayer:Player?,tweenService
+:TweenService,httpService:HttpService,textService:TextService,replicatedStorage:ReplicatedStorage,localizationService:
 LocalizationService,guiContainer:Instance}local af={}::RuntimeState af.secureMode=(function()if typeof(getgenv)~=
 'function'then return false end local ag,ah=pcall(function()return getgenv().RAYFIELD_SECURE end)return ag and ah==true
 end)()af.coreGui=ae.getService'CoreGui'::CoreGui af.workspace=ae.getService'Workspace'::Workspace af.runService=ae.
@@ -3102,23 +3167,23 @@ getService'TextService'::TextService af.replicatedStorage=ae.getService'Replicat
 localizationService=ae.getService'LocalizationService'::LocalizationService af.guiContainer=(function():Instance if af.
 runService:IsStudio()then local ag=af.localPlayer if ag then return ag.PlayerGui end return af.coreGui end if typeof(
 gethui)=='function'then local ag,ah=pcall(gethui)if ag and ah then return ah end end return af.coreGui end)()return af
-end)()end,[72]=function()local aa,ab,ac=a(72)local ad return(function(...)local ae={}function ae.getService(af)local ag=
-game:GetService(af)return if cloneref then cloneref(ag)else ag end return ae end)()end,[73]=function()local aa,ab,ac=a(
-73)local ad return(function(...)local ae=ac(ab.Parent.variables)local af,ag,ah:{[string]:number},ai,aj=ae.textService,{}
+end)()end,[73]=function()local aa,ab,ac=a(73)local ad return(function(...)local ae={}function ae.getService(af)local ag=
+game:GetService(af)return if cloneref then cloneref(ag)else ag end return ae end)()end,[74]=function()local aa,ab,ac=a(
+74)local ad return(function(...)local ae=ac(ab.Parent.variables)local af,ag,ah:{[string]:number},ai,aj=ae.textService,{}
 ,{},0,1024 local function ak(al:GetTextBoundsParams):unknown local am,an=pcall(function()return af:GetTextBoundsAsync(al
 )end)return if am then an else nil end local function al(am:unknown,an:'X'|'Y'):number?if typeof(am)=='Vector2'then
 return if an=='X'then am.X else am.Y end if type(am)=='table'and type((am::any)[an])=='number'then return(am::any)[an]
 end return nil end function ag.textWidth(am:Font,an:number,ao:any):number ao=tostring(ao)local ap=tostring(am.Family)..
 '|'..tostring(am.Weight)..'|'..tostring(am.Style)..'|'..tostring(an)..'|'..ao local aq=ah[ap]if aq then return aq end
-local b=Instance.new'GetTextBoundsParams'b.Text=ao b.Font=am b.Size=an b.Width=math.huge local c=al(ak(b),'X')if not c
-then local d=utf8.len(ao)or#ao return math.ceil(an*0.55*d)end local d=math.ceil(c)if ai>=aj then ah={}ai=0 end ah[ap]=d
-ai+=1 return d end function ag.textHeight(am:Font,an:number,ao:any,ap:number):number local aq=Instance.new
-'GetTextBoundsParams'aq.Text=tostring(ao)aq.Font=am aq.Size=an aq.Width=ap local b=al(ak(aq),'Y')return if b then math.
-ceil(b)else an end return ag end)()end,[74]=function()local aa,ab,ac=a(74)local ad return(function(...)local ae,af,ag,ah
-,ai,aj=ac(ab.Parent.runtime),ac(ab.Parent.constants),ac(ab.Parent.log),ac(ab.Parent.filesystemManager),ac(ab.Parent.
-assetResolver),ac(ab.Parent.fontManager)type RuntimeState=ae.RuntimeState type FileSystemManager=ah.FileSystemManager
-type AssetResolver=ai.AssetResolver type FontManager=aj.FontManager export type VariablesState=RuntimeState&{
-fallbackFont:Font,fileSystemManager:FileSystemManager,assetResolver:AssetResolver,fontManager:FontManager,
+local ar=Instance.new'GetTextBoundsParams'ar.Text=ao ar.Font=am ar.Size=an ar.Width=math.huge local as=al(ak(ar),'X')if
+not as then local at=utf8.len(ao)or#ao return math.ceil(an*0.55*at)end local at=math.ceil(as)if ai>=aj then ah={}ai=0
+end ah[ap]=at ai+=1 return at end function ag.textHeight(am:Font,an:number,ao:any,ap:number):number local aq=Instance.
+new'GetTextBoundsParams'aq.Text=tostring(ao)aq.Font=am aq.Size=an aq.Width=ap local ar=al(ak(aq),'Y')return if ar then
+math.ceil(ar)else an end return ag end)()end,[75]=function()local aa,ab,ac=a(75)local ad return(function(...)local ae,af
+,ag,ah,ai,aj=ac(ab.Parent.runtime),ac(ab.Parent.constants),ac(ab.Parent.log),ac(ab.Parent.filesystemManager),ac(ab.
+Parent.assetResolver),ac(ab.Parent.fontManager)type RuntimeState=ae.RuntimeState type FileSystemManager=ah.
+FileSystemManager type AssetResolver=ai.AssetResolver type FontManager=aj.FontManager export type VariablesState=
+RuntimeState&{fallbackFont:Font,fileSystemManager:FileSystemManager,assetResolver:AssetResolver,fontManager:FontManager,
 setFallbackFont:(font:Enum.Font|Font)->(),brandFont:(weight:Enum.FontWeight?)->Font}local ak=table.clone(ae)::
 VariablesState ag.setSecureModeSource(function()return ak.secureMode end)ak.fallbackFont=Font.fromEnum(Enum.Font.
 BuilderSans)ak.fileSystemManager=ah.new()ak.assetResolver=ai.new(true,ai.Enum.AssetDownloadUrl.RoProxyDownloadUrl)::
@@ -3127,7 +3192,7 @@ RoProxyDownloadUrl,{saveToDisk=true,skipCache=false,fallbackFont=ak.fallbackFont
 setFallbackFont(al:Enum.Font|Font)if typeof(al)=='EnumItem'then al=Font.fromEnum(al)end if typeof(al)=='Font'then ak.
 fallbackFont=al ak.fontManager.defaultOptions.fallbackFont=al end end function ak.brandFont(al:Enum.FontWeight?):Font if
 ak.secureMode then return Font.new(ak.fallbackFont.Family,al)end return Font.new(af.fontAsset,al)end return ak end)()end
-,[75]=function()local aa,ab,ac=a(75)local ad return(function(...)local ae,af=ac(ab.Parent.layouts),{}export type Profile
+,[76]=function()local aa,ab,ac=a(76)local ad return(function(...)local ae,af=ac(ab.Parent.layouts),{}export type Profile
 ={defaultSize:Vector2,minSize:Vector2,maxOccupancyX:number,maxOccupancyY:number?,marginFloorX:number,marginFloorY:number
 ,topbarClearance:number?,maxAspectRatio:number,minAspectRatio:number?,widthCompensation:number?,chromeHeight:number}
 local ag,ah=200,{top={defaultSize=Vector2.new(760,520),minSize=Vector2.new(320,285),maxOccupancyX=0.9,topbarClearance=36
@@ -3145,64 +3210,64 @@ minSize.X)return UDim2.fromOffset(math.floor(math.min(aq,am,ao*al.maxAspectRatio
 an:number,ao:number):UDim2 local ap,aq=math.min(math.clamp(an,am.minSize.X,am.defaultSize.X),an),math.min(math.clamp(ao,
 am.minSize.Y,am.defaultSize.Y),ao)aq=math.floor(math.min(aq,ap/(am.minAspectRatio::number)))ap=math.floor(math.min(ap,aq
 *am.maxAspectRatio))return UDim2.fromOffset(ap,aq)end af.minScale=0.7 local am,an=0.9,0.88 function af.scaleFor(ao:
-Vector2?,ap:ae.Mode?):number if not ao or ao.X<ag or ao.Y<ag then return 1 end local aq=af.profile(ap)local b=math.min(
-ao.X*am/aq.defaultSize.X,ao.Y*an/aq.defaultSize.Y)return math.floor(math.clamp(b,af.minScale,1)*100)/100 end function af
-.fit(ao:Vector2?,ap:ae.Mode?):UDim2 local aq=af.profile(ap)if not ao or ao.X<ag or ao.Y<ag then return UDim2.fromOffset(
-aq.defaultSize.X,aq.defaultSize.Y)end local b,c=math.min(ao.X*aq.maxOccupancyX,ao.X-aq.marginFloorX),ai(aq,ao.Y)if aq.
-minAspectRatio then return al(aq,b,c)end return ak(aq,b,c)end return af end)()end},{{1,2,{'Rayfield'},{{2,1,{
-'components'},{{14,2,{'group'}},{5,2,{'chat'}},{28,2,{'tabSelector'}},{17,2,{'nameplate'}},{8,2,{'column'}},{33,2,{
-'window'}},{32,2,{'toggle'}},{16,2,{'keybind'}},{26,2,{'tab'}},{22,2,{'section'}},{29,2,{'tag'}},{7,2,{'colorpicker'}},{
-4,2,{'button'}},{10,2,{'descriptor'}},{19,2,{'popup'}},{27,2,{'tabSection'}},{21,2,{'search'}},{25,2,{'stat'}},{30,2,{
-'text'}},{23,2,{'sidebar'}},{15,2,{'input'}},{24,2,{'slider'}},{18,2,{'notification'}},{9,2,{'console'}},{6,2,{'chrome'}
-},{13,2,{'dropdown'}},{20,2,{'progress'}},{31,2,{'toast'}},{3,2,{'action'}},{12,2,{'drag'}},{11,2,{'divider'}}}},{41,2,{
-'types'}},{42,1,{'utility'},{{53,2,{'functions'}},{46,2,{'columns'}},{43,2,{'HapticEngine'}},{72,2,{'services'}},{48,2,{
-'enums'}},{66,2,{'persistenceConfig'}},{74,2,{'variables'}},{73,2,{'textMetrics'}},{70,2,{'relayClient'}},{58,2,{
-'lockable'}},{67,2,{'persistencePaths'}},{69,2,{'persistenceWrite'}},{57,2,{'locale'}},{45,2,{'colors'}},{64,2,{'path'}}
-,{50,2,{'filesystemManager'}},{75,2,{'windowSizing'}},{65,2,{'persistence'}},{59,2,{'log'}},{55,2,{'imageCache'}},{44,2,
-{'assetResolver'}},{54,2,{'image'}},{63,2,{'ordering'}},{52,2,{'fontManager'}},{47,2,{'constants'}},{61,2,{'network'}},{
-56,2,{'layouts'}},{60,2,{'moveable'}},{51,2,{'flagNames'}},{71,2,{'runtime'}},{62,2,{'odometer'}},{68,2,{
-'persistenceSettings'}},{49,2,{'filesystem'}}}},{34,1,{'themes'},{{36,2,{'cobalt'}},{35,2,{'amethyst'}},{37,2,{'default'
-}},{38,2,{'ember'}},{39,2,{'frost'}},{40,2,{'rose'}}}}}}},'0.4.1','Rayfield',string,task,setmetatable,error,next,table,
-unpack,coroutine,script,type,require,pcall,xpcall,tostring,tonumber,_VERSION local f,g,h,i,j,k,l=aj.insert,aj.remove,aj.
-freeze or function(f)return f end,al.wrap,ae.sub,ae.match,ae.gmatch if d and j(d,1,4)=='Lune'then local m,n=ap(ao,
-'@lune/task')if m and n then af=n end end local m=af and af.defer local n,o,p,q,r,s,t,u,v=m or function(n,...)i(n)(...)
-end,{[1]='Folder',[2]='ModuleScript',[3]='Script',[4]='LocalScript',[5]='StringValue'},{},{},{},{},{},{},{}local w,x={
-GetFullName={{},function(w)local x,y=w.Name,w.Parent while y do x=y.Name..'.'..x y=y.Parent end return x end},
-GetChildren={{},function(w)local x={}for y in ai,v[w]do f(x,y)end return x end},GetDescendants={{},function(w)local x={}
-for y in ai,v[w]do f(x,y)for z,A in ai,y:GetDescendants()do f(x,A)end end return x end},FindFirstChild={{'string',
-'boolean?'},function(w,x,y)local z=v[w]for A in ai,z do if A.Name==x then return A end end if y then for A in ai,z do
-return A:FindFirstChild(x,true)end end end},FindFirstAncestor={{'string'},function(w,x)local y=w.Parent while y do if y.
-Name==x then return y end y=y.Parent end end},WaitForChild={{'string','number?'},function(w,x)return w:FindFirstChild(x)
-end}},{}for y,z in ai,w do local A,B,C=z[1],z[2],{}for D,E in ai,A do local F,G=k(E,'^([^%?]+)(%??)')C[D]={F,G}end x[y]=
-function(D,...)if not v[D]then ah("Expected ':' not '.' calling member function "..y,2)end local E={...}for F,G in ai,C
-do local H=E[F]local I,J,K=an(H),G[1],G[2]if H==nil and not K then ah('Argument '..H..' missing or nil',3)end if J~=
-'any'and I~=J and not(I=='nil'and K)then ah('Argument '..F..' expects type "'..J..'", got "'..I..'"',2)end end return B(
-D,...)end end local function y(z,A,B)local C,D=(ag({},{__mode='k'}))local function E(F)ah(F..
-' is not a valid (virtual) member of '..z..' "'..A..'"',3)end local function F(G)ah(
-'Unable to assign (virtual) property '..G..'. Property is read only',3)end local G,H={},{}H.__metatable=false H.__index=
-function(I,J)if J=='ClassName'then return z elseif J=='Name'then return A elseif J=='Parent'then return B elseif z==
-'StringValue'and J=='Value'then return D else local K=x[J]if K then return K end end for K in ai,C do if K.Name==J then
-return K end end E(J)end H.__newindex=function(I,J,K)if J=='ClassName'then F(J)elseif J=='Name'then A=K elseif J==
-'Parent'then if K==G then return end if B~=nil then v[B][G]=nil end B=K if K~=nil then v[K][G]=true end elseif z==
-'StringValue'and J=='Value'then D=K else E(J)end end H.__tostring=function()return A end ag(G,H)v[G]=C if B~=nil then v[
-B][G]=true end return G end local function z(A,B)local C,D,E,F=A[1],A[2],A[3],A[4]local G=o[D]local H=E and g(E,1)or G
-local I=y(G,H,B)p[C]=I if E then for J,K in ai,E do I[J]=K end end if F then for J,K in ai,F do z(K,I)end end return I
-end local A=y('Folder','['..ad..']')for B,C in ai,ab do z(C,A)end for B,C in ai,aa do local D=p[B]q[D]=C r[D]=B local E=
-D.ClassName if E=='LocalScript'or E=='Script'then f(t,D)end end local function B(C)local D,E=C.ClassName,s[C]if E and D
-=='ModuleScript'then return ak(E)end local F=q[C]local function G(H)local I,J,K=nil,ap(function()return debug.traceback(
-nil,2)end)if J then I=K end return{Message=H,Traceback=I}end local function H(I)local J,K=b(I.Message),C:GetFullName()
-local L,M=k(J,'[^:]+:(%d+): (.+)')local N if not L or not e then N=K..':*: '..(M or J)else L=c(L)local O=r[C]local P=e[O
-]local Q=L-P+1 if Q<0 then Q='?'end N=K..':'..Q..': '..M end local O=I.Traceback if O and O~=''then N=N..'\n'..O end
-return N end if D=='LocalScript'or D=='Script'then local I,J=aq(F,G)if not I then ah(H(J),0)end else local I={aq(F,G)}
-local J=g(I,1)if not J then local K=g(I,1)ah(H(K),0)end s[C]=I return ak(I)end end function a(C)local D=p[C]
-local function E(F,...)local G={ap(F,...)}local H=g(G,1)if not H then ah(G[1],3)end return ak(G)end local F=h(ag({},{
-__index=u,__newindex=function(F,G,H)u[G]=H end,__len=function()return#u end,__iter=function()return ai,u end}))local G,H
-=h{version=ac,envname=ad,shared=F,script=am,require=ao},D local function I(J,...)local K,L,M=an(J),
-'Attempted to call require with a non-ModuleScript','Attempted to call require with self'if K=='table'and v[J]then if J.
-ClassName~='ModuleScript'then ah(L,2)elseif J==D then ah(M,2)end return B(J)elseif K=='string'and j(J,1,1)~='@'then if#J
-==0 then ah('Attempted to call require with empty string',2)end local N=D if j(J,1,1)=='/'then N=A elseif j(J,1,2)=='./'
-then J=j(J,3)end local O for P in l(J,'([^/]*)/?')do local Q=P if P=='..'then Q='Parent'end if Q~=''then local R=N:
-FindFirstChild(Q)if not R then local S=N.Parent if S then R=S:FindFirstChild(Q)end end if R then N=R elseif P~=O and P~=
-'init'and P~='init.server'and P~='init.client'then ah('Virtual script path "'..J..'" not found',2)end end O=P end if N.
-ClassName~='ModuleScript'then ah(L,2)elseif N==D then ah(M,2)end return B(N)end return E(ao,J,...)end return G,H,I end
-for C,D in ai,t do n(B,D)end return B(A:GetChildren()[1])
+Vector2?,ap:ae.Mode?):number if not ao or ao.X<ag or ao.Y<ag then return 1 end local aq=af.profile(ap)local ar=math.min(
+ao.X*am/aq.defaultSize.X,ao.Y*an/aq.defaultSize.Y)return math.floor(math.clamp(ar,af.minScale,1)*100)/100 end function
+af.fit(ao:Vector2?,ap:ae.Mode?):UDim2 local aq=af.profile(ap)if not ao or ao.X<ag or ao.Y<ag then return UDim2.
+fromOffset(aq.defaultSize.X,aq.defaultSize.Y)end local ar,as=math.min(ao.X*aq.maxOccupancyX,ao.X-aq.marginFloorX),ai(aq,
+ao.Y)if aq.minAspectRatio then return al(aq,ar,as)end return ak(aq,ar,as)end return af end)()end},{{1,2,{'Rayfield'},{{2
+,1,{'components'},{{26,2,{'tab'}},{3,2,{'action'}},{4,2,{'button'}},{25,2,{'stat'}},{20,2,{'progress'}},{32,2,{'toggle'}
+},{6,2,{'chrome'}},{33,2,{'window'}},{9,2,{'console'}},{30,2,{'text'}},{7,2,{'colorpicker'}},{13,2,{'dropdown'}},{10,2,{
+'descriptor'}},{5,2,{'chat'}},{27,2,{'tabSection'}},{24,2,{'slider'}},{12,2,{'drag'}},{28,2,{'tabSelector'}},{17,2,{
+'nameplate'}},{11,2,{'divider'}},{21,2,{'search'}},{19,2,{'popup'}},{14,2,{'group'}},{31,2,{'toast'}},{23,2,{'sidebar'}}
+,{22,2,{'section'}},{16,2,{'keybind'}},{8,2,{'column'}},{18,2,{'notification'}},{15,2,{'input'}},{29,2,{'tag'}}}},{42,1,
+{'utility'},{{76,2,{'windowSizing'}},{66,2,{'persistence'}},{58,2,{'locale'}},{46,2,{'colors'}},{75,2,{'variables'}},{68
+,2,{'persistencePaths'}},{69,2,{'persistenceSettings'}},{64,2,{'ordering'}},{51,2,{'filesystemManager'}},{62,2,{
+'network'}},{61,2,{'moveable'}},{48,2,{'constants'}},{47,2,{'columns'}},{53,2,{'fontManager'}},{65,2,{'path'}},{72,2,{
+'runtime'}},{52,2,{'flagNames'}},{50,2,{'filesystem'}},{70,2,{'persistenceWrite'}},{71,2,{'relayClient'}},{57,2,{
+'layouts'}},{43,2,{'HapticEngine'}},{74,2,{'textMetrics'}},{63,2,{'odometer'}},{54,2,{'functions'}},{55,2,{'image'}},{60
+,2,{'log'}},{44,2,{'animatedImage'}},{45,2,{'assetResolver'}},{59,2,{'lockable'}},{73,2,{'services'}},{67,2,{
+'persistenceConfig'}},{49,2,{'enums'}},{56,2,{'imageCache'}}}},{41,2,{'types'}},{34,1,{'themes'},{{38,2,{'ember'}},{39,2
+,{'frost'}},{40,2,{'rose'}},{35,2,{'amethyst'}},{37,2,{'default'}},{36,2,{'cobalt'}}}}}}},'0.4.1','Rayfield',string,task
+,setmetatable,error,next,table,unpack,coroutine,script,type,require,pcall,xpcall,tostring,tonumber,_VERSION local av,b,c
+,d,e,f,g=aj.insert,aj.remove,aj.freeze or function(av)return av end,al.wrap,ae.sub,ae.match,ae.gmatch if at and e(at,1,4
+)=='Lune'then local h,i=ap(ao,'@lune/task')if h and i then af=i end end local h=af and af.defer local i,j,k,l,m,n,o,p,q=
+h or function(i,...)d(i)(...)end,{[1]='Folder',[2]='ModuleScript',[3]='Script',[4]='LocalScript',[5]='StringValue'},{},{
+},{},{},{},{},{}local r,s={GetFullName={{},function(r)local s,t=r.Name,r.Parent while t do s=t.Name..'.'..s t=t.Parent
+end return s end},GetChildren={{},function(r)local s={}for t in ai,q[r]do av(s,t)end return s end},GetDescendants={{},
+function(r)local s={}for t in ai,q[r]do av(s,t)for u,v in ai,t:GetDescendants()do av(s,v)end end return s end},
+FindFirstChild={{'string','boolean?'},function(r,s,t)local u=q[r]for v in ai,u do if v.Name==s then return v end end if
+t then for v in ai,u do return v:FindFirstChild(s,true)end end end},FindFirstAncestor={{'string'},function(r,s)local t=r
+.Parent while t do if t.Name==s then return t end t=t.Parent end end},WaitForChild={{'string','number?'},function(r,s)
+return r:FindFirstChild(s)end}},{}for t,u in ai,r do local v,w,x=u[1],u[2],{}for y,z in ai,v do local A,B=f(z,
+'^([^%?]+)(%??)')x[y]={A,B}end s[t]=function(y,...)if not q[y]then ah("Expected ':' not '.' calling member function "..t
+,2)end local z={...}for A,B in ai,x do local C=z[A]local D,E,F=an(C),B[1],B[2]if C==nil and not F then ah('Argument '..C
+..' missing or nil',3)end if E~='any'and D~=E and not(D=='nil'and F)then ah('Argument '..A..' expects type "'..E..
+'", got "'..D..'"',2)end end return w(y,...)end end local function t(u,v,w)local x,y=(ag({},{__mode='k'}))local function
+z(A)ah(A..' is not a valid (virtual) member of '..u..' "'..v..'"',3)end local function A(B)ah(
+'Unable to assign (virtual) property '..B..'. Property is read only',3)end local B,C={},{}C.__metatable=false C.__index=
+function(D,E)if E=='ClassName'then return u elseif E=='Name'then return v elseif E=='Parent'then return w elseif u==
+'StringValue'and E=='Value'then return y else local F=s[E]if F then return F end end for F in ai,x do if F.Name==E then
+return F end end z(E)end C.__newindex=function(D,E,F)if E=='ClassName'then A(E)elseif E=='Name'then v=F elseif E==
+'Parent'then if F==B then return end if w~=nil then q[w][B]=nil end w=F if F~=nil then q[F][B]=true end elseif u==
+'StringValue'and E=='Value'then y=F else z(E)end end C.__tostring=function()return v end ag(B,C)q[B]=x if w~=nil then q[
+w][B]=true end return B end local function u(v,w)local x,y,z,A=v[1],v[2],v[3],v[4]local B=j[y]local C=z and b(z,1)or B
+local D=t(B,C,w)k[x]=D if z then for E,F in ai,z do D[E]=F end end if A then for E,F in ai,A do u(F,D)end end return D
+end local v=t('Folder','['..ad..']')for w,x in ai,ab do u(x,v)end for w,x in ai,aa do local y=k[w]l[y]=x m[y]=w local z=
+y.ClassName if z=='LocalScript'or z=='Script'then av(o,y)end end local function w(x)local y,z=x.ClassName,n[x]if z and y
+=='ModuleScript'then return ak(z)end local A=l[x]local function B(C)local D,E,F=nil,ap(function()return debug.traceback(
+nil,2)end)if E then D=F end return{Message=C,Traceback=D}end local function C(D)local E,F=ar(D.Message),x:GetFullName()
+local G,H=f(E,'[^:]+:(%d+): (.+)')local I if not G or not au then I=F..':*: '..(H or E)else G=as(G)local J=m[x]local K=
+au[J]local L=G-K+1 if L<0 then L='?'end I=F..':'..L..': '..H end local J=D.Traceback if J and J~=''then I=I..'\n'..J end
+return I end if y=='LocalScript'or y=='Script'then local D,E=aq(A,B)if not D then ah(C(E),0)end else local D={aq(A,B)}
+local E=b(D,1)if not E then local F=b(D,1)ah(C(F),0)end n[x]=D return ak(D)end end function a(x)local y=k[x]
+local function z(A,...)local B={ap(A,...)}local C=b(B,1)if not C then ah(B[1],3)end return ak(B)end local A=c(ag({},{
+__index=p,__newindex=function(A,B,C)p[B]=C end,__len=function()return#p end,__iter=function()return ai,p end}))local B,C
+=c{version=ac,envname=ad,shared=A,script=am,require=ao},y local function D(E,...)local F,G,H=an(E),
+'Attempted to call require with a non-ModuleScript','Attempted to call require with self'if F=='table'and q[E]then if E.
+ClassName~='ModuleScript'then ah(G,2)elseif E==y then ah(H,2)end return w(E)elseif F=='string'and e(E,1,1)~='@'then if#E
+==0 then ah('Attempted to call require with empty string',2)end local I=y if e(E,1,1)=='/'then I=v elseif e(E,1,2)=='./'
+then E=e(E,3)end local J for K in g(E,'([^/]*)/?')do local L=K if K=='..'then L='Parent'end if L~=''then local M=I:
+FindFirstChild(L)if not M then local N=I.Parent if N then M=N:FindFirstChild(L)end end if M then I=M elseif K~=J and K~=
+'init'and K~='init.server'and K~='init.client'then ah('Virtual script path "'..E..'" not found',2)end end J=K end if I.
+ClassName~='ModuleScript'then ah(G,2)elseif I==y then ah(H,2)end return w(I)end return z(ao,E,...)end return B,C,D end
+for x,y in ai,o do i(w,y)end return w(v:GetChildren()[1])

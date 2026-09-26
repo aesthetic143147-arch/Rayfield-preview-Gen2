@@ -6,7 +6,7 @@
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
 --
 -- Modified for Rayfield Columns: icons are fetched from this project's own repository, and any
--- other PNG in its assets/ folder can be loaded by name (nameplate artwork).
+-- other PNG in its assets/ folder can be loaded by name (nameplate artwork), or any PNG by URL.
 
 local filesystem = require(script.Parent.filesystem)
 local path = require(script.Parent.path)
@@ -268,6 +268,16 @@ function imageCache.remote(fileName: string): string?
         return nil
     end
     local ok, uri = pcall(cacheFile, path.join(cacheFolder, fileName), assetBase .. fileName)
+    return if ok then uri else nil
+end
+
+-- Any PNG by URL (a relay's converted sprite sheet), saved as `fileName` in the asset cache and
+-- loaded as a custom asset. Yields; returns nil where the executor can't load custom assets.
+function imageCache.url(url: string, fileName: string): string?
+    if not string.match(fileName, "^[%w%-_]+%.png$") then
+        return nil
+    end
+    local ok, uri = pcall(cacheFile, path.join(cacheFolder, fileName), url)
     return if ok then uri else nil
 end
 

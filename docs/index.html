@@ -872,7 +872,7 @@ Log:Copy() -- copies to the clipboard where the executor allows it</code></pre>
 
   <section id="nameplates">
     <h2><a class="anchor" href="#nameplates">Nameplates<span class="hash">#</span></a></h2>
-    <p>An animated nameplate over the head of everyone running your script, in the Omnity look by default: the Omnity mark rocking gently in a soft halo with sparks orbiting it, and a dark glass card over a spiral galaxy. It enters in stages (mark, card, title, name, badge), then bobs, breathes and catches the light.</p>
+    <p>A small, quiet animated nameplate over the head of everyone running your script, in the Omnity look by default: the Omnity mark in a faint halo with sparks orbiting it, and a dark glass card over a spiral galaxy, edged by a hairline. It enters in stages (mark, card, title, name, badge), then bobs, breathes and catches the light.</p>
 <pre><code>local Plates = Window:CreateNameplate({
     title = "OMNITY",
     badge = "Developer",
@@ -881,7 +881,11 @@ Log:Copy() -- copies to the clipboard where the executor allows it</code></pre>
 
 -- every part of the look is a setting
 Plates:SetStyle({ accent = Color3.fromRGB(255, 90, 160), sparkles = 4, entrance = "fade" })
-Plates:SetStyle("Midnight") -- presets: Omnity, Midnight, Mono</code></pre>
+Plates:SetStyle("Midnight") -- presets: Omnity, Midnight, Mono
+
+-- players' own image or GIF, shown to everyone (needs the relay)
+Plates:SetMedia("https://media.tenor.com/xyz/me.gif")</code></pre>
+    <p>Images can move: <code>logo</code> and <code>backdrop</code> take a GIF link (the relay turns it into a sprite sheet, since Roblox can't play GIFs), your own sprite sheet, or a list of frames.</p>
     <p>Settings cover shape (<code>size</code>, <code>lift</code>, <code>cornerRadius</code>), colour (<code>accent</code>, <code>cardColor</code>, <code>titleColor</code>…), images (<code>logo</code>, <code>backdrop</code>, each an asset id, URI or <code>false</code>), fonts, and every motion (<code>logoSway</code>, <code>sparkles</code>, <code>sweep</code>, <code>bob</code>…). The README lists them all.</p>
     <p>Without <code>endpoint</code> you see your own plate only. With it, players check in with the relay and see everyone else in the same server who runs the script.</p>
   </section>
