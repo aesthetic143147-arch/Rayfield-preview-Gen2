@@ -451,6 +451,7 @@
       <a class="nav-link" href="#stat">Stat</a>
       <a class="nav-link" href="#progress">Progress</a>
       <a class="nav-link" href="#console">Console</a>
+      <a class="nav-link" href="#chat">Chat</a>
     </div>
     <div class="nav-group"><div class="nav-label">Feedback</div>
       <a class="nav-link" href="#notifications">Notifications</a>
@@ -850,6 +851,22 @@ Main.Right:CreateProgress({ name = "Loading", indeterminate = true }) -- a loopi
 Log:Append("[12:00] started")
 Log:Clear()
 Log:Copy() -- copies to the clipboard where the executor allows it</code></pre>
+  </section>
+
+  <section id="chat">
+    <h2><a class="anchor" href="#chat">Chat<span class="hash">#</span></a></h2>
+    <p>A live chat room backed by a channel in your Discord server. Players chat, share server invites and send emoji; your community answers from Discord, and deleting a message on Discord removes it for everyone.</p>
+<pre><code>Main.Right:CreateChat({
+    name = "Community",
+    endpoint = "https://your-relay.example.com",
+    channel = "general",
+    height = 280,
+    onMessage = function(message)
+        print(message.author.name, message.content)
+    end,
+})</code></pre>
+    <p>The chat talks to a small relay you run (the <a href="https://github.com/aesthetic143147-arch/Rayfield-preview-Gen2/tree/main/relay"><code>relay/</code></a> folder). The relay holds your bot token, so it never ends up in a script anyone can read. It also rate-limits players, blocks mass pings, and lets moderators ban with <code>!chatban &lt;robloxId&gt;</code>. Setup takes about ten minutes: follow its README.</p>
+    <p>Methods: <code>Send(text)</code>, <code>Refresh()</code>, <code>SetChannel(name)</code>, <code>Clear()</code>, <code>Remove()</code>.</p>
   </section>
 
   <section id="notifications">

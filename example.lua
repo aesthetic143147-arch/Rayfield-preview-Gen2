@@ -77,3 +77,22 @@ task.spawn(function()
         Earnings:Set(Earnings.value + math.random(5, 25))
     end
 end)
+
+-- Community tab: a chat room backed by your Discord channel ---------------------------------
+-- Run the relay in relay/ (see relay/README.md) and put its address in `endpoint`. Until then
+-- the chat shows "Not connected".
+local Community = Window:CreateTab({ name = "Community", icon = 84750991656135 })
+
+Community.Left:CreateSection({ name = "Chat" })
+Community.Left:CreateChat({
+    name = "Omnity Chat",
+    endpoint = nil, -- e.g. "https://your-relay.example.com"
+    channel = "general",
+    height = 300,
+})
+
+Community.Right:CreateSection({ name = "About" })
+Community.Right:CreateText({
+    name = "Talk to everyone",
+    text = "Messages here are posted in our Discord server, and replies from Discord show up here.",
+})

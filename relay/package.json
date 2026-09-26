@@ -1,0 +1,20 @@
+{
+  "name": "rayfield-chat-relay",
+  "version": "1.0.0",
+  "description": "Connects the Rayfield Columns Chat element to Discord channels",
+  "private": true,
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "license": "MPL-2.0",
+  "dependencies": {
+    "discord.js": "^14.27.0",
+    "dotenv": "^18.0.4"
+  }
+}

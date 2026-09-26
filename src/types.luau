@@ -5,7 +5,8 @@
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
 --
--- Modified for Rayfield Columns: tabs are two columns, and element props can pick one.
+-- Modified for Rayfield Columns: tabs are two columns, element props can pick one, and there's a
+-- Discord-backed Chat element.
 
 -- Public API types. camelCase is the documented surface; PascalCase keys still work.
 
@@ -215,6 +216,34 @@ export type ConsoleProps = {
     maxLines: number?, -- how many lines to keep; past this the oldest roll off (default 200)
 }
 
+export type ChatMessage = {
+    id: string,
+    content: string,
+    time: number?, -- unix seconds
+    author: { name: string, roblox: number?, discord: boolean? },
+}
+
+-- request(method, path, body) -> (ok, decodedBody). Replaces the built-in HTTP call, for a
+-- backend that isn't a plain HTTP relay.
+export type ChatTransport = (method: string, path: string, body: any?) -> (boolean, any)
+
+export type ChatProps = {
+    side: ColumnSide?, -- tab-level only: which column it goes in
+    name: string?, -- header title (default "Chat")
+    description: string?,
+    endpoint: string?, -- the relay's base URL, e.g. "https://chat.example.com"
+    channel: string?, -- which of the relay's channels (default "general")
+    key: string?, -- sent as X-Chat-Key; keeps casual traffic off the relay, it isn't a secret
+    transport: ChatTransport?,
+    height: number?, -- message area height in pixels (default 260)
+    pollInterval: number?, -- seconds between checks while the chat is on screen (default 3)
+    poll: boolean?, -- false: never poll on its own; call Refresh yourself
+    maxMessages: number?, -- how many recent messages to show (default 60)
+    placeholder: string?,
+    emojis: { string }?, -- the emoji picker's set
+    onMessage: ((message: ChatMessage) -> ())?, -- each new message after the first load
+}
+
 export type NotifyProps = {
     title: string?,
     content: string?,
@@ -327,6 +356,14 @@ export type Progress = Moveable & {
     Remove: (self: Progress) -> (),
 }
 
+export type Chat = Moveable & {
+    Send: (self: Chat, text: string) -> (boolean, string?), -- as the local player
+    Refresh: (self: Chat) -> boolean,
+    SetChannel: (self: Chat, channel: string, endpoint: string?) -> (),
+    Clear: (self: Chat) -> (),
+    Remove: (self: Chat) -> (),
+}
+
 export type Console = Moveable & {
     Set: (self: Console, text: string) -> (),
     Append: (self: Console, line: string) -> (), -- multi-line splits, so the cap still counts
@@ -400,6 +437,7 @@ export type Column = {
     CreateStat: (self: Column, props: StatProps) -> Stat,
     CreateProgress: (self: Column, props: ProgressProps) -> Progress,
     CreateConsole: (self: Column, props: ConsoleProps) -> Console,
+    CreateChat: (self: Column, props: ChatProps) -> Chat,
     CreateSection: (self: Column, props: SectionProps) -> Section,
     CreateText: (self: Column, props: TextProps) -> Text,
     CreateDivider: (self: Column, props: DividerProps?) -> Divider,
@@ -428,6 +466,7 @@ export type Tab = {
     CreateStat: (self: Tab, props: StatProps) -> Stat,
     CreateProgress: (self: Tab, props: ProgressProps) -> Progress,
     CreateConsole: (self: Tab, props: ConsoleProps) -> Console,
+    CreateChat: (self: Tab, props: ChatProps) -> Chat,
     CreateSection: (self: Tab, props: SectionProps) -> Section,
     CreateText: (self: Tab, props: TextProps) -> Text,
     CreateDivider: (self: Tab, props: DividerProps?) -> Divider,

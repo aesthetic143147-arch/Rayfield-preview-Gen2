@@ -5,7 +5,7 @@
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
 --
--- Modified for Rayfield Columns: exports the Column type and drops the loading banner.
+-- Modified for Rayfield Columns: exports the Column and Chat types and drops the loading banner.
 
 local variables = require(script.utility.variables)
 local image = require(script.utility.image)
@@ -35,6 +35,9 @@ export type ColorPickerProps = types.ColorPickerProps
 export type StatProps = types.StatProps
 export type ProgressProps = types.ProgressProps
 export type ConsoleProps = types.ConsoleProps
+export type ChatProps = types.ChatProps
+export type ChatMessage = types.ChatMessage
+export type ChatTransport = types.ChatTransport
 export type TextProps = types.TextProps
 export type DividerProps = types.DividerProps
 export type NotifyProps = types.NotifyProps
@@ -59,6 +62,7 @@ export type ColorPicker = types.ColorPicker
 export type Stat = types.Stat
 export type Progress = types.Progress
 export type Console = types.Console
+export type Chat = types.Chat
 export type Section = types.Section
 export type TabSection = types.TabSection
 export type Text = types.Text

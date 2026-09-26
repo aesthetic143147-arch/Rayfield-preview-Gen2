@@ -352,6 +352,10 @@ function Tab:CreateConsole(properties)
     return self:_columnFor(properties):CreateConsole(properties)
 end
 
+function Tab:CreateChat(properties)
+    return self:_columnFor(properties):CreateChat(properties)
+end
+
 function Tab:CreateStat(properties)
     return self:_columnFor(properties):CreateStat(properties)
 end

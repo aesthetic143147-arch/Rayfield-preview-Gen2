@@ -128,6 +128,11 @@ function Column:CreateConsole(properties)
     return self:_register(require(script.Parent.console).new(self, properties))
 end
 
+-- Chat, backed by a Discord channel through a relay
+function Column:CreateChat(properties)
+    return self:_register(require(script.Parent.chat).new(self, properties))
+end
+
 -- Slider
 function Column:CreateSlider(properties)
     return self:_register(require(script.Parent.slider).new(self, properties))

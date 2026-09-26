@@ -104,6 +104,7 @@ Property names are camelCase; PascalCase (`Name`, `Callback`, …) is accepted t
 | `CreateStat` | `name`, `value`, `prefix`, `suffix`, `display`, `compact` | `Set(value)`, `ResetBaseline()` |
 | `CreateProgress` | `name`, `range`, `value`, `steps`, `text`, `format`, `indeterminate` | `Set`, `SetRange`, `SetText`, `SetIndeterminate`, `Remove` |
 | `CreateConsole` | `name`, `text`, `height`, `follow`, `maxLines` | `Set`, `Append`, `Clear`, `Copy`, `SetHeight`, `Remove` |
+| `CreateChat` | `endpoint`, `channel`, `height`, `key`, `onMessage(message)` | `Send(text)`, `Refresh()`, `SetChannel(name)`, `Clear()`, `Remove()`. See [Chat](#chat) |
 | `CreateText` | `name` (title), `text` (body), `icon` | `Set(text)`, `SetTitle(title)` |
 | `CreateDivider` | `text`, `spacing`, `line` | `Set(text)` |
 | `CreateGroup` | `direction = "row"` or `"column"` | the `Create…` methods above, for a row of buttons/toggles/stats/sliders or a nested column |
@@ -114,6 +115,47 @@ pass `flag = "…"`. Pass `forgetState = true` to keep one out of the config.
 
 The full property reference is in the [Rayfield Gen2 docs](https://docs.sirius.menu/rayfield-gen2).
 Everything there applies here, and this README covers only what's different.
+
+## Chat
+
+`CreateChat` puts a live chat room in a column. Players chat, share server invites (with a
+**Copy invite** button) and send emoji from a picker. Every message lives in **a channel in your
+Discord server**, so your community can answer from Discord and your moderators can delete
+anything there.
+
+```lua
+Tab.Right:CreateChat({
+    name = "Community",
+    endpoint = "https://your-relay.example.com", -- your relay's address (see below)
+    channel = "general",                          -- which of the relay's channels
+    height = 280,
+    onMessage = function(message)
+        print(message.author.name, message.content)
+    end,
+})
+```
+
+| Option | Default | What it does |
+| --- | --- | --- |
+| `endpoint` | none | Your relay's base URL. Without it (and without `transport`) the chat shows "Not connected" |
+| `channel` | `"general"` | One of the channel names you set up in the relay |
+| `key` | none | Sent as `X-Chat-Key`. It keeps random traffic off the relay, but it isn't a secret |
+| `height` | `260` | Height of the message area in pixels |
+| `pollInterval` | `3` | Seconds between checks while the chat is on screen. Hidden, it checks every 12s |
+| `maxMessages` | `60` | How many recent messages to show |
+| `emojis` | 32 common emoji | The picker's set |
+| `poll` | `true` | `false` stops automatic checking; call `Refresh()` yourself |
+| `transport` | HTTP | `function(method, path, body) -> (ok, data)` to use your own backend |
+
+**Why there's a relay.** A script can't talk to Discord directly without exposing your bot token
+or a webhook URL, and anyone who opens the script could then take over or spam your server. The
+relay in [`relay/`](relay) is a small Node.js server you run: it holds the token, posts players'
+messages through a webhook with their Roblox name and headshot, rate-limits, blocks mass pings, and
+lets moderators ban players with `!chatban <robloxId>` from Discord. Setup takes about ten
+minutes; see [`relay/README.md`](relay/README.md).
+
+Players are identified by what their executor reports, which a determined player can fake. Treat
+chat names like any other public chat, and ban by Roblox ID if someone misbehaves.
 
 ## Window
 
@@ -149,6 +191,8 @@ settings page (cog icon).
   become about 44 points on screen, so they're easy to tap.
 - **Theme picker.** The settings page (the cog) has a Theme dropdown listing every built-in
   theme. The player's pick is remembered between sessions and wins over the script's theme.
+- **Chat element.** `CreateChat` is new: a chat room backed by your Discord channels, through a
+  relay you run (see [Chat](#chat)).
 - **No loading banner.** The Rayfield logo that Gen2 flashes in the middle of the screen before
   the window opens is gone; the window just opens.
 - The tab strip sits 8px lower, so the title and subtitle have room above the tabs.
