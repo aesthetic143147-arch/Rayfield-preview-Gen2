@@ -452,6 +452,7 @@
       <a class="nav-link" href="#progress">Progress</a>
       <a class="nav-link" href="#console">Console</a>
       <a class="nav-link" href="#chat">Chat</a>
+      <a class="nav-link" href="#nameplates">Nameplates</a>
     </div>
     <div class="nav-group"><div class="nav-label">Feedback</div>
       <a class="nav-link" href="#notifications">Notifications</a>
@@ -867,6 +868,17 @@ Log:Copy() -- copies to the clipboard where the executor allows it</code></pre>
 })</code></pre>
     <p>The chat talks to a small relay you run (the <a href="https://github.com/aesthetic143147-arch/Rayfield-preview-Gen2/tree/main/relay"><code>relay/</code></a> folder). The relay holds your bot token, so it never ends up in a script anyone can read. It also rate-limits players, blocks mass pings, and lets moderators ban with <code>!chatban &lt;robloxId&gt;</code>. Setup takes about ten minutes: follow its README.</p>
     <p>Methods: <code>Send(text)</code>, <code>Refresh()</code>, <code>SetChannel(name)</code>, <code>Clear()</code>, <code>Remove()</code>.</p>
+  </section>
+
+  <section id="nameplates">
+    <h2><a class="anchor" href="#nameplates">Nameplates<span class="hash">#</span></a></h2>
+    <p>An animated nameplate over the head of everyone running your script: dark glass over a misty backdrop, your mark and name, and the player's <code>@username</code>. It rises in, bobs gently, catches a sweep of light, and fades with distance.</p>
+<pre><code>Window:CreateNameplate({
+    title = "OMNITY",
+    endpoint = "https://your-relay.example.com", -- to see other users' plates
+    badge = "Developer",
+})</code></pre>
+    <p>Without <code>endpoint</code> you see your own plate only. With it, players check in with the relay and see everyone else in the same server who runs the script. The relay can hand out badges with <code>BADGES=</code>.</p>
   </section>
 
   <section id="notifications">

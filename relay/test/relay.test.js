@@ -154,3 +154,45 @@ test('HTTP: the element’s GET and POST, the key, and errors', async () => {
         server.close();
     }
 });
+
+test('nameplates: players in the same server see each other, and drop off when they stop', () => {
+    const { core, tick } = makeCore({ badges: { 12345: 'Developer' } });
+    const me = { user: { id: 12345 }, jobId: 'job-a' };
+    const friend = { user: { id: 777 }, jobId: 'job-a' };
+    const elsewhere = { user: { id: 888 }, jobId: 'job-b' };
+
+    assert.deepEqual(core.checkIn(me).body.users, [{ id: 12345, badge: 'Developer' }]);
+    core.checkIn(elsewhere);
+    const seen = core.checkIn(friend).body.users.map((u) => u.id).sort((a, b) => a - b);
+    assert.deepEqual(seen, [777, 12345], "only this server");
+
+    tick(61_000);
+    core.checkIn(me);
+    assert.deepEqual(core.checkIn(me).body.users.map((u) => u.id), [12345], 'the friend timed out');
+
+    core.checkOut(me);
+    assert.equal(core.checkIn(friend).body.users.length, 1);
+
+    assert.equal(core.checkIn({ user: { id: 1 }, jobId: 'bad job id!' }).status, 400);
+    assert.equal(core.checkIn({ user: {}, jobId: 'job-a' }).status, 400);
+});
+
+test('nameplates over HTTP', async () => {
+    const { core } = makeCore();
+    const server = createServer(createHandler({ core, send: async () => ({}) }));
+    await new Promise((resolve) => server.listen(0, resolve));
+    const base = `http://127.0.0.1:${server.address().port}`;
+    try {
+        const res = await fetch(`${base}/v1/presence`, {
+            method: 'POST',
+            body: JSON.stringify({ user: { id: 5, name: 'a' }, jobId: 'abc' }),
+        });
+        assert.equal(res.status, 200);
+        assert.deepEqual((await res.json()).users, [{ id: 5 }]);
+        assert.equal((await fetch(`${base}/v1/presence`)).status, 405);
+        const left = await fetch(`${base}/v1/presence`, { method: 'DELETE', body: JSON.stringify({ user: { id: 5 }, jobId: 'abc' }) });
+        assert.equal(left.status, 200);
+    } finally {
+        server.close();
+    }
+});

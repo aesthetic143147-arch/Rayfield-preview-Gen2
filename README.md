@@ -157,6 +157,43 @@ minutes; see [`relay/README.md`](relay/README.md).
 Players are identified by what their executor reports, which a determined player can fake. Treat
 chat names like any other public chat, and ban by Roblox ID if someone misbehaves.
 
+## Nameplates
+
+`Window:CreateNameplate` floats a nameplate over the head of everyone running your script: a dark
+glass card over a misty blue backdrop, your hub's mark and name, and the player's `@username`,
+with an optional badge. It rises in with a small overshoot, bobs gently, catches a sweep of light
+every few seconds, and its edge gradient slowly turns. Walls hide it and it fades with distance,
+so it sits in the world rather than on the screen.
+
+```lua
+Window:CreateNameplate({
+    title = "OMNITY",
+    endpoint = "https://your-relay.example.com", -- the same relay as the chat
+    badge = "Developer",                          -- optional, on your own plate
+})
+```
+
+| Option | Default | What it does |
+| --- | --- | --- |
+| `title` | the window name in capitals | The big text |
+| `subtitle` | `"@username"` | A string, or `function(player)` returning one |
+| `endpoint` | none | Your relay. Without it you only see your own plate |
+| `badge` | none | Your own badge. The relay can give badges to anyone with `BADGES=` |
+| `accent` | blue | Edge and badge colour |
+| `logo`, `backdrop` | the Omnity artwork | An asset id or URI, or `false` for a lettered mark / plain glass |
+| `showSelf` | `true` | Show your own plate |
+| `hideDefaultName` | `true` | Hide Roblox's name under a plate |
+| `maxDistance` | `100` | Studs before it fades out |
+
+Methods: `SetEnabled(bool)`, `SetTitle(text)`, `Add(player, badge?)`, `Remove(player)`,
+`CheckIn()`, `Destroy()`.
+
+**Who sees what.** Plates are drawn locally, so only people running the script see them. To show
+plates over *other* users, each player checks in with the relay every 20 seconds and gets back
+everyone else in the same Roblox server who's running it. The artwork loads through the
+executor's custom-asset support; where that's missing, the plate falls back to a lettered mark on
+plain glass.
+
 ## Window
 
 `Rayfield:CreateWindow({...})` takes the same options as Gen2:
@@ -191,6 +228,8 @@ settings page (cog icon).
   become about 44 points on screen, so they're easy to tap.
 - **Theme picker.** The settings page (the cog) has a Theme dropdown listing every built-in
   theme. The player's pick is remembered between sessions and wins over the script's theme.
+- **Nameplates.** `Window:CreateNameplate` floats an animated nameplate over everyone running the
+  script (see [Nameplates](#nameplates)).
 - **Chat element.** `CreateChat` is new: a chat room backed by your Discord channels, through a
   relay you run (see [Chat](#chat)).
 - **No loading banner.** The Rayfield logo that Gen2 flashes in the middle of the screen before

@@ -14,6 +14,9 @@ players' scripts  ⇄  this relay (holds your bot token)  ⇄  your Discord chan
 - **Protection:** each player can send one message every 1.5s and 12 a minute. It also blocks
   repeated messages, can't ping `@everyone`/`@here` or roles, strips invisible characters, and
   limits message length (300 characters by default).
+- **Nameplates:** players running the script check in every 20 seconds with the Roblox server
+  they're in, and get back everyone else there who's running it, so each of them can see the
+  others' nameplates. Give people badges with `BADGES=`.
 - **Bans:** in the channel, anyone with Manage Messages can type `!chatban <robloxId>`,
   `!chatunban <robloxId>` or `!chatbans`. Bans are saved in `data/bans.json`.
 
@@ -71,6 +74,7 @@ Tab.Right:CreateChat({ name = "Community", endpoint = "https://your-relay-addres
 | `CHAT_KEY` | none | If set, scripts must send it (`key = "…"` in `CreateChat`). Keeps casual traffic off; not a secret |
 | `ALLOW_INVITES` | `true` | `false` rejects Discord invite links from players |
 | `MAX_LENGTH` | `300` | Longest message a player can send |
+| `BADGES` | none | Nameplate badges as `robloxId:Badge` pairs, e.g. `12345:Developer,67890:Staff` |
 
 If your server uses AutoMod to block invite links, exempt the chat channel from that rule, or
 invites written on Discord will be blocked there. Messages from players come through a webhook,
@@ -89,6 +93,10 @@ POST /v1/chat/{channel}     { "content": "...", "user": { "id", "name", "display
   200 { "ok": true, "message": { ... } }
   4xx { "error": "shown to the player", "retryAfter"?: seconds }
 ```
+
+POST   /v1/presence   { "user": { "id", "name" }, "jobId": "<game.JobId>" }
+  200 { "users": [ { "id", "badge"? } ], "ttl": 60 }    everyone running the script in that server
+DELETE /v1/presence   same body: leave the list straight away
 
 The GET returns the whole recent window rather than only new messages, which is how edits and
 deletions reach players.

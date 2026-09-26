@@ -34,7 +34,7 @@ local utility = script.Parent.Parent.utility
 local variables = require(utility.variables)
 local moveable = require(utility.moveable)
 local locale = require(utility.locale)
-local network = require(utility.network)
+local relayClient = require(utility.relayClient)
 local hapticEngine = require(utility.HapticEngine)
 
 local defaultHeight = 260
@@ -169,9 +169,7 @@ function Chat.new(tab, properties)
         _alive = true,
     }, Chat)
 
-    if type(self.endpoint) == "string" then
-        self.endpoint = self.endpoint:gsub("/+$", "")
-    end
+    self.endpoint = relayClient.base(self.endpoint)
     if not self.endpoint and not self.transport then
         self.status = "unconfigured"
     end
@@ -192,50 +190,13 @@ end
 
 -- Transport --------------------------------------------------------------------------------------
 
--- One HTTP round trip. Returns ok, decoded body. A custom transport (for a backend that isn't a
--- plain HTTP relay, or for tests) takes (method, path, body) and returns the same pair.
+-- One HTTP round trip through the shared relay client.
 function Chat:_request(method: string, path: string, body: any?)
-    if self.transport then
-        local ok, result, data = pcall(self.transport, method, path, body)
-        if not ok then
-            return false, { error = tostring(result) }
-        end
-        return result, data
-    end
-
-    local requestFn = network.getRequestFn()
-    if not requestFn then
-        return false, { error = "This executor can't make web requests." }
-    end
-
-    local headers = { ["Content-Type"] = "application/json" }
-    if self.key then
-        headers["X-Chat-Key"] = tostring(self.key)
-    end
-    local ok, response = pcall(requestFn, {
-        Url = self.endpoint .. path,
-        Method = method,
-        Headers = headers,
-        Body = if body ~= nil then variables.httpService:JSONEncode(body) else nil,
-    })
-    if not ok or type(response) ~= "table" then
-        return false, { error = "No response from the chat server." }
-    end
-
-    local decoded = nil
-    if type(response.Body) == "string" and response.Body ~= "" then
-        local parsed, value = pcall(variables.httpService.JSONDecode, variables.httpService, response.Body)
-        decoded = if parsed then value else nil
-    end
-    local code = tonumber(response.StatusCode) or 0
-    return code >= 200 and code < 300, decoded or {}
+    return relayClient.request(self, method, path, body)
 end
 
 local function channelPath(self)
-    local encoded = tostring(self.channel):gsub("[^%w%-_%.~]", function(char)
-        return string.format("%%%02X", string.byte(char))
-    end)
-    return "/v1/chat/" .. encoded
+    return "/v1/chat/" .. relayClient.segment(self.channel)
 end
 
 -- Fetch the recent window. Public so a script (or a test) can refresh on its own schedule.
@@ -861,7 +822,7 @@ end
 function Chat:SetChannel(channel, endpoint)
     self.channel = channel or self.channel
     if endpoint then
-        self.endpoint = tostring(endpoint):gsub("/+$", "")
+        self.endpoint = relayClient.base(tostring(endpoint))
     end
     self.version = nil
     self._primed = false

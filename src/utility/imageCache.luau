@@ -5,7 +5,8 @@
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
 --
--- Modified for Rayfield Columns: icons are fetched from this project's own repository.
+-- Modified for Rayfield Columns: icons are fetched from this project's own repository, and any
+-- other PNG in its assets/ folder can be loaded by name (nameplate artwork).
 
 local filesystem = require(script.Parent.filesystem)
 local path = require(script.Parent.path)
@@ -258,6 +259,16 @@ function imageCache.avatar(userId: unknown, onReady: AvatarCallback?): string
     end
 
     return ""
+end
+
+-- A PNG from this project's assets/ folder, by file name, as a custom asset. Downloads it once
+-- and keeps it on disk. Yields; returns nil where the executor can't load custom assets.
+function imageCache.remote(fileName: string): string?
+    if not string.match(fileName, "^[%w%-_]+%.png$") then
+        return nil
+    end
+    local ok, uri = pcall(cacheFile, path.join(cacheFolder, fileName), assetBase .. fileName)
+    return if ok then uri else nil
 end
 
 return imageCache

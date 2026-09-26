@@ -31,8 +31,18 @@ if (Object.keys(channels).length === 0) {
     process.exit(1);
 }
 
+// BADGES=12345:Developer,67890:Staff puts a badge on those players' nameplates.
+const badges = Object.fromEntries(
+    (env.BADGES ?? '')
+        .split(',')
+        .map((pair) => pair.trim().split(':'))
+        .filter(([id, badge]) => /^\d+$/.test(id ?? '') && badge)
+        .map(([id, badge]) => [Number(id), badge.trim().slice(0, 16)]),
+);
+
 const core = createCore({
     channels,
+    badges,
     maxLength: Number(env.MAX_LENGTH) || 300,
     allowInvites: env.ALLOW_INVITES !== 'false',
 });

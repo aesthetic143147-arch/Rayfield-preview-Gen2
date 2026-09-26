@@ -6,7 +6,7 @@
 -- file, You can obtain one at https://mozilla.org/MPL/2.0/.
 --
 -- Modified for Rayfield Columns: tabs are two columns, element props can pick one, and there's a
--- Discord-backed Chat element.
+-- Discord-backed Chat element and floating nameplates.
 
 -- Public API types. camelCase is the documented surface; PascalCase keys still work.
 
@@ -242,6 +242,33 @@ export type ChatProps = {
     placeholder: string?,
     emojis: { string }?, -- the emoji picker's set
     onMessage: ((message: ChatMessage) -> ())?, -- each new message after the first load
+}
+
+export type NameplateProps = {
+    title: string?, -- big text (default: the window name in capitals)
+    subtitle: (string | (player: Player) -> string)?, -- default "@username"
+    accent: Color3?, -- edge and badge colour (default blue)
+    logo: (number | string | boolean)?, -- asset id or URI; false for a lettered mark
+    backdrop: (number | string | boolean)?, -- asset id or URI; false for plain glass
+    badge: string?, -- your own badge, e.g. "Developer"
+    endpoint: string?, -- the relay's address: shows plates over everyone else running the script
+    key: string?,
+    transport: ChatTransport?,
+    showSelf: boolean?, -- your own plate (default true)
+    hideDefaultName: boolean?, -- hide Roblox's name under a plate (default true)
+    maxDistance: number?, -- studs (default 100)
+    lift: number?, -- studs above the head (default 2.5)
+    checkInInterval: number?, -- seconds between relay check-ins (default 20)
+    autoCheckIn: boolean?, -- false: never check in on its own; call CheckIn yourself
+}
+
+export type Nameplate = {
+    SetEnabled: (self: Nameplate, enabled: boolean) -> (),
+    SetTitle: (self: Nameplate, title: string) -> (),
+    Add: (self: Nameplate, player: Player, badge: string?) -> (),
+    Remove: (self: Nameplate, player: Player) -> (),
+    CheckIn: (self: Nameplate) -> boolean,
+    Destroy: (self: Nameplate) -> (),
 }
 
 export type NotifyProps = {
@@ -484,6 +511,7 @@ export type Window = {
     CreateTag: (self: Window, props: TagProps) -> Tag,
     Notify: (self: Window, props: NotifyProps) -> (),
     Toast: (self: Window, props: ToastProps) -> (),
+    CreateNameplate: (self: Window, props: NameplateProps?) -> Nameplate,
     Popup: (self: Window, props: PopupProps) -> Popup?, -- nil once the window is unloaded
     Show: (self: Window) -> (),
     Hide: (self: Window) -> (),

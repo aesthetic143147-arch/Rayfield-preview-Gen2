@@ -14,9 +14,26 @@ export function createHandler({ core, send, key }) {
             const url = new URL(req.url, 'http://relay');
             if (url.pathname === '/health') return reply(200, { ok: true });
 
+            if (key && url.pathname.startsWith('/v1/') && req.headers['x-chat-key'] !== key) {
+                return reply(401, { error: 'Wrong chat key.' });
+            }
+
+            // nameplates: POST to check in (and get who else is here), DELETE to leave
+            if (url.pathname === '/v1/presence') {
+                if (req.method !== 'POST' && req.method !== 'DELETE') return reply(405, { error: 'Method not allowed.' });
+                const raw = await readBody(req);
+                let body;
+                try {
+                    body = JSON.parse(raw ?? '');
+                } catch {
+                    return reply(400, { error: 'Bad request.' });
+                }
+                const result = req.method === 'POST' ? core.checkIn(body, clientIp(req)) : core.checkOut(body);
+                return reply(result.status, result.body);
+            }
+
             const match = url.pathname.match(/^\/v1\/chat\/([^/]+)\/?$/);
             if (!match) return reply(404, { error: 'Not found.' });
-            if (key && req.headers['x-chat-key'] !== key) return reply(401, { error: 'Wrong chat key.' });
 
             const channel = decodeURIComponent(match[1]);
             const ip = clientIp(req);

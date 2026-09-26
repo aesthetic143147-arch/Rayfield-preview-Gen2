@@ -7,7 +7,8 @@
 --
 -- Modified for Rayfield Columns: pages are two columns, which the window re-lays out as the screen
 -- changes and reveals top to bottom across both, and draws the window (with its notifications,
--- toasts and popups) smaller on small screens. The settings page has a theme picker.
+-- toasts and popups) smaller on small screens. The settings page has a theme picker, and the
+-- window can put floating nameplates over players (CreateNameplate).
 
 -- Utility
 local utility = script.Parent.Parent.utility
@@ -1047,6 +1048,15 @@ end
 -- Top-centre / bottom-centre toast stack. Like Notify but for brief, centred messages that drop
 -- in from the top (or rise from the bottom) of the screen (newest on top). Each toast takes
 -- { title, subtitle?, icon?, duration?, position? }.
+-- Floating nameplates over everyone running the script (see components/nameplate).
+function Window:CreateNameplate(properties)
+    assert(not self.unloaded, "Cannot create nameplates on an unloaded window.")
+    local plate = require(script.Parent.nameplate).new(self, properties)
+    self._nameplates = self._nameplates or {}
+    table.insert(self._nameplates, plate)
+    return plate
+end
+
 function Window:Toast(properties)
     if self.unloaded then
         return
@@ -3044,6 +3054,9 @@ end
 
 function Window:Unload()
     self.unloaded = true
+    for _, plate in self._nameplates or {} do
+        plate._alive = false
+    end
     -- drop our effects and release the gui they hung on, but leave the enabled flag alone -
     -- another window may still be open and haptics arent ours to switch off for it
     hapticEngine.teardown()

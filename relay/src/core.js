@@ -16,6 +16,9 @@ export function createCore({
     sendInterval = 1500, // ms between one player's messages
     perMinute = 12, // messages per player per minute
     pollPerMinute = 120, // polls per IP per minute
+    presenceTtl = 60_000, // a player drops off the "who's here" list this long after their last check-in
+    presencePerMinute = 20, // check-ins per IP per minute
+    badges = {}, // { robloxId: "Developer" } shown on that player's nameplate
     now = () => Date.now(),
 } = {}) {
     const rooms = new Map(); // channel name -> { id, version, messages }
@@ -30,6 +33,8 @@ export function createCore({
     const senders = new Map(); // key -> { last, recent: [times], lastContent, lastContentAt }
     const pollers = new Map(); // ip -> [times]
     const authors = new Map(); // message id -> { name, roblox } for messages sent through the relay
+    const servers = new Map(); // Roblox JobId -> Map(robloxId -> last check-in time)
+    const checkins = new Map(); // ip -> [times]
 
     const touch = (room) => {
         room.version += 1;
@@ -46,6 +51,40 @@ export function createCore({
         roomFor: (name) => rooms.get(name),
         roomForChannel: (id) => byChannelId.get(id),
         defaultRoom: () => rooms.values().next().value,
+
+        // Nameplates: a player running the script checks in with the Roblox server (JobId) they're
+        // in, and gets back everyone else in that server who is running it too.
+        checkIn(body, ip) {
+            const user = body?.user ?? {};
+            const id = Number.isSafeInteger(user.id) && user.id > 0 ? user.id : null;
+            const jobId = typeof body?.jobId === 'string' ? body.jobId : '';
+            if (!id || !/^[\w-]{1,64}$/.test(jobId)) return { status: 400, body: { error: 'Bad request.' } };
+            if (ip && !allow(checkins, ip, presencePerMinute)) {
+                return { status: 429, body: { error: 'Too many requests.', retryAfter: 30 } };
+            }
+            const t = now();
+            const server = servers.get(jobId) ?? new Map();
+            server.set(id, t);
+            servers.set(jobId, server);
+
+            const users = [];
+            for (const [other, at] of server) {
+                if (t - at > presenceTtl) server.delete(other);
+                else users.push({ id: other, badge: badges[other] });
+            }
+            // forget whole servers nobody has checked in to for a while
+            for (const [job, members] of servers) {
+                if (members.size === 0 || [...members.values()].every((at) => t - at > presenceTtl)) servers.delete(job);
+            }
+            return { status: 200, body: { users, ttl: Math.floor(presenceTtl / 1000) } };
+        },
+
+        checkOut(body) {
+            const id = body?.user?.id;
+            const server = servers.get(body?.jobId);
+            if (server && server.delete(id) && server.size === 0) servers.delete(body.jobId);
+            return { status: 200, body: { ok: true } };
+        },
 
         // A message seen on Discord (or just sent through the webhook).
         ingest(channelId, message) {

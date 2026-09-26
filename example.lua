@@ -78,6 +78,10 @@ task.spawn(function()
     end
 end)
 
+-- A floating OMNITY nameplate over your head (and, with a relay endpoint, over every other
+-- Omnity user in the server)
+Window:CreateNameplate({ title = "OMNITY", endpoint = nil })
+
 -- Community tab: a chat room backed by your Discord channel ---------------------------------
 -- Run the relay in relay/ (see relay/README.md) and put its address in `endpoint`. Until then
 -- the chat shows "Not connected".
