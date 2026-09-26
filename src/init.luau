@@ -65,6 +65,7 @@ export type Console = types.Console
 export type Chat = types.Chat
 export type Nameplate = types.Nameplate
 export type NameplateProps = types.NameplateProps
+export type NameplateStyle = types.NameplateStyle
 export type Section = types.Section
 export type TabSection = types.TabSection
 export type Text = types.Text

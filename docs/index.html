@@ -872,13 +872,18 @@ Log:Copy() -- copies to the clipboard where the executor allows it</code></pre>
 
   <section id="nameplates">
     <h2><a class="anchor" href="#nameplates">Nameplates<span class="hash">#</span></a></h2>
-    <p>An animated nameplate over the head of everyone running your script: dark glass over a misty backdrop, your mark and name, and the player's <code>@username</code>. It rises in, bobs gently, catches a sweep of light, and fades with distance.</p>
-<pre><code>Window:CreateNameplate({
+    <p>An animated nameplate over the head of everyone running your script, in the Omnity look by default: the Omnity mark rocking gently in a soft halo with sparks orbiting it, and a dark glass card over a spiral galaxy. It enters in stages (mark, card, title, name, badge), then bobs, breathes and catches the light.</p>
+<pre><code>local Plates = Window:CreateNameplate({
     title = "OMNITY",
-    endpoint = "https://your-relay.example.com", -- to see other users' plates
     badge = "Developer",
-})</code></pre>
-    <p>Without <code>endpoint</code> you see your own plate only. With it, players check in with the relay and see everyone else in the same server who runs the script. The relay can hand out badges with <code>BADGES=</code>.</p>
+    endpoint = "https://your-relay.example.com", -- to see other users' plates
+})
+
+-- every part of the look is a setting
+Plates:SetStyle({ accent = Color3.fromRGB(255, 90, 160), sparkles = 4, entrance = "fade" })
+Plates:SetStyle("Midnight") -- presets: Omnity, Midnight, Mono</code></pre>
+    <p>Settings cover shape (<code>size</code>, <code>lift</code>, <code>cornerRadius</code>), colour (<code>accent</code>, <code>cardColor</code>, <code>titleColor</code>…), images (<code>logo</code>, <code>backdrop</code>, each an asset id, URI or <code>false</code>), fonts, and every motion (<code>logoSway</code>, <code>sparkles</code>, <code>sweep</code>, <code>bob</code>…). The README lists them all.</p>
+    <p>Without <code>endpoint</code> you see your own plate only. With it, players check in with the relay and see everyone else in the same server who runs the script.</p>
   </section>
 
   <section id="notifications">

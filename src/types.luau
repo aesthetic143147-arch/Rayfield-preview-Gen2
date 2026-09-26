@@ -244,27 +244,74 @@ export type ChatProps = {
     onMessage: ((message: ChatMessage) -> ())?, -- each new message after the first load
 }
 
+-- Every look setting of a nameplate. A preset fills them all; `style` overrides any of them.
+-- Images take a file in the repo's assets/ ("x.png"), an asset id, any image URI, or false.
+export type NameplateStyle = {
+    size: Vector2?, -- studs (default 5.6 x 1.35)
+    lift: number?, -- studs above the head
+    maxDistance: number?,
+    cornerRadius: number?,
+    accent: Color3?,
+    accentDeep: Color3?,
+    cardColor: Color3?,
+    cardTransparency: number?,
+    veilColor: Color3?,
+    veilStrength: number?,
+    titleColor: Color3?,
+    subtitleColor: Color3?,
+    badgeTextColor: Color3?,
+    logo: (string | number | boolean)?,
+    logoTint: Color3?,
+    logoScale: number?,
+    backdrop: (string | number | boolean)?,
+    backdropTint: Color3?,
+    backdropTransparency: number?,
+    glowImage: (string | number | boolean)?,
+    titleFont: Font?,
+    subtitleFont: Font?,
+    entrance: ("unfold" | "fade" | "none")?,
+    logoSway: number?, -- degrees it rocks either way
+    logoSpin: number?, -- degrees a second of continuous turning
+    halo: boolean?,
+    sparkles: number?,
+    sparkleColor: Color3?,
+    titleShine: boolean?,
+    sweep: boolean?,
+    sweepEvery: number?,
+    border: boolean?,
+    borderThickness: number?,
+    borderSpeed: number?,
+    glow: boolean?,
+    bob: boolean?,
+    bobHeight: number?,
+    bobSpeed: number?,
+}
+
 export type NameplateProps = {
     title: string?, -- big text (default: the window name in capitals)
     subtitle: (string | (player: Player) -> string)?, -- default "@username"
-    accent: Color3?, -- edge and badge colour (default blue)
-    logo: (number | string | boolean)?, -- asset id or URI; false for a lettered mark
-    backdrop: (number | string | boolean)?, -- asset id or URI; false for plain glass
     badge: string?, -- your own badge, e.g. "Developer"
+    preset: ("Omnity" | "Midnight" | "Mono")?,
+    style: NameplateStyle?,
     endpoint: string?, -- the relay's address: shows plates over everyone else running the script
     key: string?,
     transport: ChatTransport?,
     showSelf: boolean?, -- your own plate (default true)
     hideDefaultName: boolean?, -- hide Roblox's name under a plate (default true)
-    maxDistance: number?, -- studs (default 100)
-    lift: number?, -- studs above the head (default 2.5)
     checkInInterval: number?, -- seconds between relay check-ins (default 20)
     autoCheckIn: boolean?, -- false: never check in on its own; call CheckIn yourself
+    -- shorthands for the style keys of the same name
+    accent: Color3?,
+    logo: (string | number | boolean)?,
+    backdrop: (string | number | boolean)?,
+    maxDistance: number?,
+    lift: number?,
 }
 
 export type Nameplate = {
     SetEnabled: (self: Nameplate, enabled: boolean) -> (),
     SetTitle: (self: Nameplate, title: string) -> (),
+    SetStyle: (self: Nameplate, style: NameplateStyle | string, preset: string?) -> (),
     Add: (self: Nameplate, player: Player, badge: string?) -> (),
     Remove: (self: Nameplate, player: Player) -> (),
     CheckIn: (self: Nameplate) -> boolean,

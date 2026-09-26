@@ -1,93 +1,123 @@
-// Renders the nameplate artwork in assets/ from SVG. Dev-only, not part of the library:
+// Renders the nameplate artwork in assets/. Dev-only, not part of the library:
 //   node scripts/art/nameplate.mjs   (needs Playwright; CHROMIUM_PATH to use a local Chromium)
+//
+//   nameplate-galaxy.png  the default backdrop: a spiral galaxy tilted like the Omnity mark
+//   nameplate-glow.png    a soft white radial glow, tinted in-game, for the halo behind the logo
+// omnity-logo.png is the real logo, trimmed from the original artwork, not rendered here.
 import { chromium } from 'playwright';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const out = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../assets');
 
-// Layered ridgelines, far to near: smooth curves, each nearer layer darker and sharper, with mist
-// between them, the way ink-wash mountains fade into haze.
-function ridge(seed, base, amp, width = 1024) {
-    let r = seed;
-    const rand = () => ((r = (r * 16807) % 2147483647) / 2147483647);
-    const points = [];
-    for (let x = -40; x <= width + 80; x += 60 + rand() * 70) {
-        points.push([x, base - amp * Math.pow(rand(), 1.6)]);
+// Runs in the page. Seeded so the artwork is the same every render.
+function drawGalaxy() {
+    const c = document.createElement('canvas');
+    c.width = 1024;
+    c.height = 256;
+    document.body.append(c);
+    const g = c.getContext('2d');
+    let seed = 7;
+    const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+    const gauss = () => (rand() + rand() + rand() - 1.5) / 1.5;
+
+    // deep space, a shade lighter toward the galaxy
+    const sky = g.createLinearGradient(0, 0, 1024, 0);
+    sky.addColorStop(0, '#04060C');
+    sky.addColorStop(0.55, '#070C1A');
+    sky.addColorStop(1, '#0A1226');
+    g.fillStyle = sky;
+    g.fillRect(0, 0, 1024, 256);
+
+    // nebula haze
+    for (const [x, y, r, color] of [
+        [720, 120, 260, 'rgba(59,130,246,0.16)'],
+        [860, 60, 180, 'rgba(147,197,253,0.10)'],
+        [560, 200, 200, 'rgba(99,102,241,0.08)'],
+    ]) {
+        const n = g.createRadialGradient(x, y, 0, x, y, r);
+        n.addColorStop(0, color);
+        n.addColorStop(1, 'rgba(0,0,0,0)');
+        g.fillStyle = n;
+        g.fillRect(0, 0, 1024, 256);
     }
-    let d = `M-40 300 L${points[0][0]} ${points[0][1]}`;
-    for (let i = 1; i < points.length; i++) {
-        const [x0, y0] = points[i - 1];
-        const [x1, y1] = points[i];
-        const mx = (x0 + x1) / 2;
-        d += ` C${mx.toFixed(1)} ${y0.toFixed(1)} ${mx.toFixed(1)} ${y1.toFixed(1)} ${x1.toFixed(1)} ${y1.toFixed(1)}`;
+
+    // background stars
+    for (let i = 0; i < 380; i++) {
+        const a = 0.15 + rand() * 0.6;
+        g.fillStyle = `rgba(219,234,254,${a * a})`;
+        const s = rand() < 0.06 ? 1.4 : 0.7;
+        g.fillRect(rand() * 1024, rand() * 256, s, s);
     }
-    return `${d} L${width + 80} 300 Z`;
+
+    // the galaxy: two logarithmic arms, flattened and tilted like the mark
+    const cx = 760, cy = 128, tilt = -0.42, flat = 0.42;
+    g.globalCompositeOperation = 'lighter';
+    for (let arm = 0; arm < 2; arm++) {
+        for (let i = 0; i < 9000; i++) {
+            const t = Math.pow(rand(), 0.8) * 3.6;
+            const angle = arm * Math.PI + t * 1.9 + gauss() * 0.25;
+            const radius = 10 + t * 62 + gauss() * (6 + t * 5);
+            const x0 = Math.cos(angle) * radius;
+            const y0 = Math.sin(angle) * radius * flat;
+            const x = cx + x0 * Math.cos(tilt) - y0 * Math.sin(tilt);
+            const y = cy + x0 * Math.sin(tilt) + y0 * Math.cos(tilt);
+            const heat = Math.max(0, 1 - t / 3.6);
+            const alpha = 0.05 + heat * 0.12;
+            const r = Math.round(150 + heat * 105), gg = Math.round(185 + heat * 70);
+            g.fillStyle = `rgba(${r},${gg},255,${alpha})`;
+            const s = rand() < 0.03 ? 1.8 : 1;
+            g.fillRect(x, y, s, s);
+        }
+    }
+    // bright core
+    const core = g.createRadialGradient(cx, cy, 0, cx, cy, 70);
+    core.addColorStop(0, 'rgba(255,255,255,0.85)');
+    core.addColorStop(0.2, 'rgba(191,219,254,0.35)');
+    core.addColorStop(1, 'rgba(59,130,246,0)');
+    g.fillStyle = core;
+    g.save();
+    g.translate(cx, cy);
+    g.rotate(tilt);
+    g.scale(1, flat);
+    g.translate(-cx, -cy);
+    g.fillRect(cx - 80, cy - 80, 160, 160);
+    g.restore();
+    g.globalCompositeOperation = 'source-over';
+
+    // film grain, so the gradients don't band on big screens
+    const img = g.getImageData(0, 0, 1024, 256);
+    for (let i = 0; i < img.data.length; i += 4) {
+        const n = (rand() - 0.5) * 6;
+        img.data[i] += n;
+        img.data[i + 1] += n;
+        img.data[i + 2] += n;
+    }
+    g.putImageData(img, 0, 0);
+    return c.toDataURL('image/png');
 }
 
-const layers = [
-    // seed, base, amp, fill, blur, mist after
-    [11, 140, 80, '#2A3C66', 3.5, 0.28],
-    [29, 170, 75, '#1C2B4E', 2.2, 0.24],
-    [47, 205, 70, '#121D38', 1.2, 0.18],
-    [83, 240, 60, '#080D1A', 0, 0],
-];
-
-const backdrop = `
-<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="256" viewBox="0 0 1024 256">
-  <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#070B16"/><stop offset=".55" stop-color="#16244A"/><stop offset="1" stop-color="#0A1022"/>
-    </linearGradient>
-    <radialGradient id="moon" cx=".74" cy=".3" r=".5">
-      <stop offset="0" stop-color="#BFDBFE" stop-opacity=".45"/><stop offset=".35" stop-color="#60A5FA" stop-opacity=".12"/><stop offset="1" stop-color="#3B82F6" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#D6E4FF" stop-opacity="0"/><stop offset=".55" stop-color="#D6E4FF" stop-opacity="1"/><stop offset="1" stop-color="#D6E4FF" stop-opacity="0"/>
-    </linearGradient>
-    ${layers.map(([, , , , blur], i) => `<filter id="b${i}" x="-5%" y="-20%" width="110%" height="140%"><feGaussianBlur stdDeviation="${blur}"/></filter>`).join('')}
-    <filter id="haze" x="-10%" y="-50%" width="120%" height="200%"><feGaussianBlur stdDeviation="10"/></filter>
-    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .045 0"/></filter>
-  </defs>
-  <rect width="1024" height="256" fill="url(#sky)"/>
-  <rect width="1024" height="256" fill="url(#moon)"/>
-  ${Array.from({ length: 60 }, (_, i) => {
-      const x = (i * 137.5) % 1024, y = (i * 53.3) % 110, o = 0.12 + ((i * 7) % 10) / 28;
-      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${i % 11 === 0 ? 1.1 : 0.6}" fill="#DBEAFE" opacity="${o.toFixed(2)}"/>`;
-  }).join('')}
-  ${layers
-      .map(([seed, base, amp, fill, , mist], i) => {
-          const hill = `<path d="${ridge(seed, base, amp)}" fill="${fill}" filter="${layers[i][4] ? `url(#b${i})` : ''}"/>`;
-          const band = mist
-              ? `<rect x="-40" y="${base - 30}" width="1104" height="70" fill="url(#mist)" opacity="${mist}" filter="url(#haze)"/>`
-              : '';
-          return hill + band;
-      })
-      .join('\n  ')}
-  <rect width="1024" height="256" filter="url(#grain)"/>
-</svg>`;
-
-const mark = `
-<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 400 400" fill="none">
-  <defs>
-    <linearGradient id="g" x1="60" y1="40" x2="340" y2="360" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FFFFFF"/><stop offset=".45" stop-color="#BFDBFE"/><stop offset="1" stop-color="#3B82F6"/>
-    </linearGradient>
-  </defs>
-  <circle cx="200" cy="200" r="130" stroke="url(#g)" stroke-width="40"/>
-  <ellipse cx="200" cy="200" rx="176" ry="56" transform="rotate(-28 200 200)" stroke="url(#g)" stroke-width="14" opacity=".75"/>
-  <circle cx="345" cy="124" r="18" fill="#FFFFFF"/>
-</svg>`;
+function drawGlow() {
+    const c = document.createElement('canvas');
+    c.width = c.height = 256;
+    const g = c.getContext('2d');
+    const r = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+    r.addColorStop(0, 'rgba(255,255,255,1)');
+    r.addColorStop(0.25, 'rgba(255,255,255,0.55)');
+    r.addColorStop(0.6, 'rgba(255,255,255,0.12)');
+    r.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = r;
+    g.fillRect(0, 0, 256, 256);
+    return c.toDataURL('image/png');
+}
 
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
 const page = await browser.newPage();
-for (const [name, svg, w, h, transparent] of [
-    ['nameplate-backdrop', backdrop, 1024, 256, false],
-    ['nameplate-mark', mark, 256, 256, true],
-]) {
-    await page.setViewportSize({ width: w, height: h });
-    await page.setContent(`<html><body style="margin:0;background:transparent">${svg}</body></html>`);
-    await page.locator('svg').screenshot({ path: `${out}/${name}.png`, omitBackground: transparent });
+await page.setContent('<html><body style="margin:0"></body></html>');
+const { writeFileSync } = await import('node:fs');
+for (const [name, fn] of [['nameplate-galaxy', drawGalaxy], ['nameplate-glow', drawGlow]]) {
+    const url = await page.evaluate(fn);
+    writeFileSync(`${out}/${name}.png`, Buffer.from(url.split(',')[1], 'base64'));
 }
 await browser.close();
 console.log('rendered to', out);

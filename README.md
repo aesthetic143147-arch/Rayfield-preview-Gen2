@@ -159,40 +159,62 @@ chat names like any other public chat, and ban by Roblox ID if someone misbehave
 
 ## Nameplates
 
-`Window:CreateNameplate` floats a nameplate over the head of everyone running your script: a dark
-glass card over a misty blue backdrop, your hub's mark and name, and the player's `@username`,
-with an optional badge. It rises in with a small overshoot, bobs gently, catches a sweep of light
-every few seconds, and its edge gradient slowly turns. Walls hide it and it fades with distance,
-so it sits in the world rather than on the screen.
+`Window:CreateNameplate` floats a nameplate over the head of everyone running your script. By
+default it wears the Omnity look: the real Omnity mark rocking gently in a soft halo, sparks
+orbiting it on a tilted ring, and a dark glass card over a spiral galaxy carrying the title, the
+player's `@username` and an optional badge.
+
+It enters in stages: the mark swirls in out of nothing, the card unfolds from behind it, the title
+slides in, the name follows and the badge pops. At rest it keeps moving: a gentle bob, the halo
+breathing, light running along the title, a sweep across the glass, and the edge gradient turning.
+Walls hide it and it fades with distance, so it sits in the world rather than on the screen.
 
 ```lua
-Window:CreateNameplate({
+local Plates = Window:CreateNameplate({
     title = "OMNITY",
+    badge = "Developer",
     endpoint = "https://your-relay.example.com", -- the same relay as the chat
-    badge = "Developer",                          -- optional, on your own plate
 })
 ```
 
-| Option | Default | What it does |
-| --- | --- | --- |
-| `title` | the window name in capitals | The big text |
-| `subtitle` | `"@username"` | A string, or `function(player)` returning one |
-| `endpoint` | none | Your relay. Without it you only see your own plate |
-| `badge` | none | Your own badge. The relay can give badges to anyone with `BADGES=` |
-| `accent` | blue | Edge and badge colour |
-| `logo`, `backdrop` | the Omnity artwork | An asset id or URI, or `false` for a lettered mark / plain glass |
-| `showSelf` | `true` | Show your own plate |
-| `hideDefaultName` | `true` | Hide Roblox's name under a plate |
-| `maxDistance` | `100` | Studs before it fades out |
+**Every part of the look is editable.** Pick a `preset` (`"Omnity"`, `"Midnight"` with the misty
+mountains, or `"Mono"` in silver), then override any setting with `style`:
 
-Methods: `SetEnabled(bool)`, `SetTitle(text)`, `Add(player, badge?)`, `Remove(player)`,
-`CheckIn()`, `Destroy()`.
+```lua
+Window:CreateNameplate({
+    title = "MY HUB",
+    preset = "Midnight",
+    style = {
+        logo = 1234567890,                 -- your own logo (asset id, URI, or a file in assets/)
+        accent = Color3.fromRGB(255, 90, 160),
+        sparkles = 4,
+        logoSway = 10,
+        entrance = "fade",                 -- "unfold", "fade" or "none"
+        size = Vector2.new(6, 1.4),        -- studs
+    },
+})
+
+Plates:SetStyle({ titleShine = false })   -- change it live
+Plates:SetStyle("Mono")                    -- or switch preset (your overrides stay)
+```
+
+| Group | Settings |
+| --- | --- |
+| Shape | `size` (studs), `lift`, `maxDistance`, `cornerRadius` |
+| Colour | `accent`, `accentDeep`, `cardColor`, `cardTransparency`, `veilColor`, `veilStrength`, `titleColor`, `subtitleColor`, `badgeTextColor`, `sparkleColor` |
+| Images | `logo`, `logoTint`, `logoScale`, `backdrop`, `backdropTint`, `backdropTransparency`, `glowImage` (each can be `false`) |
+| Type | `titleFont`, `subtitleFont` (a `Font`) |
+| Motion | `entrance`, `logoSway`, `logoSpin`, `halo`, `sparkles`, `titleShine`, `sweep`, `sweepEvery`, `border`, `borderThickness`, `borderSpeed`, `glow`, `bob`, `bobHeight`, `bobSpeed` |
+
+Other options: `subtitle` (a string or `function(player)`), `showSelf` (default `true`),
+`hideDefaultName` (hides Roblox's name under a plate, default `true`). Methods: `SetStyle`,
+`SetTitle`, `SetEnabled`, `Add(player, badge?)`, `Remove(player)`, `CheckIn()`, `Destroy()`.
 
 **Who sees what.** Plates are drawn locally, so only people running the script see them. To show
 plates over *other* users, each player checks in with the relay every 20 seconds and gets back
-everyone else in the same Roblox server who's running it. The artwork loads through the
-executor's custom-asset support; where that's missing, the plate falls back to a lettered mark on
-plain glass.
+everyone else in the same Roblox server who's running it. The relay can give people badges with
+`BADGES=`. Images load through the executor's custom-asset support; where that's missing, the
+plate falls back to a lettered mark on plain glass.
 
 ## Window
 

@@ -1,6 +1,7 @@
 local helpers = (_G :: any).__RAYFIELD_TEST_HELPERS
 
--- Nameplates against fake players and characters, and a fake relay for check-ins.
+-- Nameplates against fake players and characters, and a fake relay for check-ins. The animation
+-- is driven by hand through _step, so the entrance can be checked frame by frame.
 return function()
     local Window = helpers.requireComponent("window")
     local variables = helpers.requireUtility("variables")
@@ -31,6 +32,16 @@ return function()
             return { UserId = id, Name = name, DisplayName = name, Character = model }
         end
 
+        local function plateFor(props, badge)
+            local w = makeWindow()
+            props = props or {}
+            props.showSelf = false
+            local plates = w:CreateNameplate(props)
+            local player = fakePlayer(77, "Friend")
+            plates:Add(player, badge)
+            return plates, plates.plates[player], player
+        end
+
         afterEach(function()
             if window and not window.unloaded then
                 window:Unload()
@@ -38,7 +49,7 @@ return function()
             window = nil
         end)
 
-        it("floats a plate over your own head, with the hub's name and your @username", function()
+        it("floats a plate over your own head, with the hub's name, @username and badge", function()
             local w = makeWindow()
             local me = variables.localPlayer
             local model, head = character()
@@ -53,52 +64,100 @@ return function()
             expect(entry.gui.Adornee).to.equal(head)
             expect(entry.gui.AlwaysOnTop).to.equal(false)
             expect(entry.parts.title.Text).to.equal("OMNITY")
-            expect(entry.subtitle.Text:find("@SpecUser", 1, true)).to.be.ok()
-            expect(entry.subtitle.Text:find("DEVELOPER", 1, true)).to.be.ok()
+            expect(entry.parts.subtitle.Text).to.equal("@SpecUser")
+            expect(entry.parts.badge.Visible).to.equal(true)
+            expect(entry.parts.badgeText.Text).to.equal("DEVELOPER")
+            -- the Omnity look by default: the real logo and the galaxy
+            expect(plates.style.logo).to.equal("omnity-logo.png")
+            expect(plates.style.backdrop).to.equal("nameplate-galaxy.png")
         end)
 
-        it("rises in with an overshoot, bobs, and sweeps light across", function()
-            local w = makeWindow()
-            local plates = w:CreateNameplate({ showSelf = false })
-            local friend = fakePlayer(77, "Friend")
-            plates:Add(friend)
-            local entry = plates.plates[friend]
+        it("plays its entrance in order: mark, then card, then words", function()
+            local plates, entry = plateFor({}, "VIP")
+            local parts = entry.parts
             local born = entry.born
+            local logoScale = plates.style.logoScale
 
             plates:_step(born)
-            expect(entry.parts.card.GroupTransparency).to.equal(1)
-            expect(entry.parts.scale.Scale).to.equal(0.8)
+            expect(parts.monogram.TextTransparency).to.equal(1)
+            expect(parts.wipe.Enabled).to.equal(true)
+            expect(parts.title.TextTransparency).to.equal(1)
+            expect(parts.badgeScale.Scale).to.equal(0)
 
-            -- partway in, the scale runs past 1 before settling
+            -- the mark overshoots its size on the way in, before the words have arrived
             local peak = 0
-            for i = 1, 20 do
-                plates:_step(born + i * 0.035)
-                peak = math.max(peak, entry.parts.scale.Scale)
+            for i = 1, 14 do
+                plates:_step(born + i * 0.03)
+                peak = math.max(peak, parts.monogram.Size.X.Scale)
             end
-            expect(peak > 1).to.equal(true)
-            plates:_step(born + 2)
-            expect(entry.parts.card.GroupTransparency < 0.01).to.equal(true)
-            expect(math.abs(entry.parts.scale.Scale - 1) < 0.001).to.equal(true)
+            expect(peak > logoScale).to.equal(true)
+            expect(parts.title.TextTransparency > 0.9).to.equal(true)
 
-            -- the bob moves it up and down around its lift
-            local heights = {}
-            for i = 0, 10 do
-                plates:_step(born + 2 + i * 0.3)
+            -- partway: the card is wiping open, the title on its way
+            plates:_step(born + 0.55)
+            expect(parts.wipe.Enabled).to.equal(true)
+            expect(parts.title.TextTransparency < 1).to.equal(true)
+            expect(parts.title.Position.X.Scale > entry.layout.textLeft).to.equal(true)
+
+            -- done: everything in place, the wipe switched off
+            plates:_step(born + 2)
+            expect(parts.wipe.Enabled).to.equal(false)
+            expect(parts.card.GroupTransparency < 0.01).to.equal(true)
+            expect(parts.title.TextTransparency < 0.01).to.equal(true)
+            expect(math.abs(parts.title.Position.X.Scale - entry.layout.textLeft) < 0.001).to.equal(true)
+            expect(math.abs(parts.badgeScale.Scale - 1) < 0.001).to.equal(true)
+            expect(math.abs(parts.monogram.Size.X.Scale - logoScale) < 0.001).to.equal(true)
+        end)
+
+        it("keeps moving at rest: bob, spinning mark, orbiting sparks", function()
+            local plates, entry = plateFor()
+            local born = entry.born
+            local heights, rotations = {}, {}
+            for i = 0, 12 do
+                plates:_step(born + 2 + i * 0.25)
                 table.insert(heights, entry.gui.StudsOffset.Y)
+                table.insert(rotations, entry.parts.monogram.Rotation)
             end
             expect(math.max(table.unpack(heights)) > 2.5).to.equal(true)
             expect(math.min(table.unpack(heights)) < 2.5).to.equal(true)
+            expect(rotations[1] ~= rotations[#rotations]).to.equal(true)
+
+            expect(#entry.parts.sparks).to.equal(7)
+            local spark = entry.parts.sparks[1].frame
+            local before = spark.Position
+            plates:_step(born + 6)
+            expect(spark.Position ~= before).to.equal(true)
+            expect(spark.BackgroundTransparency < 1).to.equal(true)
+        end)
+
+        it("takes any style setting, presets included, and rebuilds on SetStyle", function()
+            local plates, entry = plateFor({
+                style = { sparkles = 2, accent = Color3.fromRGB(255, 0, 0), size = Vector2.new(4, 1), bob = false },
+            })
+            expect(#entry.parts.sparks).to.equal(2)
+            expect(entry.parts.badge.BackgroundColor3).to.equal(Color3.fromRGB(255, 0, 0))
+            expect(entry.gui.Size).to.equal(UDim2.fromScale(4, 1))
+            plates:_step(entry.born + 3)
+            expect(entry.gui.StudsOffset.Y).to.equal(2.5)
+
+            local oldGui = entry.gui
+            plates:SetStyle("Mono")
+            expect(plates.style.backdrop).to.equal(false)
+            expect(plates.style.sparkles).to.equal(2) -- overrides survive a preset change
+            expect(entry.gui).never.to.equal(oldGui)
+
+            plates:SetStyle({ sparkles = 0, entrance = "none" })
+            expect(#entry.parts.sparks).to.equal(0)
+            plates:_step(entry.born)
+            expect(entry.parts.title.TextTransparency).to.equal(0)
+            expect(entry.parts.wipe.Enabled).to.equal(false)
         end)
 
         it("fades out and cleans up when a player leaves, and restores their Roblox name", function()
-            local w = makeWindow()
-            local plates = w:CreateNameplate({ showSelf = false })
-            local friend = fakePlayer(88, "Leaver")
-            plates:Add(friend, "Staff")
-            local entry = plates.plates[friend]
+            local plates, entry, friend = plateFor({}, "Staff")
             local humanoid = friend.Character:FindFirstChild("Humanoid")
             expect(humanoid.DisplayDistanceType).to.equal(Enum.HumanoidDisplayDistanceType.None)
-            expect(entry.subtitle.Text:find("STAFF", 1, true)).to.be.ok()
+            expect(entry.parts.badgeText.Text).to.equal("STAFF")
 
             plates:Remove(friend)
             expect(plates.plates[friend]).to.equal(nil)
@@ -131,7 +190,7 @@ return function()
             expect(calls[1].body.jobId).to.be.a("string")
 
             expect(plates.plates[alice]).to.be.ok()
-            expect(plates.plates[alice].subtitle.Text:find("VIP", 1, true)).to.be.ok()
+            expect(plates.plates[alice].parts.badgeText.Text).to.equal("VIP")
             expect(plates.plates[bob]).to.equal(nil)
             expect(plates.users[12345]).to.be.ok()
 
@@ -140,11 +199,7 @@ return function()
         end)
 
         it("hides and shows every plate, and renames them", function()
-            local w = makeWindow()
-            local plates = w:CreateNameplate({ showSelf = false })
-            local friend = fakePlayer(90, "Pal")
-            plates:Add(friend)
-            local entry = plates.plates[friend]
+            local plates, entry = plateFor()
             plates:_step(entry.born + 2)
             expect(entry.parts.card.GroupTransparency < 0.01).to.equal(true)
 
@@ -156,8 +211,8 @@ return function()
             plates:SetTitle("OMNITY HUB")
             expect(entry.parts.title.Text).to.equal("OMNITY HUB")
             -- no custom assets in the test runtime: the lettered mark stands in for the logo
-            expect(entry.monogram.Visible).to.equal(true)
-            expect(entry.monogram.Text).to.equal("O")
+            expect(entry.parts.monogram.Visible).to.equal(true)
+            expect(entry.parts.monogram.Text).to.equal("O")
         end)
     end)
 end
